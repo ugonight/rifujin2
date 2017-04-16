@@ -1,0 +1,531 @@
+﻿#pragma  execution_character_set("utf-8")
+
+#include "novel.h"
+#include "SimpleAudioEngine.h"
+
+using namespace CocosDenshion;
+
+USING_NS_CC;
+
+Novel::~Novel() {
+	if (mFuncTask.size() > 1) {
+		for (auto tsk : mFuncTask) {
+			CC_SAFE_RELEASE_NULL(tsk.func);
+		}
+	}
+}
+
+bool Novel::init() {
+
+	if (Layer::init() == false)
+		return false;
+
+	this->scheduleUpdate();
+
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	mNovelNum  = mCount = 0;
+	mNovelSetNum = 1;
+	mEndFlag = 0;
+	mTouchTime = 0; mHideMsg = 0;
+	for (int i = 0; i < 4; i++)mImageNum[i] = 0;
+	mLogOnly = false;
+	
+	mSentense.push_back("");
+
+	//背景
+	auto bg = Sprite::create();
+	bg->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+	this->addChild(bg, 0, "bg0");
+
+	//キャラクター・センター
+	auto charaC = Sprite::create();
+	charaC->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+	this->addChild(charaC, 1, "charaC0");
+
+	//キャラクター・レフト
+	auto charaL = Sprite::create();
+	charaL->setPosition(Vec2(visibleSize.width / 4 + origin.x, visibleSize.height / 2 + origin.y));
+	this->addChild(charaL, 1, "charaL0");
+
+	//キャラクター・ライト
+	auto charaR = Sprite::create();
+	charaR->setPosition(Vec2(visibleSize.width * 3 / 4 + origin.x, visibleSize.height / 2 + origin.y));
+	this->addChild(charaR, 1, "charaR0");
+
+	//メッセージボックス
+	auto msg = Sprite::create("msg.png");
+	msg->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+	msg->setOpacity(0.0f);
+	auto seq = Sequence::create(
+		FadeIn::create(0.5f),
+		CallFunc::create(CC_CALLBACK_0(Novel::func,this)),
+		NULL);
+	msg->runAction(seq);
+	this->addChild(msg, 2,"msgBox");
+
+	//文字
+	auto label = Label::createWithTTF("", "fonts/APJapanesefontT.ttf", 24);
+	label->setPosition(Vec2(origin.x + 50,
+				origin.y + visibleSize.height - 340));
+	label->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
+	label->setColor(Color3B::BLUE);
+	label->enableOutline(Color4B::WHITE, 2);
+	label->setDimensions(750, 130);
+	this->addChild(label, 3, "label");
+
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->setSwallowTouches(true);
+	listener->onTouchBegan = CC_CALLBACK_2(Novel::touchEvent, this);
+	listener->onTouchEnded = [this](Touch *touch, Event *event) { mTouchTime = 0; };
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+
+	//バックログ
+	auto path = FileUtils::getInstance()->getWritablePath();
+	auto file = path + "speak.plist";
+
+	if (FileUtils::getInstance()->isFileExist(file)) {
+		mLog = FileUtils::getInstance()->getValueVectorFromFile(file);
+	}
+
+	auto log = Sprite::create("log.png");
+	log->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
+	log->setPosition(Vec2(visibleSize.width -15 + origin.x, -15 + origin.y + visibleSize.height));
+	addChild(log, 5, "log");
+
+	listener = EventListenerTouchOneByOne::create();
+	listener->setSwallowTouches(true);
+	listener->onTouchBegan = CC_CALLBACK_2(Novel::logEvent, this);
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, log);
+
+
+	return true;
+}
+
+void Novel::func() { 
+	mNovelNum = 1;
+	auto label = (Label*)this->getChildByName("label");
+	label->setString(mSentense[mNovelNum]);
+	setDelayAnime();
+}
+
+bool Novel::touchEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
+	auto label = (Label*)this->getChildByName("label");
+
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	if (mLogOnly == true)
+		return false;
+	if (/*touch->getLocation().y < visibleSize.height / 2 &&*/ !mHideMsg) {
+
+		if (endCheck()) {	//文がすべて表示されていたら
+			//バックログに記録
+			if (this->getOpacity() == 255) mLog.push_back(Value(mSentense[mNovelNum]));
+			if (mSentense.size() - 1 > mNovelNum) {	//文リストの最後でなければ
+				//次の分をセット
+				mNovelNum++;
+				label->setString(mSentense[mNovelNum]);
+				setDelayAnime();
+			}
+			else if (mSentense.size() - 1 == mNovelNum && this->getOpacity() == 255) {	//文リストの最後なら
+				mNovelNum++;
+				this->runAction(Sequence::create(FadeOut::create(0.5f), CallFunc::create(CC_CALLBACK_0(Novel::end, this)),/* RemoveSelf::create(true),*/ NULL));
+				//スプライト全部をフェードアウトする
+				Sprite* spr;
+				for (auto child : this->getChildren()) {
+					spr = (Sprite*)child;
+					spr->runAction(FadeOut::create(0.5f));
+				}
+
+				//ログを保存
+				mLog.push_back(Value(""));
+				auto path = FileUtils::getInstance()->getWritablePath();
+				auto file = path + "speak.plist";
+				FileUtils::getInstance()->writeValueVectorToFile(mLog, file);
+
+			}
+		}
+		else {
+			for (int i = 0; i < label->getStringLength() + label->getStringNumLines(); i++) {
+				auto AChar = label->getLetter(i);
+				if (nullptr != AChar) {
+					AChar->setOpacity(255);
+					AChar->stopAllActions();
+				}
+			}
+		}
+		
+		mTouchTime = 1;
+	}
+	else {
+		getChildByName("msgBox")->setVisible(true);
+		getChildByName("label")->setVisible(true);
+		mHideMsg = false;
+	}
+
+
+
+	return true;
+}
+
+void Novel::end(){	
+	mEndFlag = 1;
+}
+
+void Novel::update(float delta) {
+	if (mTouchTime > 0) mTouchTime++;
+	if (mTouchTime > 60) {
+		getChildByName("msgBox")->setVisible(false);
+		getChildByName("label")->setVisible(false);
+		mHideMsg = true;
+	}
+
+	updateImg();
+	updateColor();
+	updateFunc();
+}
+
+void Novel::addSentence(std::string s) {
+	mSentense.push_back(s);
+	mNovelSetNum++;
+}
+
+void Novel::updateImg() {
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	int num = 0;
+	std::stringstream name;
+	while (mTask[num].num == mNovelNum) {
+		name.clear(); name.str("");
+
+		if (mTask[num].imgPos == IMG_BG) {
+			name << "bg" << mImageNum[0];
+			auto old = this->getChildByName(name.str());
+			old->runAction(Sequence::create(FadeOut::create(0.5f), RemoveSelf::create(true), NULL));
+
+			mImageNum[0]++;
+
+			name.clear(); name.str("");
+			name << "bg" << mImageNum[0];
+
+			if (mTask[num].imgName != "") {
+				auto newOne = Sprite::create(mTask[num].imgName);
+				newOne->setPosition(old->getPosition());
+				newOne->setOpacity(0.0f);
+
+				newOne->runAction(FadeIn::create(0.5f));
+				this->addChild(newOne, 0, name.str());
+			}
+			else {
+				auto bg = Sprite::create();
+				bg->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+				this->addChild(bg, 0, name.str());
+			}
+		}
+		else if (mTask[num].imgPos == IMG_CENTER) {
+			name << "charaC" << mImageNum[1];
+			auto old = this->getChildByName(name.str());
+			old->runAction(Sequence::create(FadeOut::create(0.3f), RemoveSelf::create(true), NULL));
+
+			mImageNum[1]++;
+
+			name.clear(); name.str("");
+			name << "charaC" << mImageNum[1];
+
+			if (mTask[num].imgName != "") {
+				auto newOne = Sprite::create(mTask[num].imgName);
+				newOne->setPosition(old->getPosition());
+				newOne->setOpacity(0.0f);
+
+				newOne->runAction(FadeIn::create(0.3f));
+				this->addChild(newOne, 1, name.str());
+			}
+			else {
+				auto charaC = Sprite::create();
+				charaC->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+				this->addChild(charaC, 1, name.str());
+			}
+		}
+		else if (mTask[num].imgPos == IMG_LEFT) {
+			name << "charaL" << mImageNum[2];
+			auto old = this->getChildByName(name.str());
+			old->runAction(Sequence::create(FadeOut::create(0.3f), RemoveSelf::create(true), NULL));
+
+			mImageNum[2]++;
+
+			name.clear(); name.str("");
+			name << "charaL" << mImageNum[2];
+
+			if (mTask[num].imgName != "") {
+				auto newOne = Sprite::create(mTask[num].imgName);
+				newOne->setPosition(old->getPosition());
+				newOne->setOpacity(0.0f);
+
+				newOne->runAction(FadeIn::create(0.3f));
+				this->addChild(newOne, 1, name.str());
+			}
+			else {
+				auto charaL = Sprite::create();
+				charaL->setPosition(Vec2(visibleSize.width / 4 + origin.x, visibleSize.height / 2 + origin.y));
+				this->addChild(charaL, 1, name.str());
+			}
+		}
+		else if (mTask[num].imgPos == IMG_RIGHT) {
+			name << "charaR" << mImageNum[3];
+			auto old = this->getChildByName(name.str());
+			old->runAction(Sequence::create(FadeOut::create(0.3f), RemoveSelf::create(true), NULL));
+
+			mImageNum[3]++;
+
+			name.clear(); name.str("");
+			name << "charaR" << mImageNum[3];
+
+			if (mTask[num].imgName != "") {
+				auto newOne = Sprite::create(mTask[num].imgName);
+				newOne->setPosition(old->getPosition());
+				newOne->setOpacity(0.0f);
+
+				newOne->runAction(FadeIn::create(0.3f));
+				this->addChild(newOne, 1, name.str());
+			}
+			else {
+				auto charaR = Sprite::create();
+				charaR->setPosition(Vec2(visibleSize.width * 3 / 4 + origin.x, visibleSize.height / 2 + origin.y));
+				this->addChild(charaR, 1, name.str());
+			}
+		}
+		mTask.erase(mTask.begin());
+	}
+}
+
+bool Novel::getEndFlag(){return mEndFlag;}
+
+void Novel::setBg(std::string s) {
+	/*
+	auto old = this->getChildByName("bg");
+	auto newOne = Sprite::create(s);
+	newOne->setPosition(old->getPosition());
+	old->runAction(Sequence::create(FadeOut::create(0.5f), RemoveSelf::create(true), NULL));
+	newOne->runAction(FadeIn::create(0.5f));
+	this->addChild(newOne, 0, "bg");
+	*/
+	Task tsk = { mNovelSetNum,IMG_BG,s };
+	mTask.push_back(tsk);
+}
+
+void Novel::setCharaC(std::string s) {
+	/*
+	auto old = this->getChildByName("charaC");
+	auto newOne = Sprite::create(s);
+	newOne->setPosition(old->getPosition());
+	old->runAction(Sequence::create(FadeOut::create(0.5f), RemoveSelf::create(true), NULL));
+	newOne->runAction(FadeIn::create(0.5f));
+	this->addChild(newOne, 1, "charaC");
+	*/
+	Task tsk = { mNovelSetNum,IMG_CENTER,s };
+	mTask.push_back(tsk);
+}
+
+void Novel::setCharaL(std::string s) {
+	//auto old = this->getChildByName("charaL");
+	//auto newOne = Sprite::create(s);
+	//newOne->setPosition(old->getPosition());
+	//old->runAction(Sequence::create(FadeOut::create(0.5f), RemoveSelf::create(true), NULL));
+	//newOne->runAction(FadeIn::create(0.5f));
+	//this->addChild(newOne, 1, "charaL");
+	Task tsk = { mNovelSetNum,IMG_LEFT,s };
+	mTask.push_back(tsk);
+}
+
+void Novel::setCharaR(std::string s) {
+	//auto old = this->getChildByName("charaR");
+	//auto newOne = Sprite::create(s);
+	//newOne->setPosition(old->getPosition());
+	//old->runAction(Sequence::create(FadeOut::create(0.5f), RemoveSelf::create(true), NULL));
+	//newOne->runAction(FadeIn::create(0.5f));
+	//this->addChild(newOne, 1, "charaR");
+	Task tsk = { mNovelSetNum,IMG_RIGHT,s };
+	mTask.push_back(tsk);
+}
+
+void Novel::setEndTask() {
+	Task tsk = {-1,IMG_NONE,""};
+	mTask.push_back(tsk);
+
+	CTask ctsk = { -1, Color3B::BLACK};
+	mColorTask.push_back(ctsk);
+
+	FTask ftsk = { -1, CallFunc::create([] {}) };
+	mFuncTask.push_back(ftsk);
+
+	updateImg();
+	updateColor();
+	//updateFunc();
+}
+
+void Novel::updateColor() {
+	if (mColorTask[0].num == mNovelNum) {
+		//for (int i = 0; i < 3; i++)mLabel[i]->setColor(mColorTask[0].color);
+		auto label = (Label*)this->getChildByName("label");
+		label->setTextColor((Color4B)mColorTask[0].color);
+		mColorTask.erase(mColorTask.begin());
+	}
+}
+
+void Novel::updateFunc() {
+	if (mFuncTask[0].num == mNovelNum) {
+		this->runAction(mFuncTask[0].func);
+		mFuncTask.erase(mFuncTask.begin());
+	}
+}
+
+void Novel::setFontColor(cocos2d::Color3B c) {
+	CTask tsk = {mNovelSetNum, c};
+	mColorTask.push_back(tsk);
+}
+
+void Novel::addEvent(cocos2d::CallFunc* func) {
+	func->retain();
+	FTask tsk = {mNovelSetNum, func};
+	mFuncTask.push_back(tsk);
+}
+
+bool Novel::endCheck() {
+	auto label = (Label*)getChildByName("label");
+	for (int i = 0; i < label->getStringLength() + label->getStringNumLines(); i++) {
+		auto AChar = label->getLetter(i);
+		if (nullptr != AChar) {
+			if (AChar->getOpacity() < 255) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+void Novel::setDelayAnime() {
+	auto label1 = (Label*)getChildByName("label");
+	for (int i = 0; i < label1->getStringLength() + label1->getStringNumLines(); i++) {
+		auto AChar = label1->getLetter(i);
+		mCharNum = 0;
+		if (nullptr != AChar) {
+			mCharNum++;
+			AChar->setOpacity(0.0f);
+			AChar->runAction(
+				Sequence::create(
+					DelayTime::create(0.05f*i),
+					FadeIn::create(0.05f),
+					CallFunc::create([this]() {	if (mCharNum % 4 == 0) SimpleAudioEngine::getInstance()->playEffect("SE/po.ogg"); }),	//全角の最初で鳴らす
+					NULL
+				));
+		}
+	}
+}
+
+bool Novel::logEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
+	auto target = (Sprite*)event->getCurrentTarget();
+	Rect targetBox = target->getBoundingBox();
+	Point touchPoint = Vec2(touch->getLocation().x, touch->getLocation().y);
+	if (targetBox.containsPoint(touchPoint))
+	{
+		Size visibleSize = Director::getInstance()->getVisibleSize();
+		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+		auto layer = Layer::create();
+		this->addChild(layer, 5, "layer_l");
+
+		//背景
+		Rect rect = Rect(0, 0, visibleSize.width, visibleSize.height);
+		Sprite* square = Sprite::create();
+		square->setTextureRect(rect);
+		square->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+		square->setColor(Color3B(0, 0, 0));
+		square->setOpacity(128);
+		layer->addChild(square, 0, "back_l");
+		auto listener = EventListenerTouchOneByOne::create();
+		listener->setSwallowTouches(true);
+		listener->onTouchBegan = [this](Touch* touch, Event* event) {
+			mLogScrollX = touch->getLocation().x;
+			mLogScrollY = touch->getLocation().y;
+			return true; 
+		};
+		listener->onTouchMoved = [this](Touch* touch, Event* event) {
+			auto label = (Label*)this->getChildByName("layer_l")->getChildByName("label");
+			auto height = Director::getInstance()->getVisibleSize().height;
+			label->setPosition(label->getPositionX() + touch->getLocation().x - mLogScrollX,label->getPositionY() + touch->getLocation().y - mLogScrollY);
+			if (label->getPositionY() > label->getDimensions().height + height) {
+				label->setPositionY(label->getDimensions().height + height);
+			}
+			else if (label->getPositionY() < 0) {
+				label->setPositionY(0.0f);
+			}
+			mLogScrollY = touch->getLocation().y;
+			if (label->getPositionX() < -label->getDimensions().width) {
+				label->setPositionX(-label->getDimensions().width);
+			}
+			else if (label->getPositionX() > 20) {
+				label->setPositionX(20.0f);
+			}
+			mLogScrollX = touch->getLocation().x;
+		};
+		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, square);
+
+
+		//文字
+		std::stringstream str;
+		int lineNum = 0;
+		for (auto s : mLog) { lineNum++; }
+		if (lineNum > 100) {	//100行越えなら最新の100行を表示
+			for (int i = 0; i < 100; i++) {
+				auto s = mLog[lineNum - 100 + i];
+				str << s.asString() << "\n";
+			}
+		}
+		else {
+			for (auto s : mLog) {
+				str << s.asString() << "\n";
+			}
+		}
+
+		auto label = Label::createWithTTF(str.str(), "fonts/APJapanesefontT.ttf", 24);
+		label->setPosition(Vec2(origin.x + 20 ,origin.y + visibleSize.height - 20));
+		label->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
+		label->setColor(Color3B::WHITE);
+		label->setDimensions(visibleSize.width * 3, label->getLineHeight() * (label->getStringNumLines() + 1));
+		label->setPositionY(label->getDimensions().height);
+		layer->addChild(label, 3, "label");
+
+		//閉じる
+		auto close = Sprite::create("log_.png");
+		close->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
+		close->setPosition(Vec2(visibleSize.width - 15 + origin.x, -15 + origin.y + visibleSize.height));
+		layer->addChild(close, 1, "close");
+		listener = EventListenerTouchOneByOne::create();
+		listener->onTouchBegan = [this](Touch* touch, Event* event) { return true; };
+		listener->onTouchEnded =[this](Touch* touch, Event* event) {
+			auto target = (Sprite*)event->getCurrentTarget();
+			Rect targetBox = target->getBoundingBox();
+			Point touchPoint = Vec2(touch->getLocation().x, touch->getLocation().y);
+			if (targetBox.containsPoint(touchPoint))
+			{
+				this->removeChildByName("layer_l");
+			}
+		};
+		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, close);
+	return true;	
+	}
+	return false;
+}
+
+void Novel::setLogOnly() { 
+	for (auto child : this->getChildren()) {
+		if (child->getName() != "log") {
+			child->setVisible(false);
+		}
+	}
+
+	mLogOnly = true;
+}
