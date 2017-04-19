@@ -8,9 +8,11 @@ using namespace CocosDenshion;
 USING_NS_CC;
 
 Novel::~Novel() {
-	if (mFuncTask.size() > 1) {
-		for (auto tsk : mFuncTask) {
-			CC_SAFE_RELEASE_NULL(tsk.func);
+	for (int i = 0; i < MAX_BRANCH; i++) {
+		if (mFuncTask[i].size() > 1) {
+			for (auto tsk : mFuncTask[i]) {
+				CC_SAFE_RELEASE_NULL(tsk.func);
+			}
 		}
 	}
 }
@@ -25,14 +27,20 @@ bool Novel::init() {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	mNovelNum  = mCount = 0;
-	mNovelSetNum = 1;
+	mCount = 0;
 	mEndFlag = 0;
 	mTouchTime = 0; mHideMsg = 0;
+	mBranch = 0; //最初はメイン
 	for (int i = 0; i < 4; i++)mImageNum[i] = 0;
+	mSwitch = false;
 	mLogOnly = false;
+
+	for (int i = 0; i < MAX_BRANCH; i++) {
+		mNovelNum[i] = 0;
+		mNovelSetNum[i] = 1;
+		mSentense[i].push_back("");
+	}
 	
-	mSentense.push_back("");
 
 	//背景
 	auto bg = Sprite::create();
@@ -104,9 +112,9 @@ bool Novel::init() {
 }
 
 void Novel::func() { 
-	mNovelNum = 1;
+	mNovelNum[0] = 1;
 	auto label = (Label*)this->getChildByName("label");
-	label->setString(mSentense[mNovelNum]);
+	label->setString(mSentense[0][mNovelNum[0]]);
 	setDelayAnime();
 }
 
@@ -118,19 +126,22 @@ bool Novel::touchEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 
 	if (mLogOnly == true)
 		return false;
-	if (/*touch->getLocation().y < visibleSize.height / 2 &&*/ !mHideMsg) {
+
+
+	//会話を進める
+	if (touch->getLocation().y < visibleSize.height / 2 && !mHideMsg && !mSwitch) {
 
 		if (endCheck()) {	//文がすべて表示されていたら
 			//バックログに記録
-			if (this->getOpacity() == 255) mLog.push_back(Value(mSentense[mNovelNum]));
-			if (mSentense.size() - 1 > mNovelNum) {	//文リストの最後でなければ
+			if (this->getOpacity() == 255) mLog.push_back(Value(mSentense[mBranch][mNovelNum[mBranch]]));
+			if (mSentense[mBranch].size() - 1 > mNovelNum[mBranch]) {	//文リストの最後でなければ
 				//次の分をセット
-				mNovelNum++;
-				label->setString(mSentense[mNovelNum]);
+				mNovelNum[mBranch]++;
+				label->setString(mSentense[mBranch][mNovelNum[mBranch]]);
 				setDelayAnime();
 			}
-			else if (mSentense.size() - 1 == mNovelNum && this->getOpacity() == 255) {	//文リストの最後なら
-				mNovelNum++;
+			else if (mSentense[mBranch].size() - 1 == mNovelNum[mBranch] && this->getOpacity() == 255) {	//文リストの最後なら
+				mNovelNum[mBranch]++;
 				this->runAction(Sequence::create(FadeOut::create(0.5f), CallFunc::create(CC_CALLBACK_0(Novel::end, this)),/* RemoveSelf::create(true),*/ NULL));
 				//スプライト全部をフェードアウトする
 				Sprite* spr;
@@ -185,11 +196,12 @@ void Novel::update(float delta) {
 	updateImg();
 	updateColor();
 	updateFunc();
+	updateSwitch();
 }
 
-void Novel::addSentence(std::string s) {
-	mSentense.push_back(s);
-	mNovelSetNum++;
+void Novel::addSentence(int branch,std::string s) {
+	mSentense[branch].push_back(s);
+	mNovelSetNum[branch]++;
 }
 
 void Novel::updateImg() {
@@ -198,10 +210,10 @@ void Novel::updateImg() {
 
 	int num = 0;
 	std::stringstream name;
-	while (mTask[num].num == mNovelNum) {
+	while (mTask[mBranch][num].num == mNovelNum[mBranch]) {
 		name.clear(); name.str("");
 
-		if (mTask[num].imgPos == IMG_BG) {
+		if (mTask[mBranch][num].imgPos == IMG_BG) {
 			name << "bg" << mImageNum[0];
 			auto old = this->getChildByName(name.str());
 			old->runAction(Sequence::create(FadeOut::create(0.5f), RemoveSelf::create(true), NULL));
@@ -211,8 +223,8 @@ void Novel::updateImg() {
 			name.clear(); name.str("");
 			name << "bg" << mImageNum[0];
 
-			if (mTask[num].imgName != "") {
-				auto newOne = Sprite::create(mTask[num].imgName);
+			if (mTask[mBranch][num].imgName != "") {
+				auto newOne = Sprite::create(mTask[mBranch][num].imgName);
 				newOne->setPosition(old->getPosition());
 				newOne->setOpacity(0.0f);
 
@@ -225,7 +237,7 @@ void Novel::updateImg() {
 				this->addChild(bg, 0, name.str());
 			}
 		}
-		else if (mTask[num].imgPos == IMG_CENTER) {
+		else if (mTask[mBranch][num].imgPos == IMG_CENTER) {
 			name << "charaC" << mImageNum[1];
 			auto old = this->getChildByName(name.str());
 			old->runAction(Sequence::create(FadeOut::create(0.3f), RemoveSelf::create(true), NULL));
@@ -235,8 +247,8 @@ void Novel::updateImg() {
 			name.clear(); name.str("");
 			name << "charaC" << mImageNum[1];
 
-			if (mTask[num].imgName != "") {
-				auto newOne = Sprite::create(mTask[num].imgName);
+			if (mTask[mBranch][num].imgName != "") {
+				auto newOne = Sprite::create(mTask[mBranch][num].imgName);
 				newOne->setPosition(old->getPosition());
 				newOne->setOpacity(0.0f);
 
@@ -249,7 +261,7 @@ void Novel::updateImg() {
 				this->addChild(charaC, 1, name.str());
 			}
 		}
-		else if (mTask[num].imgPos == IMG_LEFT) {
+		else if (mTask[mBranch][num].imgPos == IMG_LEFT) {
 			name << "charaL" << mImageNum[2];
 			auto old = this->getChildByName(name.str());
 			old->runAction(Sequence::create(FadeOut::create(0.3f), RemoveSelf::create(true), NULL));
@@ -259,8 +271,8 @@ void Novel::updateImg() {
 			name.clear(); name.str("");
 			name << "charaL" << mImageNum[2];
 
-			if (mTask[num].imgName != "") {
-				auto newOne = Sprite::create(mTask[num].imgName);
+			if (mTask[mBranch][num].imgName != "") {
+				auto newOne = Sprite::create(mTask[mBranch][num].imgName);
 				newOne->setPosition(old->getPosition());
 				newOne->setOpacity(0.0f);
 
@@ -273,7 +285,7 @@ void Novel::updateImg() {
 				this->addChild(charaL, 1, name.str());
 			}
 		}
-		else if (mTask[num].imgPos == IMG_RIGHT) {
+		else if (mTask[mBranch][num].imgPos == IMG_RIGHT) {
 			name << "charaR" << mImageNum[3];
 			auto old = this->getChildByName(name.str());
 			old->runAction(Sequence::create(FadeOut::create(0.3f), RemoveSelf::create(true), NULL));
@@ -283,8 +295,8 @@ void Novel::updateImg() {
 			name.clear(); name.str("");
 			name << "charaR" << mImageNum[3];
 
-			if (mTask[num].imgName != "") {
-				auto newOne = Sprite::create(mTask[num].imgName);
+			if (mTask[mBranch][num].imgName != "") {
+				auto newOne = Sprite::create(mTask[mBranch][num].imgName);
 				newOne->setPosition(old->getPosition());
 				newOne->setOpacity(0.0f);
 
@@ -297,69 +309,44 @@ void Novel::updateImg() {
 				this->addChild(charaR, 1, name.str());
 			}
 		}
-		mTask.erase(mTask.begin());
+		mTask[mBranch].erase(mTask[mBranch].begin());
 	}
 }
 
 bool Novel::getEndFlag(){return mEndFlag;}
 
-void Novel::setBg(std::string s) {
-	/*
-	auto old = this->getChildByName("bg");
-	auto newOne = Sprite::create(s);
-	newOne->setPosition(old->getPosition());
-	old->runAction(Sequence::create(FadeOut::create(0.5f), RemoveSelf::create(true), NULL));
-	newOne->runAction(FadeIn::create(0.5f));
-	this->addChild(newOne, 0, "bg");
-	*/
-	Task tsk = { mNovelSetNum,IMG_BG,s };
-	mTask.push_back(tsk);
+void Novel::setBg(int branch, std::string s) {
+	Task tsk = { mNovelSetNum[branch],IMG_BG,s };
+	mTask[branch].push_back(tsk);
 }
 
-void Novel::setCharaC(std::string s) {
-	/*
-	auto old = this->getChildByName("charaC");
-	auto newOne = Sprite::create(s);
-	newOne->setPosition(old->getPosition());
-	old->runAction(Sequence::create(FadeOut::create(0.5f), RemoveSelf::create(true), NULL));
-	newOne->runAction(FadeIn::create(0.5f));
-	this->addChild(newOne, 1, "charaC");
-	*/
-	Task tsk = { mNovelSetNum,IMG_CENTER,s };
-	mTask.push_back(tsk);
+void Novel::setCharaC(int branch, std::string s) {
+	Task tsk = { mNovelSetNum[branch],IMG_CENTER,s };
+	mTask[branch].push_back(tsk);
 }
 
-void Novel::setCharaL(std::string s) {
-	//auto old = this->getChildByName("charaL");
-	//auto newOne = Sprite::create(s);
-	//newOne->setPosition(old->getPosition());
-	//old->runAction(Sequence::create(FadeOut::create(0.5f), RemoveSelf::create(true), NULL));
-	//newOne->runAction(FadeIn::create(0.5f));
-	//this->addChild(newOne, 1, "charaL");
-	Task tsk = { mNovelSetNum,IMG_LEFT,s };
-	mTask.push_back(tsk);
+void Novel::setCharaL(int branch, std::string s) {
+	Task tsk = { mNovelSetNum[branch],IMG_LEFT,s };
+	mTask[branch].push_back(tsk);
 }
 
-void Novel::setCharaR(std::string s) {
-	//auto old = this->getChildByName("charaR");
-	//auto newOne = Sprite::create(s);
-	//newOne->setPosition(old->getPosition());
-	//old->runAction(Sequence::create(FadeOut::create(0.5f), RemoveSelf::create(true), NULL));
-	//newOne->runAction(FadeIn::create(0.5f));
-	//this->addChild(newOne, 1, "charaR");
-	Task tsk = { mNovelSetNum,IMG_RIGHT,s };
-	mTask.push_back(tsk);
+void Novel::setCharaR(int branch, std::string s) {
+	Task tsk = { mNovelSetNum[branch],IMG_RIGHT,s };
+	mTask[branch].push_back(tsk);
 }
 
-void Novel::setEndTask() {
+void Novel::setEndTask(int branch) {
 	Task tsk = {-1,IMG_NONE,""};
-	mTask.push_back(tsk);
+	mTask[branch].push_back(tsk);
 
 	CTask ctsk = { -1, Color3B::BLACK};
-	mColorTask.push_back(ctsk);
+	mColorTask[branch].push_back(ctsk);
 
 	FTask ftsk = { -1, CallFunc::create([] {}) };
-	mFuncTask.push_back(ftsk);
+	mFuncTask[branch].push_back(ftsk);
+
+	STask stsk = { -1 };
+	mSwitchTask[branch].push_back(stsk);
 
 	updateImg();
 	updateColor();
@@ -367,30 +354,99 @@ void Novel::setEndTask() {
 }
 
 void Novel::updateColor() {
-	if (mColorTask[0].num == mNovelNum) {
+	if (mColorTask[mBranch][0].num == mNovelNum[mBranch]) {
 		//for (int i = 0; i < 3; i++)mLabel[i]->setColor(mColorTask[0].color);
 		auto label = (Label*)this->getChildByName("label");
-		label->setTextColor((Color4B)mColorTask[0].color);
-		mColorTask.erase(mColorTask.begin());
+		label->setTextColor((Color4B)mColorTask[mBranch][0].color);
+		mColorTask[mBranch].erase(mColorTask[mBranch].begin());
 	}
 }
 
 void Novel::updateFunc() {
-	if (mFuncTask[0].num == mNovelNum) {
-		this->runAction(mFuncTask[0].func);
-		mFuncTask.erase(mFuncTask.begin());
+	if (mFuncTask[mBranch][0].num == mNovelNum[mBranch]) {
+		this->runAction(mFuncTask[mBranch][0].func);
+		mFuncTask[mBranch].erase(mFuncTask[mBranch].begin());
 	}
 }
 
-void Novel::setFontColor(cocos2d::Color3B c) {
-	CTask tsk = {mNovelSetNum, c};
-	mColorTask.push_back(tsk);
+void Novel::updateSwitch() {
+	if (mSwitchTask[mBranch][0].num == mNovelNum[mBranch]) {
+		Size visibleSize = Director::getInstance()->getVisibleSize();
+		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+		mSwitch = true;
+
+		int bNum; //選択肢の数
+		for (bNum = 0; mSwitchTask[mBranch][0].branchTo[bNum] != -1; bNum++);
+	
+		std::stringstream name;
+		for (int i = 0; i < bNum; i++) {
+			auto box = Sprite::create("ele_mini1.png");
+			box->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - (300 / (bNum + 1) * (i + 1)));
+			box->setOpacity(0.00f);
+			box->runAction(FadeIn::create(0.5));
+			name.clear(); name.str("");
+			name << "branch" << i;
+			addChild(box, 3, name.str());
+			auto text = Label::createWithTTF(mSwitchTask[mBranch][0].branchStr[i], "fonts/APJapanesefontT.ttf", 24);
+			text->setPosition(box->getPosition());
+			text->setTextColor(Color4B::BLACK);
+			text->enableOutline(Color4B::WHITE, 2);
+			text->setOpacity(0.00f);
+			text->runAction(FadeIn::create(0.5));
+			name.clear(); name.str("");
+			name << "text" << i;
+			addChild(text, 4, name.str());
+			mCurrentSTask = mSwitchTask[mBranch][0];
+			auto listener = EventListenerTouchOneByOne::create();
+			listener->onTouchBegan = [this,i,bNum](Touch* touch, Event* event) {
+				if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
+					//log("switch : %d", i);
+					mSwitch = false;
+					mBranch = mCurrentSTask.branchTo[i];
+					std::stringstream name;
+					for (int j = 0; j < bNum; j++) {
+						name << "branch" << j;
+						getChildByName(name.str())->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5f),RemoveSelf::create()));
+						name.clear(); name.str("");
+						name << "text" << j;
+						getChildByName(name.str())->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5f), RemoveSelf::create()));
+						name.clear(); name.str("");
+					}
+	
+					return true;
+				}
+				return false;
+			};
+			this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, box);
+		}
+		mSwitchTask[mBranch].erase(mSwitchTask[mBranch].begin());
+	}	
 }
 
-void Novel::addEvent(cocos2d::CallFunc* func) {
+void Novel::setFontColor(int branch,cocos2d::Color3B c) {
+	CTask tsk = {mNovelSetNum[branch], c};
+	mColorTask[branch].push_back(tsk);
+}
+
+void Novel::addEvent(int branch,cocos2d::CallFunc* func) {
 	func->retain();
-	FTask tsk = {mNovelSetNum, func};
-	mFuncTask.push_back(tsk);
+	FTask tsk = {mNovelSetNum[branch], func};
+	mFuncTask[branch].push_back(tsk);
+}
+
+void Novel::addSwitchEvent(int branch, int br1, std::string st1, int br2, std::string st2, int br3, std::string st3, int br4, std::string st4) {
+	STask tsk;
+	tsk.num = mNovelSetNum[branch];
+	tsk.branchTo[0] = br1;
+	tsk.branchStr[0] = st1;
+	tsk.branchTo[1] = br2;
+	tsk.branchStr[1] = st2;
+	tsk.branchTo[2] = br3;
+	tsk.branchStr[2] = st3;
+	tsk.branchTo[3] = br4;
+	tsk.branchStr[3] = st4;
+	mSwitchTask[branch].push_back(tsk);
 }
 
 bool Novel::endCheck() {

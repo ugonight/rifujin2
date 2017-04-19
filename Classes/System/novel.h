@@ -1,6 +1,8 @@
 #pragma once
 #include "cocos2d.h"
 
+#define MAX_BRANCH 10
+
 class Novel : public cocos2d::Layer {
 
 private:
@@ -28,16 +30,24 @@ private:
 		cocos2d::CallFunc* func;
 	} FTask;
 
-	int mNovelNum, mNovelSetNum, mCount, mCharNum;
+	typedef struct STask {
+		int num;
+		int branchTo[4];
+		std::string branchStr[4];
+	} STask;
+
+	int mNovelNum[MAX_BRANCH], mNovelSetNum[MAX_BRANCH], mCount, mCharNum, mBranch;
 	int mTouchTime; bool mHideMsg;
 	int mImageNum[4]; //Bg,CharaC,CharaL,CharaR
 	bool mEndFlag;
+	bool mSwitch; //選択肢モード
+	STask mCurrentSTask;	//選択モード中のタスク
 	bool mLogOnly;
-	std::vector<std::string> mSentense;
-	std::vector<Task> mTask;
-	std::vector<CTask> mColorTask;
-	std::vector<FTask> mFuncTask;
-	//cocos2d::Label mLabel[];
+	std::vector<std::string> mSentense[MAX_BRANCH];	//0がメイン、1～分岐
+	std::vector<Task> mTask[MAX_BRANCH];
+	std::vector<CTask> mColorTask[MAX_BRANCH];
+	std::vector<FTask> mFuncTask[MAX_BRANCH];
+	std::vector<STask> mSwitchTask[MAX_BRANCH];
 	cocos2d::ValueVector mLog;
 	int mLogScrollX, mLogScrollY;
 
@@ -57,6 +67,8 @@ private:
 	void updateColor();
 	//イベント実行
 	void updateFunc();
+	//選択肢実行
+	void updateSwitch();
 
 public:
 	virtual ~Novel();
@@ -69,24 +81,27 @@ public:
 	bool getEndFlag();
 
 	//文追加
-	void addSentence(std::string s);
+	void addSentence(int branch,std::string s);
 	//背景設定
-	void setBg(std::string s);
+	void setBg(int branch,std::string s);
 	//キャラクター・センター
-	void setCharaC(std::string s);
+	void setCharaC(int branch, std::string s);
 	//キャラクター・レフト
-	void setCharaL(std::string s);
+	void setCharaL(int branch, std::string s);
 	//キャラクター・ライト
-	void setCharaR(std::string s);
+	void setCharaR(int branch, std::string s);
 
 	//タスクの終わり
-	void setEndTask();
+	void setEndTask(int branch);
 
 	//文字色変更
-	void setFontColor(cocos2d::Color3B c);
+	void setFontColor(int branch, cocos2d::Color3B c);
 
 	//イベントタスク追加
-	void addEvent(cocos2d::CallFunc* func);
+	void addEvent(int branch, cocos2d::CallFunc* func);
+
+	//選択肢モード追加
+	void addSwitchEvent(int branch, int br1, std::string st1 = "", int br2 = -1, std::string st2 = "", int br3 = -1, std::string st3 = "", int br4 = -1, std::string st4 = "");
 
 	//ログだけ表示するモード
 	void setLogOnly();

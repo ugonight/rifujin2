@@ -68,48 +68,49 @@ bool Prologue::init()
 	mFunc[0] = [this]() {
 		auto novel = Novel::create();
 
-		novel->setFontColor(Color3B::BLACK);
-		novel->addSentence("真っ暗で何も見えない");
-		novel->addSentence("そんな不安の中で");
-		novel->addSentence("ひたすら自分の犯した過ちを振り返る");
-		novel->addSentence("許してもらうために");
-		novel->addSentence("…誰に？");
-		novel->addSentence("でも、こうして罰を受け続けているのだから、懺悔を繰り返す他に道はないのだ");
-		novel->addSentence("そもそも、僕の罪は何なのだろう");
-		novel->addSentence("漠然とした記憶");
-		novel->addSentence("…何かが足りない");
-		novel->addSentence("この闇から抜け出すには、まだ、何かが足りないのだ");
-		novel->addSentence("今はその時ではない");
-		novel->addSentence("そして、また僕は思考を手放す");
+		novel->setFontColor(0,Color3B::BLACK);
+		novel->addSentence(0,"真っ暗で何も見えない");
+		novel->addSentence(0,"そんな不安の中で");
+		novel->addSentence(0,"ひたすら自分の犯した過ちを振り返る");
+		novel->addSentence(0,"許してもらうために");
+		novel->addSentence(0,"…誰に？");
+		novel->addSentence(0,"でも、こうして罰を受け続けているのだから、懺悔を繰り返す他に道はないのだ");
+		novel->addSentence(0,"そもそも、僕の罪は何なのだろう");
+		novel->addSentence(0,"漠然とした記憶");
+		novel->addSentence(0,"…何かが足りない");
+		novel->addSentence(0,"この闇から抜け出すには、まだ、何かが足りないのだ");
+		novel->addSentence(0,"今はその時ではない");
+		novel->addSentence(0,"そして、また僕は思考を手放す");
 
-		novel->setEndTask();
+		novel->setEndTask(0);
 		this->addChild(novel, 0, "novel");
 	};
 
 	mFunc[1] = [this]() {
 		auto novel = Novel::create();
 
-		novel->setFontColor(Color3B::BLACK);
-		novel->addSentence("zzz・・・");
-		novel->setFontColor(Color3B::RED);
-		novel->addSentence("？？？「つぐる様…」");
-		novel->setFontColor(Color3B::BLACK);
-		novel->addSentence("zzz・・・");
-		novel->setFontColor(Color3B::RED);
-		novel->addSentence("？？？「継様…？」");
-		novel->setFontColor(Color3B::BLACK);
-		novel->addSentence("・・・？");
-		novel->addSentence("…またこのパターンか");
-		novel->addSentence("僕は狸寝入りを試みる");
-		novel->addSentence("？？？「起きろーーーー！！！！！」");
-		novel->setBg("bg/white.png");
-		novel->addSentence("バシャッ");
-		novel->addSentence("継「うわっ、何するんだよセ…」");
-		novel->setBg("obj/classroom.png");
-		novel->addSentence("");
+		novel->setFontColor(0,Color3B::BLACK);
+		novel->addSentence(0,"zzz・・・");
+		novel->setFontColor(0,Color3B::RED);
+		novel->addSentence(0,"？？？「つぐる様…」");
+		novel->setFontColor(0,Color3B::BLACK);
+		novel->addSentence(0,"zzz・・・");
+		novel->setFontColor(0,Color3B::RED);
+		novel->addSentence(0,"？？？「継様…？」");
+		novel->setFontColor(0,Color3B::BLACK);
+		novel->addSentence(0,"・・・？");
+		novel->addSentence(0,"…またこのパターンか");
+		novel->addSwitchEvent(0, 1, "狸寝入りを試みる", 2, "再び眠りにつく");
+		novel->addSentence(0,"僕は…");
+		novel->addSentence(0,"？？？「起きろーーーー！！！！！」");
+		novel->setBg(0,"bg/white.png");
+		novel->addSentence(0,"バシャッ");
+		novel->addSentence(0,"継「うわっ、何するんだよセ…」");
+		novel->setBg(0,"obj/classroom.png");
+		novel->addSentence(0,"");
 
 
-		novel->setEndTask();
+		novel->setEndTask(0);
 		this->addChild(novel, 0, "novel");
 	};
 

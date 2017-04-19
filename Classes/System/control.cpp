@@ -49,8 +49,8 @@ bool Control::init() {
 	this->addChild(menu, 1, "save");
 
 	auto novel = Novel::create();
-	novel->addSentence("");
-	novel->setEndTask();
+	novel->addSentence(0,"");
+	novel->setEndTask(0);
 	novel->setLogOnly();
 	addChild(novel, 1, "log");
 
@@ -93,8 +93,8 @@ void Control::update(float delta) {
 		
 		if (!getChildByName("log")) {
 			auto novel = Novel::create();
-			novel->addSentence("");
-			novel->setEndTask();
+			novel->addSentence(0,"");
+			novel->setEndTask(0);
 			novel->setLogOnly();
 			addChild(novel, 1, "log");
 		}
