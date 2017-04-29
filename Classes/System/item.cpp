@@ -1,9 +1,9 @@
 #include "item.h"
 
 #include "control.h"
-#include "SimpleAudioEngine.h"
 
-using namespace CocosDenshion;
+#include "audio/include/AudioEngine.h"
+using namespace cocos2d::experimental;
 USING_NS_CC;
 
 static Item* instanceOfItem;
@@ -174,7 +174,7 @@ void Item::getItem(std::string s, Point p) {
 	addChild(m_emitter, 10);
 
 	//SE
-	SimpleAudioEngine::getInstance()->playEffect("SE/get.ogg");
+	AudioEngine::play2d("SE/get.ogg");
 }
 
 void Item::deleteItem(std::string s) {
@@ -279,7 +279,7 @@ void Item::showAboutItem() {
 	addChild(aboutItem, 2, "AboutItem");
 
 	//SE
-	SimpleAudioEngine::getInstance()->playEffect("SE/set.ogg");
+	AudioEngine::play2d("SE/set.ogg");
 }
 
 void Item::saveItem(cocos2d::ValueMap* map) {	

@@ -1,8 +1,8 @@
 #include "Title.h"
 #include "Prologue.h"
-#include "SimpleAudioEngine.h"
 
-using namespace CocosDenshion;
+#include "audio/include/AudioEngine.h"
+using namespace cocos2d::experimental;
 USING_NS_CC;
 
 Scene* Title::createScene()
@@ -50,7 +50,7 @@ bool Title::init()
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
     
 	//SE
-	SimpleAudioEngine::getInstance()->preloadEffect("SE/po.ogg");
+	AudioEngine::preload("SE/po.ogg");
 
     return true;
 }

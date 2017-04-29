@@ -1,9 +1,9 @@
 ﻿#pragma  execution_character_set("utf-8")
 
 #include "novel.h"
-#include "SimpleAudioEngine.h"
 
-using namespace CocosDenshion;
+#include "audio/include/AudioEngine.h"
+using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
@@ -376,50 +376,81 @@ void Novel::updateSwitch() {
 
 		mSwitch = true;
 
-		int bNum; //選択肢の数
-		for (bNum = 0; mSwitchTask[mBranch][0].branchTo[bNum] != -1; bNum++);
-	
-		std::stringstream name;
-		for (int i = 0; i < bNum; i++) {
-			auto box = Sprite::create("ele_mini1.png");
-			box->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - (300 / (bNum + 1) * (i + 1)));
-			box->setOpacity(0.00f);
-			box->runAction(FadeIn::create(0.5));
-			name.clear(); name.str("");
-			name << "branch" << i;
-			addChild(box, 3, name.str());
-			auto text = Label::createWithTTF(mSwitchTask[mBranch][0].branchStr[i], "fonts/APJapanesefontT.ttf", 24);
-			text->setPosition(box->getPosition());
-			text->setTextColor(Color4B::BLACK);
-			text->enableOutline(Color4B::WHITE, 2);
-			text->setOpacity(0.00f);
-			text->runAction(FadeIn::create(0.5));
-			name.clear(); name.str("");
-			name << "text" << i;
-			addChild(text, 4, name.str());
+		if (mSwitchTask[mBranch][0].branchStr[0] == "") {	//ルート変更のみ
 			mCurrentSTask = mSwitchTask[mBranch][0];
+			int branchTo = mSwitchTask[mBranch][0].branchTo[0];
+			auto fake = Layer::create();
+			fake->setPosition(visibleSize / 2);
+			fake->setSwallowsTouches(true);
+			this->addChild(fake, 10, "fakeLayer");
+
 			auto listener = EventListenerTouchOneByOne::create();
-			listener->onTouchBegan = [this,i,bNum](Touch* touch, Event* event) {
-				if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
-					//log("switch : %d", i);
-					mSwitch = false;
-					mBranch = mCurrentSTask.branchTo[i];
-					std::stringstream name;
-					for (int j = 0; j < bNum; j++) {
-						name << "branch" << j;
-						getChildByName(name.str())->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5f),RemoveSelf::create()));
-						name.clear(); name.str("");
-						name << "text" << j;
-						getChildByName(name.str())->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5f), RemoveSelf::create()));
-						name.clear(); name.str("");
-					}
-	
-					return true;
-				}
-				return false;
+			listener->onTouchBegan = [this](Touch* touch, Event* event) {
+				return true;
 			};
-			this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, box);
+			listener->onTouchEnded = [this, branchTo](Touch* touch, Event* event) {
+				mBranch = mCurrentSTask.branchTo[branchTo];
+				auto label = (Label*)this->getChildByName("label");
+				mNovelNum[mBranch]++;
+				label->setString(mSentense[mBranch][mNovelNum[mBranch]]);
+				setDelayAnime();
+				this->removeChildByName("fakeLayer");
+				mSwitch = false;
+			};
+			this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, fake);
 		}
+		else {
+
+			int bNum; //選択肢の数
+			for (bNum = 0; mSwitchTask[mBranch][0].branchTo[bNum] != -1; bNum++);
+
+			std::stringstream name;
+			for (int i = 0; i < bNum; i++) {
+				auto box = Sprite::create("ele_mini1.png");
+				box->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - (300 / (bNum + 1) * (i + 1)));
+				box->setOpacity(0.00f);
+				box->runAction(FadeIn::create(0.5));
+				name.clear(); name.str("");
+				name << "branch" << i;
+				addChild(box, 3, name.str());
+				auto text = Label::createWithTTF(mSwitchTask[mBranch][0].branchStr[i], "fonts/APJapanesefontT.ttf", 24);
+				text->setPosition(box->getPosition());
+				text->setTextColor(Color4B::BLACK);
+				text->enableOutline(Color4B::WHITE, 2);
+				text->setOpacity(0.00f);
+				text->runAction(FadeIn::create(0.5));
+				name.clear(); name.str("");
+				name << "text" << i;
+				addChild(text, 4, name.str());
+				mCurrentSTask = mSwitchTask[mBranch][0];
+				auto listener = EventListenerTouchOneByOne::create();
+				listener->onTouchBegan = [this, i, bNum](Touch* touch, Event* event) {
+					if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
+						//log("switch : %d", i);
+						mSwitch = false;
+						mBranch = mCurrentSTask.branchTo[i];
+						std::stringstream name;
+						for (int j = 0; j < bNum; j++) {
+							name << "branch" << j;
+							getChildByName(name.str())->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5f), RemoveSelf::create()));
+							name.clear(); name.str("");
+							name << "text" << j;
+							getChildByName(name.str())->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5f), RemoveSelf::create()));
+							name.clear(); name.str("");
+						}
+						auto label = (Label*)this->getChildByName("label");
+						mNovelNum[mBranch]++;
+						label->setString(mSentense[mBranch][mNovelNum[mBranch]]);
+						setDelayAnime();
+
+						return true;
+					}
+					return false;
+				};
+				this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, box);
+			}
+		}
+
 		mSwitchTask[mBranch].erase(mSwitchTask[mBranch].begin());
 	}	
 }
@@ -474,7 +505,7 @@ void Novel::setDelayAnime() {
 				Sequence::create(
 					DelayTime::create(0.05f*i),
 					FadeIn::create(0.05f),
-					CallFunc::create([this]() {	if (mCharNum % 4 == 0) SimpleAudioEngine::getInstance()->playEffect("SE/po.ogg"); }),	//全角の最初で鳴らす
+					CallFunc::create([this]() {	if (mCharNum % 4 == 0) AudioEngine::play2d("SE/po.ogg"); }),	//全角の最初で鳴らす
 					NULL
 				));
 		}

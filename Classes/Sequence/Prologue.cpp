@@ -4,9 +4,8 @@
 
 #pragma execution_character_set("utf-8")
 
-#include "SimpleAudioEngine.h"
-
-using namespace CocosDenshion;
+#include "audio/include/AudioEngine.h"
+using namespace cocos2d::experimental;
 USING_NS_CC;
 
 Scene* Prologue::createScene()
@@ -34,7 +33,7 @@ bool Prologue::init()
 	this->addChild(cursor, 1, 1);
 
 	//BGM
-	SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+	AudioEngine::pauseAll();
 
 	//バックログを初期化
 	auto path = FileUtils::getInstance()->getWritablePath();
@@ -100,8 +99,15 @@ bool Prologue::init()
 		novel->setFontColor(0,Color3B::BLACK);
 		novel->addSentence(0,"・・・？");
 		novel->addSentence(0,"…またこのパターンか");
+		//addSitchEventは表示させたい文のタイミングの前に書く
 		novel->addSwitchEvent(0, 1, "狸寝入りを試みる", 2, "再び眠りにつく");
-		novel->addSentence(0,"僕は…");
+		novel->addSentence(0,"僕は…");	
+		novel->addSentence(1, "継「ぐー」");
+		novel->addSentence(1, "僕は狸寝入りを試みた");
+		novel->addSwitchEvent(1, 0);
+		novel->addSentence(1, "？？？「ちょ…わざと過ぎ…っ」");
+		novel->addSwitchEvent(2, 0);
+		novel->addSentence(2, "再び眠りについた");
 		novel->addSentence(0,"？？？「起きろーーーー！！！！！」");
 		novel->setBg(0,"bg/white.png");
 		novel->addSentence(0,"バシャッ");
@@ -109,8 +115,10 @@ bool Prologue::init()
 		novel->setBg(0,"obj/classroom.png");
 		novel->addSentence(0,"");
 
-
+		//setEndTaskは最後にまとめて呼ぶこと
 		novel->setEndTask(0);
+		novel->setEndTask(1);
+		novel->setEndTask(2);
 		this->addChild(novel, 0, "novel");
 	};
 
