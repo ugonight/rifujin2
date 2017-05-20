@@ -48,18 +48,43 @@ bool Control::init() {
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1, "save");
 
+	auto help = Sprite::create("help.png");
+	help->setPosition(Vec2(origin.x + 30, origin.y + 30));
+	this->addChild(help, 1, "help");
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->setSwallowTouches(true);
+	listener->onTouchBegan = [this](Touch* touch, Event* event) {
+		if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
+			auto explain = Sprite::create("explain.png");
+			explain->setPosition(Director::getInstance()->getVisibleSize() / 2);
+			this->addChild(explain, 5, "explain");
+			auto listener2 = EventListenerTouchOneByOne::create();
+			listener2->setSwallowTouches(true);
+			listener2->onTouchBegan = [this](Touch* touch, Event* event) {
+				removeChildByName("explain");
+				return true;
+			};
+			this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener2, explain);
+			return true;
+		}
+		return false;
+	};
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, help);
+
 	auto novel = Novel::create();
 	novel->addSentence(0,"");
 	novel->setEndTask(0);
 	novel->setLogOnly();
 	addChild(novel, 1, "log");
 
-	initField();
+	//initFieldは継承先のクラスで作り、使うときに呼び出す。
+	//initField();
 
 	//this->addChild(mFieldList["forest1"], 0, "field"); //initField()へ
 
-	auto item = Item::create();
-	this->addChild(item, 2, "item");
+	//継承先のinitField()で記述
+	//auto item = Item::create();
+	//this->addChild(item, 2, "item");
 
 	auto msg = Label::createWithTTF("", "fonts/APJapanesefontT.ttf", 30);
 	msg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + 50));
@@ -72,7 +97,7 @@ bool Control::init() {
 	this->addChild(msgArea, 2, "msgArea");
 
 	//カーソルの状態をリセットする
-	auto listener = EventListenerTouchOneByOne::create();
+	listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [&](Touch* touch, Event* event) {  setCursor(0); return true; };
 	listener->onTouchMoved = [=](Touch* touch, Event* event) {	setCursor(0);};	
 	listener->onTouchEnded = [=](Touch* touch, Event* event) {};
@@ -223,7 +248,8 @@ void Control::resumeField() {
 	field->resumeEventListener();
 }
 
-void Control::initField() {
+//void Control::initField() {
+	//CCLOG("super");
 	//mFieldList["forest1"] = Field1::create();
 	//mFieldList["campus"] = Field2::create();
 
@@ -232,4 +258,4 @@ void Control::initField() {
 	//for (auto it = mFieldList.begin(); it != mFieldList.end(); it++) {
 	//	it->second->retain();
 	//}
-}
+//}

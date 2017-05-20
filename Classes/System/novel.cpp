@@ -29,7 +29,7 @@ bool Novel::init() {
 
 	mCount = 0;
 	mEndFlag = 0;
-	mTouchTime = 0; mHideMsg = 0;
+	mTouchTime = 0; mHideMsg = 0; mFast = 0;
 	mBranch = 0; //最初はメイン
 	for (int i = 0; i < 4; i++)mImageNum[i] = 0;
 	mSwitch = false;
@@ -107,6 +107,22 @@ bool Novel::init() {
 	listener->onTouchBegan = CC_CALLBACK_2(Novel::logEvent, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, log);
 
+	//早送り
+	auto fast = Sprite::create("ff.png");
+	fast->setPosition(Vec2(60 + origin.x, visibleSize.height / 2 - 50));
+	addChild(fast, 3, "fast");
+	listener = EventListenerTouchOneByOne::create();
+	listener->setSwallowTouches(true);
+	listener->onTouchBegan = [this](Touch* touch, Event* event) {
+		if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
+			mFast = true;
+			return true;
+		}
+		return false;
+	};
+	listener->onTouchEnded = [this](Touch* touch, Event* event) { mFast = false; };
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, fast);
+
 
 	return true;
 }
@@ -129,56 +145,65 @@ bool Novel::touchEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 
 
 	//会話を進める
-	if (touch->getLocation().y < visibleSize.height / 2 && !mHideMsg && !mSwitch) {
-
-		if (endCheck()) {	//文がすべて表示されていたら
-			//バックログに記録
-			if (this->getOpacity() == 255) mLog.push_back(Value(mSentense[mBranch][mNovelNum[mBranch]]));
-			if (mSentense[mBranch].size() - 1 > mNovelNum[mBranch]) {	//文リストの最後でなければ
-				//次の分をセット
-				mNovelNum[mBranch]++;
-				label->setString(mSentense[mBranch][mNovelNum[mBranch]]);
-				setDelayAnime();
-			}
-			else if (mSentense[mBranch].size() - 1 == mNovelNum[mBranch] && this->getOpacity() == 255) {	//文リストの最後なら
-				mNovelNum[mBranch]++;
-				this->runAction(Sequence::create(FadeOut::create(0.5f), CallFunc::create(CC_CALLBACK_0(Novel::end, this)),/* RemoveSelf::create(true),*/ NULL));
-				//スプライト全部をフェードアウトする
-				Sprite* spr;
-				for (auto child : this->getChildren()) {
-					spr = (Sprite*)child;
-					spr->runAction(FadeOut::create(0.5f));
-				}
-
-				//ログを保存
-				mLog.push_back(Value(""));
-				auto path = FileUtils::getInstance()->getWritablePath();
-				auto file = path + "speak.plist";
-				FileUtils::getInstance()->writeValueVectorToFile(mLog, file);
-
-			}
-		}
-		else {
-			for (int i = 0; i < label->getStringLength() + label->getStringNumLines(); i++) {
-				auto AChar = label->getLetter(i);
-				if (nullptr != AChar) {
-					AChar->setOpacity(255);
-					AChar->stopAllActions();
-				}
-			}
-		}
-		
+	if (/*touch->getLocation().y < visibleSize.height / 2 && */
+		!mHideMsg && 
+		!mSwitch &&
+		mNovelNum[mBranch] > 0 /* フェードイン前に押されるのを防ぐ */) {
+		readTalk();
 		mTouchTime = 1;
 	}
 	else {
 		getChildByName("msgBox")->setVisible(true);
 		getChildByName("label")->setVisible(true);
+		getChildByName("fast")->setVisible(true);
 		mHideMsg = false;
 	}
 
 
 
 	return true;
+}
+
+void Novel::readTalk() {
+	auto label = (Label*)this->getChildByName("label");
+	if (endCheck()) {	//文がすべて表示されていたら
+						//バックログに記録
+		if (this->getOpacity() == 255) mLog.push_back(Value(mSentense[mBranch][mNovelNum[mBranch]]));
+		if (mSentense[mBranch].size() - 1 > mNovelNum[mBranch]) {	//文リストの最後でなければ
+																	//次の分をセット
+			mNovelNum[mBranch]++;
+			label->setString(mSentense[mBranch][mNovelNum[mBranch]]);
+			setDelayAnime();
+		}
+		else if (mSentense[mBranch].size() - 1 == mNovelNum[mBranch] && this->getOpacity() == 255) {	//文リストの最後なら
+			mNovelNum[mBranch]++;
+			this->runAction(Sequence::create(FadeOut::create(0.5f), CallFunc::create(CC_CALLBACK_0(Novel::end, this)),/* RemoveSelf::create(true),*/ NULL));
+			//スプライト全部をフェードアウトする
+			Sprite* spr;
+			for (auto child : this->getChildren()) {
+				spr = (Sprite*)child;
+				spr->runAction(FadeOut::create(0.5f));
+			}
+
+			//ログを保存
+			mLog.push_back(Value(""));
+			auto path = FileUtils::getInstance()->getWritablePath();
+			auto file = path + "speak.plist";
+			FileUtils::getInstance()->writeValueVectorToFile(mLog, file);
+
+		}
+	}
+	else {
+		for (int i = 0; i < label->getStringLength() + label->getStringNumLines(); i++) {
+			auto AChar = label->getLetter(i);
+			if (nullptr != AChar) {
+				AChar->setOpacity(255);
+				AChar->stopAllActions();
+			}
+		}
+	}
+
+
 }
 
 void Novel::end(){	
@@ -190,7 +215,17 @@ void Novel::update(float delta) {
 	if (mTouchTime > 60) {
 		getChildByName("msgBox")->setVisible(false);
 		getChildByName("label")->setVisible(false);
+		getChildByName("fast")->setVisible(false);
 		mHideMsg = true;
+	}
+	if (mFast) {
+		if (/*touch->getLocation().y < visibleSize.height / 2 && */
+			!mHideMsg &&
+			!mSwitch &&
+			mSentense[mBranch].size() - 1 > mNovelNum[mBranch] &&
+			mNovelNum[mBranch] > 0 /* フェードイン前に押されるのを防ぐ */) {
+			readTalk();
+		}
 	}
 
 	updateImg();

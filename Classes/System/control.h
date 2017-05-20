@@ -8,11 +8,12 @@ class Control : public cocos2d::Scene {
 protected:
 	std::map<std::string, Field*> mFieldList;
 	
-	virtual void initField();
+
 	void save(cocos2d::Ref* pSender);
 
 public:
 	virtual ~Control();
+	//virtual void initField();
 
 	void setCursor(int num);
 	void changeField(std::string field);

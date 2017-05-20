@@ -37,7 +37,7 @@ private:
 	} STask;
 
 	int mNovelNum[MAX_BRANCH], mNovelSetNum[MAX_BRANCH], mCount, mCharNum, mBranch;
-	int mTouchTime; bool mHideMsg;
+	int mTouchTime; bool mHideMsg, mFast;
 	int mImageNum[4]; //Bg,CharaC,CharaL,CharaR
 	bool mEndFlag;
 	bool mSwitch; //選択肢モード
@@ -53,7 +53,7 @@ private:
 
 	void func();
 	bool touchEvent(cocos2d::Touch* touch, cocos2d::Event* event);
-
+	void readTalk();
 	//バックログ
 	bool logEvent(cocos2d::Touch* touch, cocos2d::Event* event);
 
