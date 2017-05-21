@@ -1,31 +1,34 @@
+ï»¿#pragma  execution_character_set("utf-8")
 #include "System/control.h"
 
-#include "fieldDef.h"
+#include "Script\day0\fieldDef.h"
 
 USING_NS_CC;
 
 namespace day0 {
 
 	void Esc::initField() {
-		//ƒtƒB[ƒ‹ƒhˆê——
+		//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ä¸€è¦§
 		mFieldList["bedroom"] = BedRoom::create();
+		mFieldList["closet"] = Closet::create();
+
+		mFieldList["AboutItem"] = AboutItem::create();
 
 		for (auto it = mFieldList.begin(); it != mFieldList.end(); it++) {
 			it->second->retain();
 		}
 
-		//Å‰‚É•\Ž¦‚³‚¹‚éƒtƒB[ƒ‹ƒh
+		//æœ€åˆã«è¡¨ç¤ºã•ã›ã‚‹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
 		this->addChild(mFieldList["bedroom"], 0, "field");
 
-		//ƒAƒCƒeƒ€‚Ì‰Šú‰»
-		auto item = ItemMgr::create();
+		//ã‚¢ã‚¤ãƒ†ãƒ ã®åˆæœŸåŒ–
+		auto item = (ItemMgr*)ItemMgr::create();
+		item->initItem();
 		this->addChild(item, 2, "item");
 
+		//ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã§ã¯ã‚»ãƒ¼ãƒ–ã—ãªã„
+		getChildByName("save")->setVisible(false);
+		getChildByName("save")->pause();
 	}
 
-	void Esc::showAI(std::string itemName) {
-		auto ai = (AboutItem*)mFieldList["AboutItem"];
-		ai->setAboutItem(itemName);
-		addChild(ai, 3, "AboutItem");
-	}
 }

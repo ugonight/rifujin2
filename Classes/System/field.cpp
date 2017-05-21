@@ -18,6 +18,33 @@ bool Field::init() {
 
 	initField();
 
+	//ƒJ[ƒ\ƒ‹•Ï‰»
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->onTouchBegan = [this](Touch* touch, Event* event) {
+		int cursorNum = 0;
+		for (auto obj : mObjectList) {
+			if (obj.second->getArea().containsPoint(touch->getLocationInView()) &&
+				getChildByName(obj.first)) {
+				cursorNum = obj.second->getCursor();
+				break;
+			}
+		}
+		Control::me->setCursor(cursorNum);
+		return true;
+	};
+	listener->onTouchMoved = [this](Touch* touch, Event* event) {
+		int cursorNum = 0;
+		for (auto obj : mObjectList) {
+			if (obj.second->getArea().containsPoint(touch->getLocationInView()) &&
+				getChildByName(obj.first)) {
+				cursorNum = obj.second->getCursor();
+				break;
+			}
+		}
+		Control::me->setCursor(cursorNum);
+	};
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+
 	return true;
 }
 
@@ -34,7 +61,7 @@ void Field::update(float delta) {
 			removeChild(novel);
 		}
 		else {
-			Control::me->setCursor(7);
+			Control::me->setCursor(8);
 		}
 	}
 }

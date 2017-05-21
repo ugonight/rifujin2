@@ -1,6 +1,6 @@
 ﻿#pragma  execution_character_set("utf-8")
 
-#include "fieldDef.h"
+#include "Script\day0\fieldDef.h"
 
 USING_NS_CC;
 
@@ -12,13 +12,13 @@ namespace day0 {
 		//オブジェクトを作っておく
 		//基本的にアイテム名と同じ名前でオブジェクトを登録する。必ずaddChildをfalseにして登録。
 
-		//クレヨン（緑）
-		//auto crayon = ObjectN::create();
-		//crayon->setTexture("item/crayon_g.png");
-		//crayon->setMsg("緑のクレヨンだ");
-		//crayon->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-		//crayon->setArea(crayon->getBoundingBox());
-		//addObject(crayon, "crayon_g", 1, false);
+		//服
+		auto ai = ObjectN::create();
+		ai->setTexture("item/clothes_a.png");
+		ai->setMsg("いつもの服だ");
+		//ai->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+		ai->setArea(ai->getBoundingBox());
+		addObject(ai, "clothes", 1, false);
 
 	}
 	void AboutItem::changedField() {}

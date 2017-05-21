@@ -1,5 +1,5 @@
-#pragma  execution_character_set("utf-8")
-#include "fieldDef.h"
+ï»¿#pragma  execution_character_set("utf-8")
+#include "Script\day0\fieldDef.h"
 
 USING_NS_CC;
 
@@ -20,12 +20,18 @@ namespace day0 {
 			auto novel = Novel::create();
 			novel->setCharaR(0,"chara/tuguru1.png");
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0,"ŒpuƒpƒWƒƒƒ}‚©‚ç•’Ê‚Ì•‚É’…‘Ö‚¦‚æ‚¤v");
-			novel->addSentence(0, "ŒpuƒNƒ[ƒ[ƒbƒg‚ÍˆÚ“®‚·‚ê‚ÎŒ©‚Â‚©‚é‚æv");
+			novel->addSentence(0,"ç¶™ã€Œãƒ‘ã‚¸ãƒ£ãƒã‹ã‚‰æ™®é€šã®æœã«ç€æ›¿ãˆã‚ˆã†ã€");
+			novel->addSentence(0, "ç¶™ã€Œã‚¯ãƒ­ãƒ¼ã‚¼ãƒƒãƒˆã¯ç§»å‹•ã™ã‚Œã°è¦‹ã¤ã‹ã‚‹ã‚ˆã€");
 			novel->setEndTask(0);
 			this->addChild(novel, 10, "novel");
 		}));
-		addChild(tuguru, 1, "tuguru");
+		addObject(tuguru, "tuguru", 1, true);
+
+		auto closet = ObjectN::create();
+		closet->setArea(Rect(0, 0, 80, 480));
+		closet->setCursor(5);
+		closet->setFieldChangeEvent("closet");
+		addObject(closet, "closet", 2, true);
 
 		this->setCascadeOpacityEnabled(true);
 		this->setOpacity(0);
@@ -33,6 +39,42 @@ namespace day0 {
 	}
 
 	void BedRoom::changedField() {
+
+	}
+
+	void Closet::initField() {
+		Size visibleSize = Director::getInstance()->getVisibleSize();
+		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+		auto bg = Sprite::create("closet.png");
+		bg->setPosition(visibleSize / 2);
+		addChild(bg, 0, "bg");
+
+		auto bed = ObjectN::create();
+		bed->setArea(Rect(774, 0, 80, 480));
+		bed->setCursor(4);
+		bed->setFieldChangeEvent("bedroom");
+		addObject(bed, "bed", 2, true);
+
+		auto closet = ObjectN::create();
+		closet->setArea(Rect(60, 30, 290, 390));
+		closet->setCursor(1);
+		closet->setTouchEvent(CallFunc::create([this] {
+			if (mObjectList["closet"]->getState() == 0) {
+				auto item = ItemMgr::sharedItem();
+				item->getItem("clothes", Point(200, 240));
+				Esc::me->showMsg("æœã‚’æ‰‹ã«å…¥ã‚ŒãŸ");
+				mObjectList["closet"]->setState(1);
+				mObjectList["closet"]->setCursor(2);
+			}
+			else {
+				Esc::me->showMsg("æœã¯æ‰‹ã«å…¥ã‚Œã¦ã‚ã‚‹");
+			}
+		}));
+		addObject(closet, "closet", 2, true);
+	}
+
+	void Closet::changedField() {
 
 	}
 }

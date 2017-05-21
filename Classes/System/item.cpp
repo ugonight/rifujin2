@@ -62,7 +62,7 @@ bool Item::init() {
 	selectItem->setAnchorPoint(Vec2(0.0f, 1.0f));
 	addChild(selectItem, 3, "selectItem");
 
-	initItem();
+	//initItem();	//initFieldで記述
 
 	//取得しているアイテム
 	auto possession = Layer::create();
@@ -306,11 +306,11 @@ void Item::loadItem(cocos2d::ValueMap map) {
 	}
 }
 
-void Item::initItem() {
+//void Item::initItem() {
 
 	//mItemList["crayon_g"] = new ItemObj("item/crayon_g.png");
 	//mItemList["crayon_b"] = new ItemObj("item/crayon_b.png");
 	//mItemList["crayon_y"] = new ItemObj("item/crayon_y.png");
 	//mItemList["crayon_r"] = new ItemObj("item/crayon_r.png");
 
-}
+//}

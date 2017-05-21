@@ -35,8 +35,8 @@ bool Control::init() {
 	auto cursor = Cursor::create();
 	this->addChild(cursor, 4, "cursor");
 
-	auto resetCursor = Layer::create();
-	this->addChild(resetCursor, 10);
+	//auto resetCursor = Layer::create();
+	//this->addChild(resetCursor, 10);
 
 	auto save = MenuItemImage::create(
 		"save.png",
@@ -97,11 +97,12 @@ bool Control::init() {
 	this->addChild(msgArea, 2, "msgArea");
 
 	//カーソルの状態をリセットする
-	listener = EventListenerTouchOneByOne::create();
+	/*listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [&](Touch* touch, Event* event) {  setCursor(0); return true; };
 	listener->onTouchMoved = [=](Touch* touch, Event* event) {	setCursor(0);};	
 	listener->onTouchEnded = [=](Touch* touch, Event* event) {};
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, resetCursor);
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, resetCursor);*/
+
 
 	return true;
 }
@@ -223,7 +224,8 @@ void Control::showMsg(std::string s) {
 }
 
 void Control::showAI(std::string itemName) {
-	//auto ai = (AboutItem*)mFieldList["AboutItem"];
+	//CCLOG("super");
+	//auto ai = mAboutItem;
 	//ai->setAboutItem(itemName);
 	//addChild(ai, 3, "AboutItem");
 }

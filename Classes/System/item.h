@@ -13,7 +13,7 @@ public:
 	void getItem(std::string itemName,cocos2d::Point point);
 
 	void deleteItem(std::string itemName);
-	std::string getSelectedItem();
+	std::string getSelectedItem();	
 
 	void saveItem(cocos2d::ValueMap* map);
 	void loadItem(cocos2d::ValueMap map);
@@ -44,7 +44,7 @@ protected:
 	};
 
 	std::map<std::string, ItemObj*> mItemList;
-	virtual void initItem();
+	//virtual void initItem();	//åpè≥êÊÇ≈ãLèq
 
 	bool mShowWindow;
 	bool mShowAboutItem;

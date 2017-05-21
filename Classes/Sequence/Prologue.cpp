@@ -2,7 +2,7 @@
 #include "System/cursor.h"
 #include "System/novel.h"
 #include "Script\day0\fieldDef.h"
-using namespace day0;
+//using namespace day0;
 
 #pragma execution_character_set("utf-8")
 
@@ -128,7 +128,7 @@ bool Prologue::init()
 	mFunc[2] = [this]() {
 		removeChildByName("cursor");
 
-		auto control = (Esc*)Esc::create();
+		auto control = (day0::Esc*)day0::Esc::create();
 		control->initField();	//必ず呼ぶ
 		addChild(control, 1, "control");
 

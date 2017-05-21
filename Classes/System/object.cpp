@@ -46,36 +46,37 @@ void ObjectN::setArea(cocos2d::Rect rect) {
 
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = CC_CALLBACK_2(ObjectN::touchOn, this); /*[&](Touch* touch, Event* event) {return true; };*/
-	listener->onTouchMoved = CC_CALLBACK_2(ObjectN::checkOn, this);
+	//listener->onTouchMoved = CC_CALLBACK_2(ObjectN::checkOn, this);
 	listener->onTouchEnded = CC_CALLBACK_2(ObjectN::touchOff, this);/* [=](Touch* touch, Event* event) {};*/
 	//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 }
 
-void ObjectN::checkOn(cocos2d::Touch* touch, cocos2d::Event* event) {
-	if (mArea.containsPoint(Vec2(touch->getLocationInView().x, touch->getLocationInView().y))) {
-		Control::me->setCursor(mCursorNum);		
-	}
-	else {
-		//Control::me->setCursor(0);
-	}
-
-}
+//void ObjectN::checkOn(cocos2d::Touch* touch, cocos2d::Event* event) {
+//	if (mArea.containsPoint(Vec2(touch->getLocationInView().x, touch->getLocationInView().y))) {
+//		//Control::me->setCursor(mCursorNum);		
+//	}
+//	else {
+//		//Control::me->setCursor(0);
+//	}
+//
+//}
 
 bool ObjectN::touchOn(cocos2d::Touch* touch, cocos2d::Event* event) {
 	if (mArea.containsPoint(Vec2(touch->getLocationInView().x, touch->getLocationInView().y))) {
-		Control::me->setCursor(mCursorNum);
+		//Control::me->setCursor(mCursorNum);	//カーソル変化はフィールドで行う
 		
 		//範囲がタッチされた時
 		mTouchTime = 1;
 
+		return true;
 	}
 	else {
 		//Control::me->setCursor(0);
 	}
 
-	return true;	//カーソル変化の関係で無条件でタッチを拾う
+
 
 }
 
@@ -124,6 +125,8 @@ void ObjectN::setTouchEvent(cocos2d::CallFunc *func) { mTouchEvent = func; mTouc
 int ObjectN::getState() { return mState; }
 std::string ObjectN::getMsg() { return mMsg; }
 std::string ObjectN::getField() { return mField; }
+cocos2d::Rect ObjectN::getArea() { return mArea; }
+int ObjectN::getCursor() { return mCursorNum; }
 
 void ObjectN::update(float delta) {
 	if (mTouchTime > 0) mTouchTime++;

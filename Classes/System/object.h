@@ -20,7 +20,7 @@ class ObjectN : public cocos2d::Sprite {
 	int mTouchTime;
 
 	//カーソルイベント
-	void checkOn(cocos2d::Touch* touch, cocos2d::Event* event);
+	//void checkOn(cocos2d::Touch* touch, cocos2d::Event* event);
 	bool touchOn(cocos2d::Touch* touch, cocos2d::Event* event);
 	void touchOff(cocos2d::Touch* touch, cocos2d::Event* event);
 
@@ -43,6 +43,8 @@ public:
 	int getState();
 	std::string getMsg();
 	std::string getField();
+	cocos2d::Rect getArea();
+	int getCursor();
 
 	CREATE_FUNC(ObjectN);
 };

@@ -4,10 +4,10 @@
 
 class Field;
 
+
 class Control : public cocos2d::Scene {
 protected:
 	std::map<std::string, Field*> mFieldList;
-	
 
 	void save(cocos2d::Ref* pSender);
 
@@ -36,3 +36,4 @@ public:
 
 	CREATE_FUNC(Control);
 };
+
