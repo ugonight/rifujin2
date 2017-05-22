@@ -1,6 +1,7 @@
-#include "item.h"
+ï»¿#include "item.h"
 
 #include "control.h"
+#include "object.h"
 
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
@@ -36,39 +37,39 @@ bool Item::init() {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	//‘I‘ðƒAƒCƒeƒ€ƒEƒBƒ“ƒhƒE
+	//é¸æŠžã‚¢ã‚¤ãƒ†ãƒ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 	auto rect = Rect(64 * 0, 0, 64, 64);
 	auto window = Sprite::create("itemWindow.png",rect);
 	window->setPosition(Vec2(15 + origin.x, -15 + origin.y + visibleSize.height));
 	window->setAnchorPoint(Vec2(0.0f, 1.0f));
 	addChild(window, 2, "window");
 
-	//ƒAƒCƒeƒ€ƒŠƒXƒgƒEƒBƒ“ƒhƒE
+	//ã‚¢ã‚¤ãƒ†ãƒ ãƒªã‚¹ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 	rect = Rect(64, 0, 64 * 0, 64);
 	window = Sprite::create("itemWindow.png", rect);
 	window->setPosition(Vec2(15 + origin.x + 64, -15 + origin.y + visibleSize.height));
 	window->setAnchorPoint(Vec2(0.0f, 1.0f));
 	addChild(window, 0, "listWindow");
 
-	//ƒAƒCƒeƒ€‘I‘ð˜g
+	//ã‚¢ã‚¤ãƒ†ãƒ é¸æŠžæž 
 	auto frame = Sprite::create("activeItem.png");
 	frame->setPosition(Vec2(15 + origin.x, -15 + origin.y + visibleSize.height));
 	frame->setAnchorPoint(Vec2(0.0f, 1.0f));
 	addChild(frame, 1, "frame");
 
-	//‘I‘ð’†ƒAƒCƒeƒ€
+	//é¸æŠžä¸­ã‚¢ã‚¤ãƒ†ãƒ 
 	auto selectItem = Sprite::create();
 	selectItem->setPosition(Vec2(15 + origin.x, -15 + origin.y + visibleSize.height));
 	selectItem->setAnchorPoint(Vec2(0.0f, 1.0f));
 	addChild(selectItem, 3, "selectItem");
 
-	//initItem();	//initField‚Å‹Lq
+	//initItem();	//initFieldã§è¨˜è¿°
 
-	//Žæ“¾‚µ‚Ä‚¢‚éƒAƒCƒeƒ€
+	//å–å¾—ã—ã¦ã„ã‚‹ã‚¢ã‚¤ãƒ†ãƒ 
 	auto possession = Layer::create();
 	addChild(possession, 1, "possession");
 
-	//ƒ^ƒbƒ`ƒCƒxƒ“ƒg
+	//ã‚¿ãƒƒãƒã‚¤ãƒ™ãƒ³ãƒˆ
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
 	listener->onTouchBegan = CC_CALLBACK_2(Item::touchEvent, this);
@@ -98,7 +99,7 @@ void Item::update(float delta) {
 	for (auto item : possession->getChildren()) {
 		if (mWindowW > 64 * i) {
 			item->setPositionX(window->getPositionX() + mWindowW - (possession->getChildrenCount() - i) * 64);		
-			if (baseWindow->getPositionX() > item->getPositionX()) item->setPositionX(baseWindow->getPositionX());	//¶‚É”ò‚Ño‚·‚Ì‚ð–h‚®i“ËŠÑHŽ–j
+			if (baseWindow->getPositionX() > item->getPositionX()) item->setPositionX(baseWindow->getPositionX());	//å·¦ã«é£›ã³å‡ºã™ã®ã‚’é˜²ãï¼ˆçªè²«å·¥äº‹ï¼‰
 		}
 		else {
 			item->setPositionX(baseWindow->getPositionX());
@@ -106,12 +107,10 @@ void Item::update(float delta) {
 		i++;
 	}
 
-	//AI•\Ž¦
+	//AIè¡¨ç¤ºã‚«ã‚¦ãƒ³ãƒˆ
 	if (mTouchTime > 0) mTouchTime++;
-	if (mTouchTime == 30 && mSelectedItem != "" && !mShowAboutItem) {
-		showAboutItem();
-		mShowAboutItem = 1;
-	}
+	if (mTouchTime > 20) mTouchTime = 0;
+
 }
 
 void Item::getItem(std::string s, Point p) {
@@ -119,28 +118,28 @@ void Item::getItem(std::string s, Point p) {
 
 	auto item = Sprite::create(mItemList[s]->getImage());
 
-	//“o˜^
+	//ç™»éŒ²
 	auto possession = getChildByName("possession");
 	auto window = getChildByName("window");
 	item->setPosition(window->getPosition());
 	item->setAnchorPoint(Vec2(0.0f, 1.0f));
 	possession->addChild(item, 0, s);
 	
-	//jumpƒAƒjƒ
+	//jumpã‚¢ãƒ‹ãƒ¡
 	item = Sprite::create(mItemList[s]->getImage());
 	item->setPosition(p);
 	item->runAction(Sequence::create(JumpBy::create(0.5f, Vec2(0, 0), 200, 1),RemoveSelf::create(),NULL));
 	addChild(item, 1);
 
-	//ƒp[ƒeƒBƒNƒ‹
+	//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«
 	// Cocos2d-x v3.x
 	auto size = Director::getInstance()->getWinSize();
 	auto m_emitter = ParticleSystemQuad::createWithTotalParticles(100);
 	m_emitter->setTexture(Director::getInstance()->getTextureCache()->addImage("spark.png"));
 
-	// v2.x‹y‚Ñv3.x‚ÅŽg—p‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·
+	// v2.xåŠã³v3.xã§ä½¿ç”¨ã™ã‚‹ã“ã¨ãŒã§ãã¾ã™
 	m_emitter->setDuration(0.2f);
-	m_emitter->setGravity(Point(0, -240)); // v2.x‚Å‚Í CCPoint( 0, -240 )
+	m_emitter->setGravity(Point(0, -240)); // v2.xã§ã¯ CCPoint( 0, -240 )
 	m_emitter->setAngle(90.0f);
 	m_emitter->setAngleVar(90.0f);
 	m_emitter->setRadialAccel(50);
@@ -189,24 +188,30 @@ void Item::deleteItem(std::string s) {
 std::string Item::getSelectedItem() { return mSelectedItem; }
 
 bool Item::touchEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
-	bool validity = false;	//ƒ^ƒbƒ`ƒCƒxƒ“ƒg‚ª—LŒø‚É‚È‚é‚©
+	bool validity = false;	//ã‚¿ãƒƒãƒã‚¤ãƒ™ãƒ³ãƒˆãŒæœ‰åŠ¹ã«ãªã‚‹ã‹
 
 	auto window = getChildByName("window");
 	auto targetBox = window->getBoundingBox();
 	auto touchPoint = touch->getLocation();
 	if (targetBox.containsPoint(touchPoint)) {
 		mShowWindow = 1;
-		mTouchTime = 1;
-
 		validity = true;
+
+		//AIè¡¨ç¤º
+		if (mTouchTime > 0 && mSelectedItem != "" && !mShowAboutItem) {
+			showAboutItem();
+			mShowAboutItem = 1;
+		} else if (mTouchTime == 0) mTouchTime = 1;
+
 	}
 
-	//AI‚ª•\Ž¦‚³‚ê‚Ä‚¢‚é‚Æ‚«
+
+	//AIãŒè¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹ã¨ã
 	if (mShowAboutItem) {
 		validity = true;
 		auto AboutItem = getChildByName("AboutItem");
 		auto targetBox2 = AboutItem->getBoundingBox();
-		if (targetBox2.containsPoint(touchPoint)) {	//AI‚Ì˜g‚Ì—Ìˆæ‚ðƒ^ƒbƒv‚µ‚½‚©
+		if (targetBox2.containsPoint(touchPoint)) {	//AIã®æž ã®é ˜åŸŸã‚’ã‚¿ãƒƒãƒ—ã—ãŸã‹
 		
 		}
 		else {
@@ -251,7 +256,7 @@ void Item::moveEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 
 void Item::endEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 	mShowWindow = 0;
-	mTouchTime = 0;
+	//mTouchTime = 0;
 
 	auto window = getChildByName("window");
 	auto frame = getChildByName("frame");
@@ -296,7 +301,7 @@ void Item::loadItem(cocos2d::ValueMap map) {
 		if (map[item.first].asBool()) {
 			mItemList[item.first]->setGetFlag(1);
 			auto item_ = Sprite::create(mItemList[item.first]->getImage());
-			//“o˜^
+			//ç™»éŒ²
 			auto possession = getChildByName("possession");
 			auto window = getChildByName("window");
 			item_->setPosition(window->getPosition());

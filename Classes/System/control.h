@@ -1,9 +1,8 @@
-#pragma once
+﻿#pragma once
 
 #include "cocos2d.h"
 
 class Field;
-
 
 class Control : public cocos2d::Scene {
 protected:
@@ -18,7 +17,7 @@ public:
 	void setCursor(int num);
 	void changeField(std::string field);
 	void showMsg(std::string msg);
-	virtual void showAI(std::string itemName);
+	void showAI(std::string itemName);
 	void deleteAI();
 	
 	void pauseField();

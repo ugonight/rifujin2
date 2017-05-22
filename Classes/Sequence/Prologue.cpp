@@ -1,10 +1,8 @@
-﻿#include "Prologue.h"
-#include "System/cursor.h"
-#include "System/novel.h"
-#include "Script\day0\fieldDef.h"
-//using namespace day0;
+﻿#pragma execution_character_set("utf-8")
 
-#pragma execution_character_set("utf-8")
+#include "Prologue.h"
+#include "System/cursor.h"
+#include "Script\day0\fieldDef.h"
 
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
@@ -42,40 +40,19 @@ bool Prologue::init()
 	auto file = path + "speak.plist";
 	FileUtils::getInstance()->removeFile(file);
 
-	//スキップボタン
-	//auto skip = Label::createWithTTF("スキップ", "fonts/APJapanesefontT.ttf", 24);
-	//skip->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
-	//skip->setPosition(Vec2(origin.x, origin.y + visibleSize.height));
-	//skip->setTextColor(Color4B::WHITE);
-	//skip->enableOutline(Color4B::BLACK, 2);
-	//addChild(skip, 3, "skip");
-	//auto listener = EventListenerTouchOneByOne::create();
-	//listener->onTouchBegan = [this](Touch* touch, Event* event) {
-	//	auto target = (Label*)event->getCurrentTarget();
-	//	Rect targetBox = target->getBoundingBox();
-	//	Point touchPoint = Vec2(touch->getLocation().x, touch->getLocation().y);
-	//	if (targetBox.containsPoint(touchPoint))
-	//	{
-	//		removeChildByTag(0);
-	//		return true;
-	//	}
-	//	return false;
-	//};
-	//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, skip);
-
 	mFuncNum = 0;
 
 	//シナリオ
 	mFunc[0] = [this]() {
 		auto novel = Novel::create();
 
-		novel->setFontColor(0,Color3B::BLACK);
+		novel->setFontColor(0, Color3B::BLACK);
 		novel->setBg(0, "bg/book.png");
-		novel->addSentence(0,"幼いころずっと読んでいた大好きな絵本");
-		novel->addSentence(0,"絵本の中のあの子が大好きでなんどもなんども読み返した");
-		novel->addSentence(0,"大きくなって入学式の日に出会ったのはあの子と同じ瞳のーーーー");
+		novel->addSentence(0, "幼いころずっと読んでいた大好きな絵本");
+		novel->addSentence(0, "絵本の中のあの子が大好きでなんどもなんども読み返した");
+		novel->addSentence(0, "大きくなって入学式の日に出会ったのはあの子と同じ瞳のーーーー");
 		novel->setBg(0, "");
-		novel->addSentence(0,"私だけの物にしたいと思った");
+		novel->addSentence(0, "私だけの物にしたいと思った");
 
 		novel->setEndTask(0);
 		this->addChild(novel, 0, "novel");
@@ -91,7 +68,7 @@ bool Prologue::init()
 		novel->addSentence(0, "人々は幼い頃から基本的な魔法を学び、日常的に魔法を使って生活をしている。");
 		novel->addSentence(0, "特殊能力という生まれつき変わった魔法が使える人もそこそこ多い、豊かな国だ");
 		novel->setFontColor(0, Color3B::BLUE);
-		novel->setCharaC(0,"chara/tuguru1.png");
+		novel->setCharaC(0, "chara/tuguru1.png");
 		novel->addSentence(0, "継「ふあぁ…おはよう。セリーヌ」");
 		novel->setFontColor(0, Color3B::BLACK);
 		novel->addSentence(0, "そんな平和なこの国を治めているのがこの国の王子である僕、王国　継（おうこく　つぐる）");

@@ -1,5 +1,5 @@
 ﻿#pragma  execution_character_set("utf-8")
-#include "System/control.h"
+//#include "System/control.h"
 
 #include "Script\day0\fieldDef.h"
 
@@ -30,5 +30,4 @@ namespace day0 {
 		getChildByName("save")->setVisible(false);
 		getChildByName("save")->pause();
 	}
-
 }

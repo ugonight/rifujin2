@@ -1,7 +1,5 @@
 #pragma once
-#include "cocos2d.h"
-
-	
+#include "cocos2d.h"	
 
 class ObjectN : public cocos2d::Sprite {
 	//bool mAreaFlag;	//タッチエリアが存在するか

@@ -1,10 +1,12 @@
 #pragma once
 #include "cocos2d.h"
 
-#include "object.h"
-#include "item.h"
-#include "control.h"
-#include "novel.h"
+//#include "object.h"
+//#include "item.h"
+//#include "control.h"
+//#include "novel.h"
+
+class ObjectN;
 
 class Field : public cocos2d::Layer {
 protected:
@@ -37,4 +39,13 @@ public:
 	
 	
 	CREATE_FUNC(Field);
+};
+
+
+class SAboutItem : public Field {
+public:
+	virtual void initField() {}
+	virtual void changedField() {}
+	CREATE_FUNC(SAboutItem);
+	virtual void setAboutItem(std::string itemName) {}
 };

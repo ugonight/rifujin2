@@ -1,5 +1,10 @@
 #include "field.h"
 
+#include "object.h"
+#include "item.h"
+#include "control.h"
+#include "novel.h"
+
 USING_NS_CC;
 
 Field::~Field() {

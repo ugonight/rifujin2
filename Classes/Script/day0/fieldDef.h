@@ -1,24 +1,32 @@
+ï»¿//#pragma  execution_character_set("utf-8")
 #pragma once
 
 #include "../../System/field.h"
+#include "../../System/control.h"
+#include "../../System/item.h"
+#include "../../System/object.h"
+#include "../../System/novel.h"
+#include "define.h"
 
 namespace day0
 {
 
-#define CREATE_FIELD(cName) class cName : public Field { \
-							public: \
-								virtual void initField(); \
-								virtual void changedField(); \
-								CREATE_FUNC(cName); 
-//ƒƒ“ƒo‚ğ’Ç‰Á‚Å‚«‚é‚æ‚¤‚É}‚Í’è‹`‚µ‚È‚¢
+//ãƒ¡ãƒ³ãƒã‚’è¿½åŠ ã§ãã‚‹ã‚ˆã†ã«}ã¯å®šç¾©ã—ãªã„
 
 CREATE_FIELD(BedRoom)};
 CREATE_FIELD(Closet)};
 
-CREATE_FIELD(AboutItem)
-void setAboutItem(std::string itemName);
-};
+//CREATE_FIELD(AboutItem)
+//void setAboutItem(std::string itemName);
+//};
 
+class AboutItem : public SAboutItem {
+public:
+	virtual void initField();
+	virtual void changedField();
+	CREATE_FUNC(AboutItem);
+	void setAboutItem(std::string itemName)override;
+};
 
 class Esc : public Control {
 public:

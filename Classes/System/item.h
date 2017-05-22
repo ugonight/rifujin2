@@ -1,7 +1,9 @@
-#pragma once
+ï»¿#pragma once
 #include "cocos2d.h"
 
-#include "object.h"
+//#include "object.h"
+
+class Control;
 
 class Item : public cocos2d::Layer {
 public:
@@ -27,7 +29,7 @@ protected:
 	class ItemObj{
 		std::string imgName;
 		bool getFlag = 0;
-		cocos2d::Layer* aiLayer;	//AI‚Å•\¦‚·‚éƒIƒuƒWƒFƒNƒg‚ğ”z’u‚·‚éƒŒƒCƒ„[
+		cocos2d::Layer* aiLayer;	//AIã§è¡¨ç¤ºã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’é…ç½®ã™ã‚‹ãƒ¬ã‚¤ãƒ¤ãƒ¼
 
 	public:
 		ItemObj(std::string imageName) {
@@ -38,13 +40,13 @@ protected:
 		void setGetFlag(bool i) { getFlag = i; };
 		bool getGetFlag() { return getFlag; };
 		
-		//aiLayer‚Ìinit()‚ğ’è‹`‚·‚éŠÖ”iHj‚ğì‚é
-		//‚í‚´‚í‚´ƒAƒCƒeƒ€‚²‚Æ‚ÉƒNƒ‰ƒX‚ğì‚é‚Ì‚ª‚ß‚ñ‚Ç‚¤‚È‚Ì‚ÅAŠÈ’P‚É’è‹`‚Å‚«‚é‚æ‚¤‚É‚µ‚½‚¢B
+		//aiLayerã®init()ã‚’å®šç¾©ã™ã‚‹é–¢æ•°ï¼ˆï¼Ÿï¼‰ã‚’ä½œã‚‹
+		//ã‚ã–ã‚ã–ã‚¢ã‚¤ãƒ†ãƒ ã”ã¨ã«ã‚¯ãƒ©ã‚¹ã‚’ä½œã‚‹ã®ãŒã‚ã‚“ã©ã†ãªã®ã§ã€ç°¡å˜ã«å®šç¾©ã§ãã‚‹ã‚ˆã†ã«ã—ãŸã„ã€‚
 
 	};
 
 	std::map<std::string, ItemObj*> mItemList;
-	//virtual void initItem();	//Œp³æ‚Å‹Lq
+	//virtual void initItem();	//ç¶™æ‰¿å…ˆã§è¨˜è¿°
 
 	bool mShowWindow;
 	bool mShowAboutItem;

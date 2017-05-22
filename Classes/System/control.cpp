@@ -28,7 +28,6 @@ bool Control::init() {
 
 	me = this;
 
-
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
@@ -225,9 +224,9 @@ void Control::showMsg(std::string s) {
 
 void Control::showAI(std::string itemName) {
 	//CCLOG("super");
-	//auto ai = mAboutItem;
-	//ai->setAboutItem(itemName);
-	//addChild(ai, 3, "AboutItem");
+	auto ai = (SAboutItem*)mFieldList["AboutItem"];
+	ai->setAboutItem(itemName);
+	addChild(ai, 3, "AboutItem");
 }
 
 void Control::deleteAI() { removeChildByName("AboutItem"); }
@@ -251,7 +250,7 @@ void Control::resumeField() {
 }
 
 //void Control::initField() {
-	//CCLOG("super");
+//	CCLOG("super");
 	//mFieldList["forest1"] = Field1::create();
 	//mFieldList["campus"] = Field2::create();
 
