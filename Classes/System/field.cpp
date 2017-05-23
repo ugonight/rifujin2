@@ -26,31 +26,32 @@ bool Field::init() {
 	//ƒJ[ƒ\ƒ‹•Ï‰»
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [this](Touch* touch, Event* event) {
-		int cursorNum = 0;
-		for (auto obj : mObjectList) {
-			if (obj.second->getArea().containsPoint(touch->getLocationInView()) &&
-				getChildByName(obj.first)) {
-				cursorNum = obj.second->getCursor();
-				break;
-			}
-		}
-		Control::me->setCursor(cursorNum);
+		changeCursor(touch);
 		return true;
 	};
 	listener->onTouchMoved = [this](Touch* touch, Event* event) {
-		int cursorNum = 0;
-		for (auto obj : mObjectList) {
-			if (obj.second->getArea().containsPoint(touch->getLocationInView()) &&
-				getChildByName(obj.first)) {
-				cursorNum = obj.second->getCursor();
-				break;
-			}
-		}
-		Control::me->setCursor(cursorNum);
+		changeCursor(touch);
 	};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 	return true;
+}
+
+void Field::changeCursor(cocos2d::Touch *touch) {
+			int cursorNum = 0;
+		for (auto obj : mObjectList) {
+			if (obj.second->getArea().containsPoint(touch->getLocationInView()) &&
+				getChildByName(obj.first)) {
+				if (obj.second->getCanUse()) {
+					cursorNum = 6;
+				}
+				else {
+					cursorNum = obj.second->getCursor();
+				}
+				break;
+			}
+		}
+		Control::me->setCursor(cursorNum);
 }
 
 void Field::initField() {

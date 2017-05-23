@@ -8,6 +8,10 @@
 ~~ぐりぐり探索×会話ツッコミ推理！？~~  
 今回のテーマは呪いにまつわるサイコホラー！！  
 
+## Demo  
+
+[PC版現過程デモ](https://github.com/ugonight/rifujin2/raw/master/Release.win32.zip)  
+
 ## VS. 
 
 Edit by Visual Studio Community

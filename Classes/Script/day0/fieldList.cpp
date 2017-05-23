@@ -29,5 +29,13 @@ namespace day0 {
 		//チュートリアルではセーブしない
 		getChildByName("save")->setVisible(false);
 		getChildByName("save")->pause();
+
+		mEndFlag = false;
+	}
+
+	bool Esc::getEndFlag() { return mEndFlag; }
+	void Esc::setEndFlag() {
+		//mEndFlag = true; 
+		this->runAction(Sequence::create(DelayTime::create(0.5), CallFunc::create([this] { mEndFlag = true; }), DelayTime::create(0.1), RemoveSelf::create(), NULL));
 	}
 }

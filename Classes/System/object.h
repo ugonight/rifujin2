@@ -6,6 +6,7 @@ class ObjectN : public cocos2d::Sprite {
 	cocos2d::Rect mArea;
 	int mCursorNum;
 	int mState;	//状態・フラグ的なもの
+	std::vector<std::string> mCanUseItemList;	//その場所で使えるアイテム
 
 	std::string mGetItem;	//タッチ時に入手するアイテム
 	std::string mField;		//移動先のフィールド
@@ -37,12 +38,14 @@ public:
 
 	//void setTouchEvent(void (*func)());
 	void setTouchEvent(cocos2d::CallFunc *func);
+	void addCanUseItem(std::string itemName);
 
 	int getState();
 	std::string getMsg();
 	std::string getField();
 	cocos2d::Rect getArea();
 	int getCursor();
+	bool getCanUse();
 
 	CREATE_FUNC(ObjectN);
 };

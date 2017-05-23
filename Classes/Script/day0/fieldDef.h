@@ -29,8 +29,14 @@ public:
 };
 
 class Esc : public Control {
+private:
+	bool mEndFlag;
 public:
+	CREATE_FUNC(Esc);
+
 	void initField();
+	bool getEndFlag();
+	void setEndFlag();
 };
 
 class ItemMgr : public Item {

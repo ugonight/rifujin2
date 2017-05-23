@@ -17,14 +17,22 @@ namespace day0 {
 		tuguru->setArea(Rect(580, 85, 140, 375));
 		tuguru->setCursor(2);
 		tuguru->setTouchEvent(CallFunc::create([this] {
-			auto novel = Novel::create();
-			novel->setCharaR(0,"chara/tuguru1.png");
-			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0,"継「パジャマから普通の服に着替えよう」");
-			novel->addSentence(0, "継「クローゼットは移動すれば見つかるよ」");
-			novel->setEndTask(0);
-			this->addChild(novel, 10, "novel");
+			if (ItemMgr::sharedItem()->getSelectedItem() == "clothes") {
+				ItemMgr::sharedItem()->deleteItem("clothes");
+				this->runAction(FadeOut::create(0.5f));
+				((Esc*)Control::me)->setEndFlag();
+			}
+			else {
+				auto novel = Novel::create();
+				novel->setCharaR(0, "chara/tuguru1.png");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継「パジャマから普通の服に着替えよう」");
+				novel->addSentence(0, "継「クローゼットは移動すれば見つかるよ」");
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+			}
 		}));
+		tuguru->addCanUseItem("clothes");
 		addObject(tuguru, "tuguru", 1, true);
 
 		auto closet = ObjectN::create();

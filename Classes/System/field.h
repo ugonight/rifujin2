@@ -22,6 +22,8 @@ public:
 	virtual bool init();
 	virtual void update(float delta);
 
+	void changeCursor(cocos2d::Touch *touch);
+
 	bool getExistObject(std::string objName);
 	ObjectN* getObject(std::string objName);
 

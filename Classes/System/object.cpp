@@ -76,8 +76,6 @@ bool ObjectN::touchOn(cocos2d::Touch* touch, cocos2d::Event* event) {
 		//Control::me->setCursor(0);
 	}
 
-
-
 }
 
 void ObjectN::touchOff(cocos2d::Touch* touch, cocos2d::Event* event) {
@@ -121,13 +119,21 @@ void ObjectN::setMsg(std::string s) { mMsg = s; };
 
 //void ObjectN::setTouchEvent(void func()) { mTouchEvent = func; }
 void ObjectN::setTouchEvent(cocos2d::CallFunc *func) { mTouchEvent = func; mTouchEvent->retain(); }
+void ObjectN::addCanUseItem(std::string itemName) { mCanUseItemList.push_back(itemName); }
 
 int ObjectN::getState() { return mState; }
 std::string ObjectN::getMsg() { return mMsg; }
 std::string ObjectN::getField() { return mField; }
 cocos2d::Rect ObjectN::getArea() { return mArea; }
 int ObjectN::getCursor() { return mCursorNum; }
+bool ObjectN::getCanUse() {
+	for (auto name : mCanUseItemList) {
+		if (name == Item::sharedItem()->getSelectedItem()) return true;
+	}
+	return false;
+}
 
 void ObjectN::update(float delta) {
 	if (mTouchTime > 0) mTouchTime++;
 }
+
