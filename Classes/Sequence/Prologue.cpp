@@ -40,10 +40,10 @@ bool Prologue::init()
 	auto file = path + "speak.plist";
 	FileUtils::getInstance()->removeFile(file);
 
-	mFuncNum = 0;
+	mFuncNum = 1;
 
 	//シナリオ
-	mFunc[0] = [this]() {
+	mFunc[0] = [this]() {	//暫定、ある程度シナリオが固まってから考え直す
 		auto novel = Novel::create();
 
 		novel->setFontColor(0, Color3B::BLACK);
@@ -87,10 +87,9 @@ bool Prologue::init()
 		novel->setFontColor(0, Color3B::BLACK);
 		novel->addSentence(0, "…心を読まれてしまったみたいだ");
 		novel->setFontColor(0, Color3B::BLUE);
-		novel->setCharaR(0, "chara/bandana1.png");
+		novel->setCharaR(0, "chara/scene1.png");
 		novel->addSentence(0, "バンダナ「おーいつぐるーん！迎えに来たぞー！」");
 		novel->setFontColor(0, Color3B::RED);
-		novel->setCharaL(0, "chara/suama1.png");
 		novel->addSentence(0, "寿甘「久しぶりー！」");
 		novel->setFontColor(0, Color3B::BLACK);
 		novel->addSentence(0, "城の前で叫んでいる二人は僕の友達のバイロン・ダイエナ、通称バンダナと立花　寿甘（たちばな　すあま）だ。");
@@ -188,6 +187,7 @@ bool Prologue::init()
 		novel->addSentence(0, "バンダナ｢そうそう！こんな平和なんだしいざとなったら継は俺が守ってやるよ｣");
 		novel->setFontColor(0, Color3B::RED);
 		novel->addSentence(0, "セリーヌ｢わかりました。ではせめてこれを…｣");
+		novel->setCharaR(0, "chara/scene2.png");
 		novel->addSentence(0, "セリーヌ｢これは邪気を一時的に抑えることができるお札です、大丈夫だとは思いますが…万が一の時に使ってください｣");
 		novel->setFontColor(0, Color3B::BLUE);
 		novel->addSentence(0, "継｢心配性だなあ…じゃあ行ってくるね｣");
@@ -198,11 +198,67 @@ bool Prologue::init()
 		this->addChild(novel, 0, "novel");
 	};
 
+	mFunc[4] = [this]() {
+		auto novel = Novel::create();
+
+		novel->setBg(0, "bg/street.png");
+		novel->setFontColor(0, Color3B::RED);
+		novel->setCharaL(0, "chara/suama1.png");
+		novel->addSentence(0, "寿甘「んで、お仕事忙しいみたいだけどどんな感じなのよ？」");
+		novel->setFontColor(0, Color3B::BLUE);
+		novel->setCharaC(0, "chara/tuguru1.png");
+		novel->addSentence(0, "継「相変わらずだよ、特に魔法が発展してない国からの交渉が多くてね…」");
+		novel->setCharaR(0, "chara/bandana1.png");
+		novel->addSentence(0, "バンダナ「せっかくだから魔法に頼らず、剣術でも発展させりゃいいのになーこの俺みたいに！」");
+		novel->addSentence(0, "継「相変わらずだねバンダナ");
+		novel->addSentence(0, "僕のところに子供を嫁がせて実権を握ろうとする国もあってさ…正直どうすればいいかわからないよ…」");
+		novel->setFontColor(0, Color3B::RED);
+		novel->addSentence(0, "寿甘「それで…相手はどんな王子様なの？(ﾆﾔﾆﾔ)」");
+		novel->setFontColor(0, Color3B::BLUE);
+		novel->addSentence(0, "継「？…言ってることがよく分からないんだけど」");
+		novel->addSentence(0, "バンダナ「分からなくていいと思うぞ…」");
+		novel->setFontColor(0, Color3B::RED);
+		novel->addSentence(0, "寿甘｢ｼﾞｮｳﾀﾞﾝﾃﾞｽｺﾞﾒﾝﾅｻｲ｣");
+		novel->setFontColor(0, Color3B::BLUE);
+		novel->addSentence(0, "バンダナ「そう言う寿甘はどうなんだよ。最近一人で帰ってるだろ？彼氏でもできたのか？」");
+		novel->setFontColor(0, Color3B::RED);
+		novel->addSentence(0, "寿甘「…ああ…まあ、そんなところかな…ハハ…」");
+		novel->setFontColor(0, Color3B::BLUE);
+		novel->addSentence(0, "バンダナ「は？お前に彼氏なんてできたの！？マジで！？」");
+		novel->setFontColor(0, Color3B::RED);
+		novel->addSentence(0, "寿甘「う、うん…ツバメの翼くんって子で……最近巣を作ったって言ってて…気になって…」");
+		novel->setFontColor(0, Color3B::BLUE);
+		novel->addSentence(0, "バンダナ「あっ…そうですか……ゴメン」");
+		novel->setFontColor(0, Color3B::RED);
+		novel->addSentence(0, "寿甘「謝らないでよ！！！そう言うバンダナはどうなのよ！」");
+		novel->setFontColor(0, Color3B::BLUE);
+		novel->addSentence(0, "バンダナ「いやあそれは………");
+		novel->addSentence(0, "……ん？」");
+		novel->addSentence(0, "継｢？どうしたのバンダナ？｣");
+		novel->addSentence(0, "バンダナ｢いや……なんでもない｣");
+
+		novel->setEndTask(0);
+		this->addChild(novel, 0, "novel");
+	};
+
+	mFunc[5] = [this]() {
+		auto bg = Sprite::create("chara/scene3.png");
+		bg->setPosition(Director::getInstance()->getVisibleSize() / 2);
+		bg->setOpacity(0.0f);
+		bg->runAction(Sequence::create(FadeIn::create(0.5f), DelayTime::create(4.0f), FadeOut::create(0.5f), CallFunc::create([this] {
+			mFunc[++mFuncNum]();
+			removeChildByName("bg");
+		}), NULL));
+		addChild(bg, 0, "bg");
+	};
+
+	mFunc[6] = [this]() {};
+
 	auto attention = Sprite::create("bg/attention.png");
 	attention->setOpacity(0.0f);
 	attention->setPosition(visibleSize / 2);
 	attention->runAction(Sequence::create(DelayTime::create(2.0f), FadeIn::create(1.0f), DelayTime::create(4.0f), FadeOut::create(1.0f),
-		CallFunc::create(Prologue::mFunc[0]), NULL));
+		CallFunc::create(Prologue::mFunc[mFuncNum]), NULL));
 	addChild(attention, 0, "attention");
 
 	return true;
@@ -211,7 +267,7 @@ bool Prologue::init()
 void Prologue::update(float delta) {
 	Novel* novel = (Novel*)(this->getChildByName("novel"));
 	if (novel) {
-		if (novel->getEndFlag() && mFuncNum < 3 /* mFuncの数に応じて変える */) {
+		if (novel->getEndFlag() && mFuncNum < 6 /* mFuncの数に応じて変える */) {
 			mFunc[++mFuncNum]();
 			this->removeChild(novel);
 		}

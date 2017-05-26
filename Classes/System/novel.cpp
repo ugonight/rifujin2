@@ -1,6 +1,7 @@
 ﻿#pragma  execution_character_set("utf-8")
 
 #include "novel.h"
+#include "define.h"
 
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
@@ -74,7 +75,7 @@ bool Novel::init() {
 	this->addChild(msg, 2,"msgBox");
 
 	//文字
-	auto label = Label::createWithTTF("", "fonts/APJapanesefontT.ttf", 24);
+	auto label = Label::createWithTTF("", FONT_NAME, 24);
 	label->setPosition(Vec2(origin.x + 50,
 				origin.y + visibleSize.height - 340));
 	label->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
@@ -448,7 +449,7 @@ void Novel::updateSwitch() {
 				name.clear(); name.str("");
 				name << "branch" << i;
 				addChild(box, 3, name.str());
-				auto text = Label::createWithTTF(mSwitchTask[mBranch][0].branchStr[i], "fonts/APJapanesefontT.ttf", 24);
+				auto text = Label::createWithTTF(mSwitchTask[mBranch][0].branchStr[i], FONT_NAME, 24);
 				text->setPosition(box->getPosition());
 				text->setTextColor(Color4B::BLACK);
 				text->enableOutline(Color4B::WHITE, 2);
@@ -612,7 +613,7 @@ bool Novel::logEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 			}
 		}
 
-		auto label = Label::createWithTTF(str.str(), "fonts/APJapanesefontT.ttf", 24);
+		auto label = Label::createWithTTF(str.str(), FONT_NAME, 24);
 		label->setPosition(Vec2(origin.x + 20 ,origin.y + visibleSize.height - 20));
 		label->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
 		label->setColor(Color3B::WHITE);

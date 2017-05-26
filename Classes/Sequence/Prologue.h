@@ -13,6 +13,6 @@
 		CREATE_FUNC(Prologue);
 
 	private:
-		std::function<void()> mFunc[5];
+		std::function<void()> mFunc[7];
 		int mFuncNum;
 	};

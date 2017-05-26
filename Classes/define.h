@@ -5,3 +5,5 @@
 								virtual void initField(); \
 								virtual void changedField(); \
 								CREATE_FUNC(cName); 
+
+#define FONT_NAME "fonts/font_1_honokamarugo_1.1.ttf"

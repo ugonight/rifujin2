@@ -10,7 +10,9 @@
 
 ## Demo  
 
-[PC版現過程デモ](https://github.com/ugonight/rifujin2/raw/master/Release.win32.zip)  
+プロローグまで遊べるデモを公開！  
+[PC版](https://github.com/ugonight/rifujin2/raw/master/Release.win32.zip)  
+[Android版](https://github.com/ugonight/rifujin2/raw/master/rifujin2-release.apk) 
 
 ## VS. 
 
