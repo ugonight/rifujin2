@@ -1,30 +1,44 @@
-#pragma once
+ï»¿#pragma once
+#pragma  execution_character_set("utf-8")
 
 #include "../../System/field.h"
+#include "../../System/control.h"
+#include "../../System/item.h"
+#include "../../System/object.h"
+#include "../../System/novel.h"
+#include "../../System/chapter.h"
+#include "define.h"
 
-#define CREATE_FIELD(cName) class cName : public Field { \
-							public: \
-								virtual void initField(); \
-								virtual void changedField(); \
-								CREATE_FUNC(cName); 
-//ƒƒ“ƒo‚ğ’Ç‰Á‚Å‚«‚é‚æ‚¤‚É}‚Í’è‹`‚µ‚È‚¢
+namespace day1
+{
+	//ãƒ¡ãƒ³ãƒã‚’è¿½åŠ ã§ãã‚‹ã‚ˆã†ã«}ã¯å®šç¾©ã—ãªã„
 
-//CREATE_FIELD(Field1)};
-//CREATE_FIELD(Field2)};
-//CREATE_FIELD(Forest2)};
+	class Day : public Chapter
+	{
+	public:
+		static cocos2d::Scene* createScene();
+		void initChapter() override;
 
-CREATE_FIELD(AboutItem)
-	void setAboutItem(std::string itemName);
-};
+		CREATE_FUNC(Day);
+	};
 
-class Day1 : public Control {
-protected:
-	virtual void initField();
-public:
-	virtual void showAI(std::string itemName);
-};
+	class AboutItem : public SAboutItem {
+	public:
+		virtual void initField();
+		virtual void changedField();
+		CREATE_FUNC(AboutItem);
+		void setAboutItem(std::string itemName)override;
+	};
 
-class Item1 : public Item {
-protected:
-	virtual void initItem();
-};
+	class Esc : public Control {
+	public:
+		CREATE_FUNC(Esc);
+		void initField();
+	};
+
+	class ItemMgr : public Item {
+	public:
+		void initItem();
+	};
+
+}

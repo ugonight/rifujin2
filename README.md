@@ -1,4 +1,4 @@
-理不尽ごっこ。2 - ~~sign~~ Insanity -
+理不尽ごっこ。2 - ~~sign~~ curse -
 ====
 
 

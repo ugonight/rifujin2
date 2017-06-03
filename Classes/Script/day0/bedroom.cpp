@@ -24,7 +24,7 @@ namespace day0 {
 			}
 			else {
 				auto novel = Novel::create();
-				novel->setCharaR(0, "chara/tuguru1.png");
+				novel->setCharaR(0, "chara/tuguru2.png");
 				novel->setFontColor(0, Color3B::BLUE);
 				novel->addSentence(0, "継「パジャマから普通の服に着替えよう」");
 				novel->addSentence(0, "継「クローゼットは移動すれば見つかるよ」");

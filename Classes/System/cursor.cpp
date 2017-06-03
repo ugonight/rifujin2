@@ -32,7 +32,9 @@ bool Cursor::init() {
 		animation->addSpriteFrame(SpriteFrame::create("cursor.png", Rect(80 * 0, 80 * 2, 80, 80)));
 		animation->setDelayPerUnit(1.0f / 3.0f);
 		animation->setRestoreOriginalFrame(true);
-		sprite->runAction(RepeatForever::create(Animate::create(animation)));
+		auto action = RepeatForever::create(Animate::create(animation));
+		action->setTag(1);
+		sprite->runAction(action);
 		/*}*/
 
 
@@ -92,7 +94,7 @@ void Cursor::setCursorNum(int i) {
 		auto sprite = (Sprite*)this->getChildByTag(0);
 
 		//sprite->setTextureRect(rect);
-		sprite->stopAllActions();
+		sprite->stopActionByTag(1);
 
 		auto animation = Animation::create();
 		animation->addSpriteFrame(SpriteFrame::create("cursor.png", Rect(80 * i, 80 * 0, 80, 80)));
@@ -100,7 +102,9 @@ void Cursor::setCursorNum(int i) {
 		animation->addSpriteFrame(SpriteFrame::create("cursor.png", Rect(80 * i, 80 * 2, 80, 80)));
 		animation->setDelayPerUnit(1.0f / 3.0f);
 		animation->setRestoreOriginalFrame(true);
-		sprite->runAction(RepeatForever::create(Animate::create(animation)));
+		auto action = RepeatForever::create(Animate::create(animation));
+		action->setTag(1);
+		sprite->runAction(action);
 
 		mCursorNum = i;
 

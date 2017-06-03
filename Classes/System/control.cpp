@@ -61,8 +61,10 @@ bool Control::init() {
 			auto listener2 = EventListenerTouchOneByOne::create();
 			listener2->setSwallowTouches(true);
 			listener2->onTouchBegan = [this](Touch* touch, Event* event) {
-				removeChildByName("explain");
 				return true;
+			};
+			listener2->onTouchEnded = [this](Touch* touch, Event* event) {
+				removeChildByName("explain");
 			};
 			this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener2, explain);
 			return true;
@@ -248,6 +250,12 @@ void Control::pauseField() {
 void Control::resumeField() {
 	auto field = (Field*)getChildByName("field");
 	field->resumeEventListener();
+}
+
+bool Control::getEndFlag() { return mEndFlag; }
+void Control::setEndFlag() {
+	//mEndFlag = true; 
+	this->runAction(Sequence::create(DelayTime::create(0.5), CallFunc::create([this] { mEndFlag = true; }), DelayTime::create(0.1), RemoveSelf::create(), NULL));
 }
 
 //void Control::initField() {

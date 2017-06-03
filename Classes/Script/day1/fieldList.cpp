@@ -1,21 +1,31 @@
-#include "System/control.h"
+ï»¿#pragma  execution_character_set("utf-8")
+//#include "System/control.h"
 
-#include "fieldDef.h"
+#include "Script\day1\fieldDef.h"
 
-void Day1::initField() {
+USING_NS_CC;
 
+namespace day1 {
 
+	void Esc::initField() {
+		//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ä¸€è¦§
+		//mFieldList["bedroom"] = BedRoom::create();
+		//mFieldList["closet"] = Closet::create();
 
-	//Å‰‚É•\Ž¦‚³‚¹‚éƒtƒB[ƒ‹ƒh
-	this->addChild(mFieldList["forest1"], 0, "field");
+		mFieldList["AboutItem"] = AboutItem::create();
 
-	//ƒAƒCƒeƒ€‚Ì‰Šú‰»
-	auto item = Item1::create();
-	this->addChild(item, 2, "item");
-}
+		for (auto it = mFieldList.begin(); it != mFieldList.end(); it++) {
+			it->second->retain();
+		}
 
-void Day1::showAI(std::string itemName) {
-	auto ai = (AboutItem*)mFieldList["AboutItem"];
-	ai->setAboutItem(itemName);
-	addChild(ai, 3, "AboutItem");
+		//æœ€åˆã«è¡¨ç¤ºã•ã›ã‚‹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+		//this->addChild(mFieldList["bedroom"], 0, "field");
+
+		//ã‚¢ã‚¤ãƒ†ãƒ ã®åˆæœŸåŒ–
+		auto item = (ItemMgr*)ItemMgr::create();
+		item->initItem();
+		this->addChild(item, 2, "item");
+
+		mEndFlag = false;
+	}
 }

@@ -196,6 +196,7 @@ bool Item::touchEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 	if (targetBox.containsPoint(touchPoint)) {
 		mShowWindow = 1;
 		validity = true;
+		Control::me->setCursor(0);
 
 		//AI表示
 		if (mTouchTime > 0 && mSelectedItem != "" && !mShowAboutItem) {

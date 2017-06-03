@@ -5,7 +5,8 @@
 class Field;
 
 class Control : public cocos2d::Scene {
-protected:
+protected:	
+	bool mEndFlag;
 	std::map<std::string, Field*> mFieldList;
 
 	void save(cocos2d::Ref* pSender);
@@ -25,6 +26,9 @@ public:
 
 	bool getExistObject(std::string field, std::string obj);
 	Field* getField(std::string field);
+
+	bool getEndFlag();
+	void setEndFlag();
 
 	virtual bool init();
 	virtual void update(float delta);

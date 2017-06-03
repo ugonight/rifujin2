@@ -2,7 +2,6 @@
 //#include "System/control.h"
 
 #include "Script\day0\fieldDef.h"
-
 USING_NS_CC;
 
 namespace day0 {
@@ -33,9 +32,4 @@ namespace day0 {
 		mEndFlag = false;
 	}
 
-	bool Esc::getEndFlag() { return mEndFlag; }
-	void Esc::setEndFlag() {
-		//mEndFlag = true; 
-		this->runAction(Sequence::create(DelayTime::create(0.5), CallFunc::create([this] { mEndFlag = true; }), DelayTime::create(0.1), RemoveSelf::create(), NULL));
-	}
 }

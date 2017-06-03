@@ -49,6 +49,9 @@ bool Title::init()
 	};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
     
+	//BGM
+	AudioEngine::preload("BGM/days.ogg");
+
 	//SE
 	AudioEngine::preload("SE/po.ogg");
 

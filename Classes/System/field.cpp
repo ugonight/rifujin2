@@ -38,7 +38,7 @@ bool Field::init() {
 }
 
 void Field::changeCursor(cocos2d::Touch *touch) {
-			int cursorNum = 0;
+		int cursorNum = 0;
 		for (auto obj : mObjectList) {
 			if (obj.second->getArea().containsPoint(touch->getLocationInView()) &&
 				getChildByName(obj.first)) {
@@ -51,6 +51,7 @@ void Field::changeCursor(cocos2d::Touch *touch) {
 				break;
 			}
 		}
+		
 		Control::me->setCursor(cursorNum);
 }
 

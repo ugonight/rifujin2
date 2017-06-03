@@ -3,6 +3,7 @@
 #include "Prologue.h"
 #include "System/cursor.h"
 #include "Script\day0\fieldDef.h"
+#include "Script\day1\fieldDef.h"	//次のchapter
 
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
@@ -60,6 +61,8 @@ bool Prologue::init()
 
 
 	mFunc[1] = [this]() {
+		AudioEngine::play2d("BGM/days.ogg", true);
+
 		auto novel = Novel::create();
 
 		novel->setFontColor(0, Color3B::BLACK);
@@ -69,7 +72,7 @@ bool Prologue::init()
 		novel->addSentence(0, "特殊能力という生まれつき変わった魔法が使える人もそこそこ多い、豊かな国だ");
 		novel->setBg(0, "obj/bedroom.png");
 		novel->setFontColor(0, Color3B::BLUE);
-		novel->setCharaC(0, "chara/tuguru1.png");
+		novel->setCharaC(0, "chara/tuguru2.png");
 		novel->addSentence(0, "継「ふあぁ…おはよう。セリーヌ」");
 		novel->setFontColor(0, Color3B::BLACK);
 		novel->addSentence(0, "そんな平和なこの国を治めているのがこの国の王子である僕、王国　継（おうこく　つぐる）");
@@ -117,8 +120,10 @@ bool Prologue::init()
 		auto listener2 = EventListenerTouchOneByOne::create();
 		listener2->setSwallowTouches(true);
 		listener2->onTouchBegan = [this](Touch* touch, Event* event) {
-			removeChildByName("explain");
 			return true;
+		};
+		listener2->onTouchEnded = [this](Touch* touch, Event* event) {
+			removeChildByName("explain");
 		};
 		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener2, explain);
 
@@ -210,8 +215,8 @@ bool Prologue::init()
 		novel->addSentence(0, "継「相変わらずだよ、特に魔法が発展してない国からの交渉が多くてね…」");
 		novel->setCharaR(0, "chara/bandana1.png");
 		novel->addSentence(0, "バンダナ「せっかくだから魔法に頼らず、剣術でも発展させりゃいいのになーこの俺みたいに！」");
-		novel->addSentence(0, "継「相変わらずだねバンダナ");
-		novel->addSentence(0, "僕のところに子供を嫁がせて実権を握ろうとする国もあってさ…正直どうすればいいかわからないよ…」");
+		novel->addSentence(0, "継「相変わらずだねバンダナ」");
+		novel->addSentence(0, "継「僕のところに子供を嫁がせて実権を握ろうとする国もあってさ…正直どうすればいいかわからないよ…」");
 		novel->setFontColor(0, Color3B::RED);
 		novel->addSentence(0, "寿甘「それで…相手はどんな王子様なの？(ﾆﾔﾆﾔ)」");
 		novel->setFontColor(0, Color3B::BLUE);
@@ -232,8 +237,8 @@ bool Prologue::init()
 		novel->setFontColor(0, Color3B::RED);
 		novel->addSentence(0, "寿甘「謝らないでよ！！！そう言うバンダナはどうなのよ！」");
 		novel->setFontColor(0, Color3B::BLUE);
-		novel->addSentence(0, "バンダナ「いやあそれは………");
-		novel->addSentence(0, "……ん？」");
+		novel->addSentence(0, "バンダナ「いやあそれは………」");
+		novel->addSentence(0, "バンダナ「……ん？」");
 		novel->addSentence(0, "継｢？どうしたのバンダナ？｣");
 		novel->addSentence(0, "バンダナ｢いや……なんでもない｣");
 
@@ -242,6 +247,7 @@ bool Prologue::init()
 	};
 
 	mFunc[5] = [this]() {
+		AudioEngine::stopAll();
 		auto bg = Sprite::create("chara/scene3.png");
 		bg->setPosition(Director::getInstance()->getVisibleSize() / 2);
 		bg->setOpacity(0.0f);
@@ -252,7 +258,9 @@ bool Prologue::init()
 		addChild(bg, 0, "bg");
 	};
 
-	mFunc[6] = [this]() {};
+	mFunc[6] = [this]() {			
+		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, day1::Day::createScene(), Color3B::WHITE));
+	};
 
 	auto attention = Sprite::create("bg/attention.png");
 	attention->setOpacity(0.0f);
