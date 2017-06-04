@@ -80,7 +80,7 @@ bool Control::init() {
 	addChild(novel, 1, "log");
 
 	//initFieldは継承先のクラスで作り、使うときに呼び出す。
-	//initField();
+	initField();
 
 	//this->addChild(mFieldList["forest1"], 0, "field"); //initField()へ
 
@@ -258,8 +258,8 @@ void Control::setEndFlag() {
 	this->runAction(Sequence::create(DelayTime::create(0.5), CallFunc::create([this] { mEndFlag = true; }), DelayTime::create(0.1), RemoveSelf::create(), NULL));
 }
 
-//void Control::initField() {
-//	CCLOG("super");
+void Control::initField() {
+	CCLOG("super");
 	//mFieldList["forest1"] = Field1::create();
 	//mFieldList["campus"] = Field2::create();
 
@@ -268,4 +268,4 @@ void Control::setEndFlag() {
 	//for (auto it = mFieldList.begin(); it != mFieldList.end(); it++) {
 	//	it->second->retain();
 	//}
-//}
+}

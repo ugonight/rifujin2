@@ -6,10 +6,13 @@
 USING_NS_CC;
 
 namespace day1 {
+	Control* Esc::createControl() {
+		return Esc::create();
+	}
 
 	void Esc::initField() {
 		//フィールド一覧
-		//mFieldList["bedroom"] = BedRoom::create();
+		mFieldList["gate"] = Gate::create();
 		//mFieldList["closet"] = Closet::create();
 
 		mFieldList["AboutItem"] = AboutItem::create();
@@ -19,7 +22,7 @@ namespace day1 {
 		}
 
 		//最初に表示させるフィールド
-		//this->addChild(mFieldList["bedroom"], 0, "field");
+		this->addChild(mFieldList["gate"], 0, "field");
 
 		//アイテムの初期化
 		auto item = (ItemMgr*)ItemMgr::create();

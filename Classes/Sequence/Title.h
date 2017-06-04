@@ -1,6 +1,6 @@
 #ifndef __HELLOWORLD_SCENE_H__
 #define __HELLOWORLD_SCENE_H__
-
+#pragma  execution_character_set("utf-8")
 #include "cocos2d.h"
 
 class Title : public cocos2d::Layer

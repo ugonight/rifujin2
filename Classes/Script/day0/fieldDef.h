@@ -1,5 +1,6 @@
 ﻿#pragma once
-//#pragma  execution_character_set("utf-8")
+#pragma  execution_character_set("utf-8")
+//↑prologueでリンクエラー出るときはここのコメントいじって
 
 #include "../../System/field.h"
 #include "../../System/control.h"
@@ -22,6 +23,7 @@ namespace day0
 
 	class Esc : public Control {
 	public:
+		static Control* createControl();
 		void initField();
 		CREATE_FUNC(Esc);
 	};

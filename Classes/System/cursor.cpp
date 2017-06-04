@@ -1,5 +1,5 @@
 #include "cursor.h"
-
+#pragma  execution_character_set("utf-8")
 USING_NS_CC;
 
 bool Cursor::init() {

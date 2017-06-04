@@ -108,8 +108,8 @@ bool Prologue::init()
 	mFunc[2] = [this]() {
 		removeChildByName("cursor");
 
-		auto control = (day0::Esc*)day0::Esc::create();
-		control->initField();	//必ず呼ぶ
+		auto control = (day0::Esc*)day0::Esc::createControl();
+		//control->initField();	//必ず呼ぶ
 		addChild(control, 1, "control");
 
 		auto explain = Sprite::create("explain.png");

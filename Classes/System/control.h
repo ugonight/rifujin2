@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#pragma  execution_character_set("utf-8")
 #include "cocos2d.h"
 
 class Field;
@@ -13,7 +13,7 @@ protected:
 
 public:
 	virtual ~Control();
-	//virtual void initField();
+	virtual void initField();
 
 	void setCursor(int num);
 	void changeField(std::string field);

@@ -1,4 +1,5 @@
 ﻿#pragma once
+#pragma  execution_character_set("utf-8")
 #include "cocos2d.h"
 
 //#include "object.h"
@@ -8,6 +9,7 @@ class Control;
 class Item : public cocos2d::Layer {
 public:
 	virtual ~Item();
+	//virtual void initItem();
 
 	virtual bool init();
 	virtual void update(float delta);
@@ -21,7 +23,6 @@ public:
 	void loadItem(cocos2d::ValueMap map);
 
 	static Item* sharedItem();
-
 
 
 	CREATE_FUNC(Item);
@@ -46,7 +47,6 @@ protected:
 	};
 
 	std::map<std::string, ItemObj*> mItemList;
-	//virtual void initItem();	//継承先で記述
 
 	bool mShowWindow;
 	bool mShowAboutItem;

@@ -5,6 +5,9 @@
 USING_NS_CC;
 
 namespace day0 {
+	Control* Esc::createControl() {
+		return Esc::create();
+	}
 
 	void Esc::initField() {
 		//フィールド一覧

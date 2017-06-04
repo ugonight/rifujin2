@@ -12,6 +12,7 @@
 namespace day1
 {
 	//メンバを追加できるように}は定義しない
+	CREATE_FIELD(Gate)};
 
 	class Day : public Chapter
 	{
@@ -32,6 +33,7 @@ namespace day1
 
 	class Esc : public Control {
 	public:
+		static Control* createControl();
 		CREATE_FUNC(Esc);
 		void initField();
 	};

@@ -43,20 +43,60 @@ namespace day1 {
 		});
 
 		mFuncList.push_back([this]() {
-			auto novel = Novel::create();
-			novel->setFontColor(0, Color3B::BLACK);
+			AudioEngine::play2d("BGM/school.ogg", true);
 
-			novel->setBg(0, "bg/book.png");
-			novel->addSentence(0, "幼いころずっと読んでいた大好きな絵本");
-			novel->addSentence(0, "絵本の中のあの子が大好きでなんどもなんども読み返した");
-			novel->addSentence(0, "大きくなって入学式の日に出会ったのはあの子と同じ瞳のーーーー");
-			novel->setBg(0, "");
-			novel->addSentence(0, "私だけの物にしたいと思った");
+			auto novel = Novel::create();
+
+			novel->setBg(0, "obj/gate.png");
+			novel->setCharaL(0, "chara/tuguru1.png");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "継「学校に着いたね、たまには歩きもいいもんだ」");
+			novel->setCharaC(0, "chara/bandana1.png");
+			novel->addSentence(0, "バンダナ「…！(ｿﾞｸｯ)」");
+			novel->setCharaR(0, "chara/rias1.png");
+			novel->setFontColor(0, Color3B::RED);
+			novel->addSentence(0, "リアス｢バンダナ様……♥｣");
+			novel->setCharaL(0, "chara/suama1.png");
+			novel->addSentence(0, "寿甘｢あれ？確かあの子……ドラゴン族の｣");
+			novel->setCharaC(0, "chara/remon1.png");
+			novel->addSentence(0, "檸檬｢こら！！リアス！！｣");
+			novel->setCharaR(0, "");
+			novel->addSentence(0, "リアス｢ヒッ！｣");
+			novel->addSentence(0, "檸檬｢まったくもうあの子は人を追いかけ回して……ごめんなさいね｣");
+			novel->addSentence(0, "寿甘「あなたは確か…水無月　檸檬（みなつき　れもん）ちゃんかな？」");
+			novel->addSentence(0, "檸檬「そうよ、継様のせいで万年学年筆記テスト2位の人よ」");
+			novel->addSentence(0, "檸檬「さっきのドラゴン族の子はリアス・アレキサンドライト。ああ見えていい子なのよ？」");
+			novel->setCharaR(0, "chara/bandana1.png");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "バンダナ「お、おう」");
+			novel->setCharaC(0, "");
+			novel->setFontColor(0, Color3B::RED);
+			novel->addSentence(0, "檸檬「リアスー！待ちなさーい！」");
+			novel->setCharaR(0, "chara/bandana1.png");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "バンダナ「…最近嫌な視線を感じると思ったらあいつか？」");
+			novel->setFontColor(0, Color3B::RED);
+			novel->addSentence(0, "寿甘「そうなの！？」");
+			novel->setCharaC(0, "chara/tuguru1.png");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "継「授業開始まで、まだ時間があるね。」");
+			novel->setFontColor(0, Color3B::RED);
+			novel->addSentence(0, "寿甘「ちょっと学校の中を散歩していこっか！」");
 
 			novel->setEndTask(0);
 			this->addChild(novel, 0, "novel");
 
 			return 0;
+		});
+
+		mFuncList.push_back([this]() {
+			removeChildByName("cursor");
+
+			auto control = (day1::Esc*)day1::Esc::createControl();
+			//control->initField();	//必ず呼ぶ
+			addChild(control, 1, "control");
+
+			return 1;
 		});
 	}
 

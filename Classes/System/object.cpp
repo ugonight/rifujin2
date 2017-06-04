@@ -1,3 +1,4 @@
+#pragma  execution_character_set("utf-8")
 #include "object.h"
 
 #include "control.h"

@@ -1,3 +1,4 @@
+#pragma  execution_character_set("utf-8")
 #include "Title.h"
 #include "Prologue.h"
 
@@ -51,6 +52,7 @@ bool Title::init()
     
 	//BGM
 	AudioEngine::preload("BGM/days.ogg");
+	AudioEngine::preload("BGM/school.ogg");
 
 	//SE
 	AudioEngine::preload("SE/po.ogg");
