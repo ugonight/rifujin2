@@ -9,7 +9,7 @@ protected:
 	bool mEndFlag;
 	std::map<std::string, Field*> mFieldList;
 
-	void save(cocos2d::Ref* pSender);
+	std::string mFirstField;
 
 public:
 	virtual ~Control();
@@ -33,7 +33,8 @@ public:
 	virtual bool init();
 	virtual void update(float delta);
 
-	void load();
+	void load(int dataNum);
+	void save(int dataNum, cocos2d::ValueMap data);
 
 	static Control* me;
 

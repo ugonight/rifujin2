@@ -13,6 +13,9 @@ public:
 	virtual bool init();
 	virtual void update(float delta);
 
+	void playFirst();	//最初の場面を実行
+	void load(int saveNum);
+	
 	CREATE_FUNC(Chapter);
 
 protected:
@@ -21,8 +24,11 @@ protected:
 
 	virtual void funcOtherEnd();	//ノベルと探索以外の終了処理
 
-	int mFuncNum;
+	int mFuncNum, mChapterNum;
 	std::vector<std::function<int()>> mFuncList;
+	std::string mSituation;
 
 	virtual void initChapter();
+	void save(cocos2d::Ref* pSender);
+
 };

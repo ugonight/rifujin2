@@ -1,6 +1,8 @@
 #pragma  execution_character_set("utf-8")
 #include "Title.h"
 #include "Prologue.h"
+#include "System\record.h"
+#include "define.h"
 
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
@@ -46,16 +48,36 @@ bool Title::init()
 		if (Rect(270,150,290,80).containsPoint(touch->getLocationInView())) {
 			Director::getInstance()->replaceScene(TransitionFade::create(1.0f, Prologue::createScene(), Color3B::WHITE));
 		}
+		else if (Rect(275, 250, 285, 80).containsPoint(touch->getLocationInView())) {
+			auto record = Record::create();
+			addChild(record, 5, "record");
+		}
 		return true;
 	};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
     
+	//初回
+	UserDefault *userDef = UserDefault::getInstance();
+	if (!userDef->getBoolForKey("first", false)) {
+		std::stringstream path;
+		for (int i = 0; i < 15; i++) {
+			resetStr(path);
+			path << FileUtils::getInstance()->getWritablePath() << i + 1;
+			FileUtils::getInstance()->createDirectory(path.str());	//セーブフォルダ生成
+		}
+		userDef->setBoolForKey("first",true);
+		userDef->flush();
+	}
+
 	//BGM
 	AudioEngine::preload("BGM/days.ogg");
 	AudioEngine::preload("BGM/school.ogg");
 
 	//SE
 	AudioEngine::preload("SE/po.ogg");
+	AudioEngine::preload("SE/record_on.ogg");
+	AudioEngine::preload("SE/record_off.ogg");
+	AudioEngine::preload("SE/chapter.ogg");
 
     return true;
 }

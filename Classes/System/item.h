@@ -20,7 +20,7 @@ public:
 	std::string getSelectedItem();	
 
 	void saveItem(cocos2d::ValueMap* map);
-	void loadItem(cocos2d::ValueMap map);
+	void loadItem( cocos2d::ValueMap map);
 
 	static Item* sharedItem();
 

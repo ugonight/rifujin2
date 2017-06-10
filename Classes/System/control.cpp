@@ -38,15 +38,16 @@ bool Control::init() {
 	//auto resetCursor = Layer::create();
 	//this->addChild(resetCursor, 10);
 
-	auto save = MenuItemImage::create(
-		"save.png",
-		"save2.png",
-		CC_CALLBACK_1(Control::save, this));
-	save->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
-	save->setPosition(Vec2(origin.x + visibleSize.width - 15, origin.y));
-	auto menu = Menu::create(save, NULL);
-	menu->setPosition(Vec2::ZERO);
-	this->addChild(menu, 1, "save");
+	//chapterで表示
+	//auto save = MenuItemImage::create(
+	//	"save.png",
+	//	"save2.png",
+	//	CC_CALLBACK_1(Control::save, this));
+	//save->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
+	//save->setPosition(Vec2(origin.x + visibleSize.width - 15, origin.y));
+	//auto menu = Menu::create(save, NULL);
+	//menu->setPosition(Vec2::ZERO);
+	//this->addChild(menu, 1, "save");
 
 	auto help = Sprite::create("help.png");
 	help->setPosition(Vec2(origin.x + 30, origin.y + 30));
@@ -111,13 +112,13 @@ bool Control::init() {
 
 void Control::update(float delta) {
 	auto field = getChildByName("field");
-	if (field->getChildByName("novel") && ((MenuItemImage*)getChildByName("save"))->getOpacity() >= 255) {
-		((MenuItemImage*)getChildByName("save"))->setOpacity(0.0f);
+	if (field->getChildByName("novel") /*&& ((MenuItemImage*)getChildByName("save"))->getOpacity() >= 255*/) {
+		//((MenuItemImage*)getChildByName("save"))->setOpacity(0.0f);
 		
 		removeChildByName("log");
 	}
 	else if (!field->getChildByName("novel")) {
-		((MenuItemImage*)getChildByName("save"))->setOpacity(255.0f);
+		//((MenuItemImage*)getChildByName("save"))->setOpacity(255.0f);
 		
 		if (!getChildByName("log")) {
 			auto novel = Novel::create();
@@ -129,16 +130,17 @@ void Control::update(float delta) {
 	}
 }
 
-void Control::save(cocos2d::Ref* pSender) {
-	if ((getChildByName("save"))->getOpacity() >= 255) {
+void Control::save(int i,cocos2d::ValueMap data) {
 		Size visibleSize = Director::getInstance()->getVisibleSize();
 		Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-		auto path = FileUtils::getInstance()->getWritablePath();
+		std::stringstream str;
+		str << FileUtils::getInstance()->getWritablePath() << i << "/";
+		auto path = str.str();
 
 		//現在いるフィールド&取得しているアイテム
 		auto file = path + "saveData.plist";
-		ValueMap data;
+		//ValueMap data;
 
 		for (auto field : mFieldList) {
 			if (field.second->getReferenceCount() > 1 && field.first != "AboutItem") {
@@ -171,25 +173,18 @@ void Control::save(cocos2d::Ref* pSender) {
 			}
 		}
 
-		auto label = Label::createWithTTF("セーブが完了しました", FONT_NAME, 20);
-		label->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
-		label->setPosition(Vec2(origin.x + visibleSize.width - 15 - 64, origin.y));
-		label->setTextColor(Color4B::WHITE);
-		label->enableOutline(Color4B::BLACK, 2);
-		label->setOpacity(0.0f);
-		label->runAction(Sequence::create(FadeIn::create(0.5f), DelayTime::create(3.0f), FadeOut::create(0.5f), NULL));
-		addChild(label, 5, "saveText");
-	}
 }
 
-void Control::load() {
-	auto path = FileUtils::getInstance()->getWritablePath();
+void Control::load(int i) {
+	std::stringstream str;
+	str << FileUtils::getInstance()->getWritablePath() << i << "/";
+	auto path = str.str();
 
 	//現在いるフィールド&取得しているアイテム
 	auto file = path + "saveData.plist";
 
 	ValueMap data = FileUtils::getInstance()->getValueMapFromFile(file);
-	if (data["currentField"].asString() != "forest1")
+	if (data["currentField"].asString() != mFirstField)
 		changeField(data["currentField"].asString());
 
 	auto item = (Item*)getChildByName("item");
