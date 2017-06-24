@@ -21,7 +21,7 @@ namespace day1 {
 	void Day::initChapter()
 	{
 		auto cursor = Cursor::create();
-		cursor->setCursorNum(8);
+		cursor->setCursorNum(Cursor::NOVEL);
 		this->addChild(cursor, 1, "cursor");
 
 		//BGM

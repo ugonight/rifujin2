@@ -13,7 +13,10 @@ namespace day1 {
 	void Esc::initField() {
 		//フィールド一覧
 		mFieldList["gate"] = Gate::create();
-		//mFieldList["closet"] = Closet::create();
+		mFieldList["entrance"] = Entrance::create();
+		mFieldList["corridor"] = Corridor::create();
+		mFieldList["classroom"] = ClassRoom::create();
+		mFieldList["artroom"] = ArtRoom::create();
 
 		mFieldList["AboutItem"] = AboutItem::create();
 

@@ -18,7 +18,7 @@ bool ObjectN::init(){
 	scheduleUpdate();
 
 	//mAreaFlag = 0;
-	mCursorNum = 1;
+	mCursorNum = Cursor::INFO;
 	mState = 0;
 
 	mGetItem = mField = mMsg = "";
@@ -100,7 +100,7 @@ void ObjectN::touchOff(cocos2d::Touch* touch, cocos2d::Event* event) {
 			if (mGetItem != "") {
 				Item::sharedItem()->getItem(mGetItem, touch->getLocation());
 				runAction(RemoveSelf::create());
-				Control::me->setCursor(0);
+				Control::me->setCursor(Cursor::NOMAL);
 			}
 		}
 	}
@@ -112,7 +112,8 @@ void ObjectN::touchOff(cocos2d::Touch* touch, cocos2d::Event* event) {
 //	mTouchEvent = event;
 //}
 
-void ObjectN::setCursor(int i) { mCursorNum = i; }
+//void ObjectN::setCursor(int i) { mCursorNum = i; }
+void ObjectN::setCursor(Cursor::CursorID i) { mCursorNum = i; }
 void ObjectN::setState(int s) { mState = s; }
 void ObjectN::setItemGetEvent(std::string s) { mGetItem = s; }
 void ObjectN::setFieldChangeEvent(std::string s) { mField = s; }
@@ -126,7 +127,8 @@ int ObjectN::getState() { return mState; }
 std::string ObjectN::getMsg() { return mMsg; }
 std::string ObjectN::getField() { return mField; }
 cocos2d::Rect ObjectN::getArea() { return mArea; }
-int ObjectN::getCursor() { return mCursorNum; }
+//int ObjectN::getCursor() { return mCursorNum; }
+Cursor::CursorID ObjectN::getCursor() { return mCursorNum; }
 bool ObjectN::getCanUse() {
 	for (auto name : mCanUseItemList) {
 		if (name == Item::sharedItem()->getSelectedItem()) return true;

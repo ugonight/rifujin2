@@ -2,10 +2,12 @@
 #pragma  execution_character_set("utf-8")
 #include "cocos2d.h"	
 
+#include "cursor.h"
+
 class ObjectN : public cocos2d::Sprite {
 	//bool mAreaFlag;	//タッチエリアが存在するか
 	cocos2d::Rect mArea;
-	int mCursorNum;
+	Cursor::CursorID mCursorNum;
 	int mState;	//状態・フラグ的なもの
 	std::vector<std::string> mCanUseItemList;	//その場所で使えるアイテム
 
@@ -31,7 +33,8 @@ public:
 	virtual void update(float delta);
 
 	void setArea(cocos2d::Rect rect);	//(int x, int y, int w, int h)
-	void setCursor(int cursorNum);
+	//void setCursor(int cursorNum);
+	void setCursor(Cursor::CursorID cursorNum);
 	void setState(int state);
 	void setItemGetEvent(std::string itemName);
 	void setFieldChangeEvent(std::string fieldName);
@@ -45,7 +48,8 @@ public:
 	std::string getMsg();
 	std::string getField();
 	cocos2d::Rect getArea();
-	int getCursor();
+	//int getCursor();
+	Cursor::CursorID getCursor();
 	bool getCanUse();
 
 	CREATE_FUNC(ObjectN);

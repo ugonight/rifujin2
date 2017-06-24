@@ -30,7 +30,7 @@ bool Prologue::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	auto cursor = Cursor::create();
-	cursor->setCursorNum(8);
+	cursor->setCursorNum(Cursor::NOVEL);
 	this->addChild(cursor, 1, "cursor");
 
 	//BGM
@@ -173,7 +173,7 @@ bool Prologue::init()
 
 	mFunc[3] = [this]() {
 		auto cursor = Cursor::create();
-		cursor->setCursorNum(8);
+		cursor->setCursorNum(Cursor::NOVEL);
 		this->addChild(cursor, 1, "cursor");
 
 		auto novel = Novel::create();

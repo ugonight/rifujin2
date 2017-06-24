@@ -7,12 +7,17 @@
 #include "../../System/object.h"
 #include "../../System/novel.h"
 #include "../../System/chapter.h"
+#include "../../System/cursor.h"
 #include "define.h"
 
 namespace day1
 {
 	//メンバを追加できるように}は定義しない
 	CREATE_FIELD(Gate)};
+	CREATE_FIELD(Entrance)};
+	CREATE_FIELD(Corridor)};
+	CREATE_FIELD(ClassRoom)};
+	CREATE_FIELD(ArtRoom)};
 
 	class Day : public Chapter
 	{

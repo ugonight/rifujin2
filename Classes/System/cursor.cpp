@@ -82,7 +82,7 @@ bool Cursor::endEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 	return true;
 }
 
-void Cursor::setCursorNum(int i) {
+void Cursor::setCursorNum(CursorID i) {
 	//Sprite* sprite1; 
 	//if (mTouchNow) { 
 	//	sprite1 = (Sprite *)this->getChildByTag(mCursorNum);

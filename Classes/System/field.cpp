@@ -39,12 +39,12 @@ bool Field::init() {
 }
 
 void Field::changeCursor(cocos2d::Touch *touch) {
-		int cursorNum = 0;
+	Cursor::CursorID cursorNum = Cursor::NOMAL;
 		for (auto obj : mObjectList) {
 			if (obj.second->getArea().containsPoint(touch->getLocationInView()) &&
 				getChildByName(obj.first)) {
 				if (obj.second->getCanUse()) {
-					cursorNum = 6;
+					cursorNum = Cursor::CANUSE;
 				}
 				else {
 					cursorNum = obj.second->getCursor();
@@ -69,7 +69,7 @@ void Field::update(float delta) {
 			removeChild(novel);
 		}
 		else {
-			Control::me->setCursor(8);
+			Control::me->setCursor(Cursor::NOVEL);
 		}
 	}
 }
@@ -144,6 +144,7 @@ cocos2d::ValueMap Field::saveField() {
 			data[obj.first + "_texture"] = obj.second->getTexture()->getPath();			//イメージ
 			data[obj.first + "_field"] = obj.second->getField();	//移動先フィールド
 			data[obj.first + "_opacity"] = (float)obj.second->getOpacity();	//透明度
+			data[obj.first + "_cursor"] = static_cast<int>(obj.second->getCursor());	//カーソル
 	}
 	return data;
 }
@@ -171,5 +172,7 @@ void Field::loadField(cocos2d::ValueMap data) {
 		obj.second->setFieldChangeEvent(data[obj.first + "_field"].asString());
 		//透明度
 		obj.second->setOpacity(data[obj.first + "_opacity"].asFloat());
+		//カーソル
+		obj.second->setCursor(static_cast<Cursor::CursorID>(data[obj.first + "_cursor"].asInt()));
 	}
 }

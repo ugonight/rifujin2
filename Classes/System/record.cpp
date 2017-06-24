@@ -233,7 +233,7 @@ void Record::save(std::function<void(int)> &func) {
 	//mSaveFunc->retain();
 	mMode = true;
 
-	auto goTitle = Label::createWithTTF("タイトルへ", FONT_NAME, 20);
+	auto goTitle = Label::createWithTTF("タイトルへ", FONT_NAME, 25);
 	goTitle->setPosition(200,80);
 	goTitle->setTextColor(Color4B::BLACK);
 	goTitle->setOpacity(0.0f);

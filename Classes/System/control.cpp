@@ -199,7 +199,12 @@ void Control::load(int i) {
 	}
 }
 
-void Control::setCursor(int num) {
+//void Control::setCursor(int num) {
+//	auto cursor = (Cursor*)this->getChildByName("cursor");
+//	if (num != cursor->getCursorNum()) cursor->setCursorNum(static_cast<CursorID>(num));
+//}
+
+void Control::setCursor(Cursor::CursorID num) {
 	auto cursor = (Cursor*)this->getChildByName("cursor");
 	if (num != cursor->getCursorNum()) cursor->setCursorNum(num);
 }

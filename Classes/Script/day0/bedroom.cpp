@@ -15,7 +15,7 @@ namespace day0 {
 		auto tuguru = ObjectN::create();
 		tuguru->setTexture("tuguru_s.png");
 		tuguru->setArea(Rect(580, 85, 140, 375));
-		tuguru->setCursor(2);
+		tuguru->setCursor(Cursor::INFO);
 		tuguru->setTouchEvent(CallFunc::create([this] {
 			if (ItemMgr::sharedItem()->getSelectedItem() == "clothes") {
 				ItemMgr::sharedItem()->deleteItem("clothes");
@@ -37,7 +37,7 @@ namespace day0 {
 
 		auto closet = ObjectN::create();
 		closet->setArea(Rect(0, 0, 80, 480));
-		closet->setCursor(5);
+		closet->setCursor(Cursor::LEFT);
 		closet->setFieldChangeEvent("closet");
 		addObject(closet, "closet", 2, true);
 
@@ -60,20 +60,20 @@ namespace day0 {
 
 		auto bed = ObjectN::create();
 		bed->setArea(Rect(774, 0, 80, 480));
-		bed->setCursor(4);
+		bed->setCursor(Cursor::RIGHT);
 		bed->setFieldChangeEvent("bedroom");
 		addObject(bed, "bed", 2, true);
 
 		auto closet = ObjectN::create();
 		closet->setArea(Rect(60, 30, 290, 390));
-		closet->setCursor(1);
+		closet->setCursor(Cursor::NEW);
 		closet->setTouchEvent(CallFunc::create([this] {
 			if (mObjectList["closet"]->getState() == 0) {
 				auto item = ItemMgr::sharedItem();
 				item->getItem("clothes", Point(200, 240));
 				Esc::me->showMsg("服を手に入れた");
 				mObjectList["closet"]->setState(1);
-				mObjectList["closet"]->setCursor(2);
+				mObjectList["closet"]->setCursor(Cursor::INFO);
 			}
 			else {
 				Esc::me->showMsg("服は手に入れてある");

@@ -1,6 +1,7 @@
 ﻿#pragma once
 #pragma  execution_character_set("utf-8")
 #include "cocos2d.h"
+#include "cursor.h"
 
 class Field;
 
@@ -15,7 +16,8 @@ public:
 	virtual ~Control();
 	virtual void initField();
 
-	void setCursor(int num);
+	void setCursor(Cursor::CursorID num);	//int num
+	//void setCursor(int num);
 	void changeField(std::string field);
 	void showMsg(std::string msg);
 	void showAI(std::string itemName);
