@@ -115,7 +115,7 @@ void Control::update(float delta) {
 	if (field->getChildByName("novel") /*&& ((MenuItemImage*)getChildByName("save"))->getOpacity() >= 255*/) {
 		//((MenuItemImage*)getChildByName("save"))->setOpacity(0.0f);
 		
-		removeChildByName("log");
+		if (getChildByName("log")) removeChildByName("log");
 	}
 	else if (!field->getChildByName("novel")) {
 		//((MenuItemImage*)getChildByName("save"))->setOpacity(255.0f);
@@ -211,6 +211,7 @@ void Control::setCursor(Cursor::CursorID num) {
 
 void Control::changeField(std::string s) {
 	auto field = (Field*)getChildByName("field");
+	field->setName("field_");
 	field->FadeOut();
 	mFieldList[s]->FadeIn();
 	addChild(mFieldList[s], 0, "field");

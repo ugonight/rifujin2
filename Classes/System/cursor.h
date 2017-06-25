@@ -26,7 +26,8 @@ public:
 		LEFT,
 		CANUSE,
 		FORWARD,
-		NOVEL
+		NOVEL,
+		ENTER
 	};
 
 	virtual bool init();

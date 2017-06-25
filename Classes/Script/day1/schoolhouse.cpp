@@ -19,7 +19,7 @@ namespace day1 {
 		remon->setTouchEvent(CallFunc::create([this] {
 			auto novel = Novel::create();
 			novel->setCharaR(0, "chara/remon1.png");
-			novel->setCharaL(0, "chara/tuguru1.png");
+			novel->setCharaL(0, "chara/bandana1.png");
 			novel->setFontColor(0, Color3B::RED);
 			novel->addSentence(0, "檸檬「うふふ、御機嫌よう」");
 			novel->setEndTask(0);
@@ -28,19 +28,19 @@ namespace day1 {
 		addObject(remon, "remon", 1, true);
 
 		auto entrance = ObjectN::create();
-		entrance->setArea(Rect(190, 420, 330, 60));
-		entrance->setCursor(Cursor::BACK);
+		entrance->setArea(Rect(784, 0, 70, 480));
+		entrance->setCursor(Cursor::RIGHT);
 		entrance->setFieldChangeEvent("entrance");
 		addObject(entrance, "entrance", 2, true);
 
 		auto classroom = ObjectN::create();
-		classroom->setArea(Rect(420,120,90,360));
-		classroom->setCursor(Cursor::INFO);
+		classroom->setArea(Rect(420, 120, 90, 360));
+		classroom->setCursor(Cursor::ENTER);
 		classroom->setFieldChangeEvent("classroom");
 		addObject(classroom, "classroom", 2, true);
 
 		auto artroom = ObjectN::create();
-		artroom->setArea(Rect(170, 180, 150, 150));
+		artroom->setArea(Rect(175, 180, 145, 150));
 		artroom->setCursor(Cursor::FORWARD);
 		artroom->setFieldChangeEvent("artroom");
 		addObject(artroom, "artroom", 2, true);
@@ -57,6 +57,112 @@ namespace day1 {
 		auto bg = Sprite::create("classroom.png");
 		bg->setPosition(visibleSize / 2);
 		addChild(bg, 0, "bg");
+
+		auto usawa = ObjectN::create();
+		usawa->setTexture("usawa_hide.png");
+		usawa->setArea(Rect(330, 70, 130, 190));
+		usawa->setCursor(Cursor::INFO);
+		usawa->setTouchEvent(CallFunc::create([this] {
+			if (mObjectList["usawa_"]->getState() == 0) {
+				auto novel = Novel::create();
+				novel->setCharaL(0, "chara/suama1.png");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "寿甘「…もしもーし」");
+				novel->addSentence(0, "？？？「……」");
+				novel->addSentence(0, "寿甘「…何してるんですかー」");
+				novel->addSentence(0, "？？？「……」");
+				novel->addSentence(0, "寿甘「…ｺﾁｮｺﾁｮｺﾁｮ」");
+				novel->addSentence(0, "？？？「……～～！！」");
+				novel->addSentence(0, "寿甘「…ｺﾁｮｺﾁｮｺﾁｮｺﾁｮｺﾁｮｺﾁｮ」");
+				novel->addSentence(0, "？？？「……うぐぐ…」");
+				novel->addSentence(0, "寿甘「…しぶといわね…」");
+				novel->setCharaR(0, "chara/tuguru1.png");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継「…さっきから何をしてるの？」");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "？？？「……（ぱあぁ）」");
+				novel->setCharaC(0, "chara/bandana1.png");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "バンダナ「うっそだろお前、俺でも気付いたぜ？」");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "？？？「……（グサッ）」");
+				novel->addSentence(0, "寿甘「こんなにバレバレなのにわかんないの！？」");
+				novel->addSentence(0, "？？？「……（グサグサッッ）」");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継「？？？」");
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+				mObjectList["usawa_"]->setState(1);
+				mObjectList["usawa_"]->addCanUseItem("pepper");
+			}
+			else if (ItemMgr::sharedItem()->getSelectedItem() == "pepper"){
+				auto novel = Novel::create();
+				novel->setCharaL(0, "chara/suama1.png");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "寿甘「…ぱらぱら」");
+				novel->addSentence(0, "？？？「……」");
+				novel->addSentence(0, "寿甘「…ぱらぱらぱら」");
+				novel->addSentence(0, "？？？「……は」");
+				novel->addSentence(0, "寿甘「…ぱらぱらぱらぱらぱらぱら」");
+				novel->addSentence(0, "？？？「……ぶわあぁぁぁぁぁぁぁぁくしょおぉおぉぉぉい！！！！」");
+				novel->addEvent(0,CallFunc::create([this] {
+					ItemMgr::sharedItem()->deleteItem("pepper");
+					mObjectList["usawa_"]->runAction(Sequence::create(FadeOut::create(0.5f), RemoveSelf::create(), NULL));
+					mObjectList["usawa"]->setOpacity(0.0f);
+					mObjectList["usawa"]->runAction(FadeIn::create(0.5f));
+					addChild(mObjectList["usawa"], 2, "usawa");
+				}));
+				novel->addSentence(0, "寿甘「…（グッ）」");
+				novel->setCharaR(0, "chara/usawa1.png");
+				novel->addSentence(0, "？？？「……チッ…このベテラン新聞部員の宇沢　智恵（うさわ　ともえ）様の”隠れ身の術”を見破るなんて大したものね…」");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->setCharaC(0, "chara/bandana1.png");
+				novel->addSentence(0, "バンダナ「大丈夫なのか新聞部…」");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "宇沢「はぁ？新聞部の調査能力をなめてもらっちゃあ困りますねぇ？」");
+				novel->addSentence(0, "宇沢「そう、例えば…立花さん、あなたは現在美術部のマドンナ、マリア・ミルフィーユさんとお付き合いしていてあんなことやこんなことまで…」");
+				novel->addSentence(0, "寿甘「してませんけど」");
+				novel->addSentence(0, "宇沢「またまた、御冗談を～」");
+				novel->addSentence(0, "宇沢「それにわたくし、今あなた方にとっておきの耳寄りな情報があるんですよ…聞いていきます？」");
+				novel->addSentence(0, "寿甘「うさんくさいわね…」");
+				novel->addSentence(0, "宇沢「そこまで言われちゃあ、教えてあげないわけにもいきませんねぇ？」");
+				novel->addSentence(0, "宇沢「た・だ・し。わたくしを楽しませてくれるようなものを持ってきてくれたら、ですねぇ…」");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "バンダナ「なんだこいつ…」");
+				novel->addEvent(0, CallFunc::create([this] {
+					ItemMgr::sharedItem()->getItem("camera", Director::getInstance()->getVisibleSize() / 2);
+					Control::me->showMsg("カメラを手に入れた");
+				}));
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "宇沢「んじゃあこれ貸すんで、いいスクープ撮ってきてくださいね～」");
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+			}
+			else {
+				auto novel = Novel::create();
+				novel->setCharaL(0, "chara/tuguru1.png");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "？？？「……」");
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+			}
+		}));
+		addObject(usawa, "usawa_", 1, true);
+
+		usawa = ObjectN::create();
+		usawa->setTexture("usawa.png");
+		usawa->setArea(Rect(330, 70, 130, 190));
+		usawa->setCursor(Cursor::INFO);
+		usawa->setTouchEvent(CallFunc::create([this] {
+			auto novel = Novel::create();
+			novel->setCharaL(0, "chara/tuguru1.png");
+			novel->setCharaR(0, "chara/usawa1.png");
+			novel->setFontColor(0, Color3B::RED);
+			novel->addSentence(0, "宇沢「わたくしを楽しませてくれそうなものは持ってきてくれたかしら？」");
+			novel->setEndTask(0);
+			this->addChild(novel, 10, "novel");
+		}));
+		addObject(usawa, "usawa", 1, false);
 
 		auto corridor = ObjectN::create();
 		corridor->setArea(Rect(784, 0, 70, 480));
@@ -107,9 +213,17 @@ namespace day1 {
 		}));
 		addObject(maria, "maria", 1, true);
 
+		auto net = ObjectN::create();
+		net->setTexture("net.png");
+		net->setArea(Rect(200, 100, 100, 50));
+		net->setCursor(Cursor::NEW);
+		net->setItemGetEvent("net");
+		net->setMsg("金網を手に入れた");
+		addObject(net, "net", 2, true);
+
 		auto corridor = ObjectN::create();
 		corridor->setArea(Rect(400, 0, 280, 290));
-		corridor->setCursor(Cursor::INFO);
+		corridor->setCursor(Cursor::ENTER);
 		corridor->setFieldChangeEvent("corridor");
 		addObject(corridor, "corridor", 2, true);
 	}

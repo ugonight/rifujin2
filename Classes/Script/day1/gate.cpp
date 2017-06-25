@@ -18,7 +18,7 @@ namespace day1 {
 		renji->setCursor(Cursor::INFO);
 		renji->setTouchEvent(CallFunc::create([this] {
 				auto novel = Novel::create();
-				//novel->setCharaR(0, "chara/renji1.png");
+				novel->setCharaR(0, "chara/renji1.png");
 				novel->setCharaL(0, "chara/tuguru1.png");
 				novel->setFontColor(0, Color3B::BLUE);
 				novel->addSentence(0, "恋巳「御早う、諸君。」");
@@ -63,12 +63,12 @@ namespace day1 {
 		auto fruit = ObjectN::create();
 		fruit->setArea(Rect(270, 230, 100, 100));
 		fruit->setCursor(Cursor::NEW);
-		//fruit->setItemGetEvent("fruit");
+		fruit->setItemGetEvent("fruit");
 		fruit->setMsg("枯れた植物の実を手に入れた");
 		addObject(fruit, "fruit", 3, true);
 
 		auto gate = ObjectN::create();
-		gate->setArea(Rect(780, 280, 74, 200));
+		gate->setArea(Rect(780, 0, 74, 480));
 		gate->setCursor(Cursor::RIGHT);
 		gate->setFieldChangeEvent("gate");
 		addObject(gate, "gate", 2, true);

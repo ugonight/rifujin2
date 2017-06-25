@@ -11,14 +11,57 @@ namespace day1 {
 		//オブジェクトを作っておく
 		//基本的にアイテム名と同じ名前でオブジェクトを登録する。必ずaddChildをfalseにして登録。
 
-		//服
+		//胡椒の実
 		auto ai = ObjectN::create();
-		ai->setTexture("item/clothes_a.png");
-		ai->setMsg("いつもの服だ");
-		//ai->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+		ai->setTexture("item/fruit_a.png");
+		ai->setMsg("コショウの実だ");
 		ai->setArea(ai->getBoundingBox());
-		addObject(ai, "clothes", 1, false);
+		addObject(ai, "fruit", 1, false);
 
+		//網
+		ai = ObjectN::create();
+		ai->setTexture("item/net_a.png");
+		ai->setMsg("美術で使うぼかし網だ");
+		ai->setArea(ai->getBoundingBox());
+		ai->setTouchEvent(CallFunc::create([this] {
+			if (ItemMgr::sharedItem()->getSelectedItem() == "fruit") {
+				auto novel = Novel::create();
+				novel->setCharaL(0, "chara/tuguru1.png");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継「ごしごしごし…」");
+				novel->setCharaR(0, "chara/suama1.png");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "寿甘「あーつぐるんがまた奇行に走ってるー！」");
+				novel->addEvent(0, CallFunc::create([this] {
+					ItemMgr::sharedItem()->deleteItem("fruit");
+					ItemMgr::sharedItem()->deleteItem("net");
+					ItemMgr::sharedItem()->getItem("pepper", Director::getInstance()->getVisibleSize() / 2);
+					Control::me->showMsg("コショウを手に入れた");
+				}));
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継「できた」");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "寿甘「は、はっくしょん！…なんでコショウなんて作ってるのよー！」");
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+			}
+		}));
+		ai->addCanUseItem("fruit");
+		addObject(ai, "net", 1, false);
+
+		//コショウ
+		ai = ObjectN::create();
+		ai->setTexture("item/pepper_a.png");
+		ai->setMsg("コショウだ");
+		ai->setArea(ai->getBoundingBox());
+		addObject(ai, "pepper", 1, false);
+
+		//カメラ
+		ai = ObjectN::create();
+		ai->setTexture("item/camera_a.png");
+		ai->setMsg("宇沢から渡されたカメラだ");
+		ai->setArea(ai->getBoundingBox());
+		addObject(ai, "camera", 1, false);
 	}
 	void AboutItem::changedField() {}
 	void AboutItem::setAboutItem(std::string itemName) {
@@ -43,7 +86,7 @@ namespace day1 {
 			}
 		}
 		else {
-			addChild(mObjectList[itemName]);	//基本的に登録名と同じオブジェクトを表示
+			addChild(mObjectList[itemName], 2, itemName);	//基本的に登録名と同じオブジェクトを表示
 		}
 	}
 

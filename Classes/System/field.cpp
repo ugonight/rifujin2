@@ -35,6 +35,19 @@ bool Field::init() {
 	};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
+
+#ifdef _DEBUG 
+	// タッチポイントの表示
+	for (auto obj : mObjectList) {
+		Sprite* square = Sprite::create();
+		square->setTextureRect(obj.second->getArea());
+		square->setPosition(obj.second->getArea().getMidX(), Director::getInstance()->getVisibleSize().height - obj.second->getArea().getMidY());
+		square->setColor(Color3B::RED);
+		square->setOpacity(100.0f);
+		this->addChild(square, 9);
+	}
+#endif
+
 	return true;
 }
 
