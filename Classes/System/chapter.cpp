@@ -8,6 +8,7 @@
 //#include "System/cursor.h"
 //#include "Script\Chapter1\fieldDef.h"
 
+#include <time.h>
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
 USING_NS_CC;
@@ -113,7 +114,15 @@ void Chapter::save(cocos2d::Ref* pSender) {
 		data["funcNum"] = mFuncNum;
 		data["situation"] = mSituation;
 
-	
+		//セーブ時間
+		int t = (int)time(NULL);
+		UserDefault *userDef = UserDefault::getInstance();
+		//struct tm* date = localtime(&t);
+		//char str2[256];
+		//sprintf_s(str2, 256, "%d/%02d/%02d %02d:%02d", date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, date->tm_hour, date->tm_min);
+		data["startTime"] = t;
+		data["totalTime"] = userDef->getIntegerForKey("totalTime") + (t - userDef->getIntegerForKey("startTime"));
+
 		if (mFuncType == 1) {	//探索モード
 			auto control = (Control*)getChildByName("control");
 			if (control) {

@@ -90,24 +90,26 @@ bool Record::init()
 	for (int i = 0; i < 5; i++) {
 		std::stringstream str;
 		str << i + 1;
-		auto num = Label::createWithTTF(str.str(), FONT_NAME, 30);
+		auto num = Label::createWithTTF(str.str(), FONT_NAME, 20);
 		num->setPosition(Vec2(250,my - 70 * i - 35));
 		//str.clear(); str.str("");
 		resetStr(str);
 		str << "num_" << i + 1;
 		addChild(num, 3, str.str());
-		auto chapter = Label::createWithTTF("chapter", FONT_NAME, 25);
-		chapter->setPosition(Vec2(visibleSize.width / 2 + 20, my - 70 * i - 20));
-		chapter->setColor(Color3B::BLACK);
+		//chapter・situation
+		auto label = Label::createWithTTF("chapter situation", FONT_NAME, 20);
+		label->setPosition(Vec2(visibleSize.width / 2 + 20, my - 70 * i - 20));
+		label->setColor(Color3B::BLACK);
 		resetStr(str);
 		str << "chapter_" << i + 1;
-		addChild(chapter, 3, str.str());
-		auto situation = Label::createWithTTF("situation", FONT_NAME, 25);
-		situation->setPosition(Vec2(visibleSize.width / 2 + 20, my - 70 * i - 50));
-		situation->setColor(Color3B::BLACK);
+		addChild(label, 3, str.str());
+		//プレイ時間
+		label = Label::createWithTTF("time", FONT_NAME, 25);
+		label->setPosition(Vec2(visibleSize.width / 2 + 20, my - 70 * i - 50));
+		label->setColor(Color3B::BLACK);
 		resetStr(str);
-		str << "situation_" << i + 1;
-		addChild(situation, 3, str.str());
+		str << "time_" << i + 1;
+		addChild(label, 3, str.str());
 	}
 	updateInfo();
 
@@ -209,17 +211,20 @@ void Record::updateInfo() {
 		auto label = (Label*)getChildByName(str.str());
 		ValueMap data = FileUtils::getInstance()->getValueMapFromFile(file);
 		if (data["chapter"].asInt() > 0) {
-			label->setString("chapter" + data["chapter"].asString());
+			label->setString("chapter" + data["chapter"].asString() + " " + data["situation"].asString());
 		}
 		else {
 			label->setString("no data");
 		}
 
 		resetStr(str);
-		str << "situation_" << i + 1;
+		str << "time_" << i + 1;
 		label = (Label*)getChildByName(str.str());
-		if (data["situation"].asString() != "") {
-			label->setString(data["situation"].asString());
+		if (data["totalTime"].asInt() > 0) {
+			char text[256];
+			int time = data["totalTime"].asInt();
+			sprintf_s(text, 256, "プレイ時間 : %02dh%02dm%02ds", time / (60 * 60), time / 60, time % 60);
+			label->setString(std::string(text));
 		}
 		else {
 			label->setString("");

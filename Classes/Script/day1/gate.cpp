@@ -20,13 +20,33 @@ namespace day1 {
 				auto novel = Novel::create();
 				novel->setCharaR(0, "chara/renji1.png");
 				novel->setCharaL(0, "chara/tuguru1.png");
-				novel->setFontColor(0, Color3B::BLUE);
-				novel->addSentence(0, "恋巳「御早う、諸君。」");
-				if (mObjectList["renji"]->getState() == 0) novel->addSentence(0, "恋巳「我こそは、神北　恋巳（かみきた　れんじ）。以後、お見知り置きを。」");
-				novel->addSentence(0, "継「うん、おはよう。神北くん」");
+				novel->setFontColor(0, Color3B::BLUE);	
+				if (mObjectList["renji"]->getState() == 0) {
+					novel->addSentence(0, "恋巳「御早う、諸君。」");
+					novel->addSentence(0, "恋巳「俺は、神北　恋巳（かみきた　れんじ）。以後、お見知り置きを。」");
+					novel->addSentence(0, "継「うん、おはよう。神北くん」");
+					mObjectList["renji"]->setState(1);
+				}
+				else if (mObjectList["renji"]->getState() == 1) {
+					novel->addSentence(0, "恋巳「御早う、諸君。」");
+				}
+				else if (mObjectList["renji"]->getState() == 2){
+					novel->addSentence(0, "恋巳「ちょっと待ちたまえ、君たち。」");
+					novel->addSentence(0, "継「ん？どうしたのかな、神北くん」");
+					novel->addSentence(0, "恋巳「諸君らはオカルトに、興味はあるか？」");
+					novel->addSentence(0, "継「オカルト…？うーん、特には」");
+					novel->addSentence(0, "恋巳「オカルトはいいぞ…いつまでも俺の知的好奇心を刺激してくれる」");
+					novel->addEvent(0, CallFunc::create([this] {
+						ItemMgr::sharedItem()->getItem("magazine", Director::getInstance()->getVisibleSize() / 2);
+						Control::me->showMsg("雑誌を手に入れた");
+						mObjectList["renji"]->setState(1);
+						mObjectList["renji"]->setCursor(Cursor::INFO);
+					}));
+					novel->addSentence(0, "恋巳「これをあげるから、諸君らも是非読んで興味を持ってくれると嬉しい。」");
+					novel->addSentence(0, "継「ありがとう、神北くん。」");
+				}
 				novel->setEndTask(0);
 				this->addChild(novel, 10, "novel");
-				mObjectList["renji"]->setState(1);
 		}));
 		//renji->addCanUseItem("clothes");
 		addObject(renji, "renji", 1, true);
@@ -66,6 +86,33 @@ namespace day1 {
 		fruit->setItemGetEvent("fruit");
 		fruit->setMsg("枯れた植物の実を手に入れた");
 		addObject(fruit, "fruit", 3, true);
+
+		auto ufo = ObjectN::create();
+		ufo->setArea(Rect(650, 0, 100, 100));
+		ufo->setTexture("ufo.png");
+		ufo->setCursor(Cursor::INFO);
+		ufo->setMsg("UFOが飛んでいる");
+		ufo->addCanUseItem("camera");
+		ufo->setTouchEvent(CallFunc::create([this] {
+			if (ItemMgr::sharedItem()->getSelectedItem() == "camera") {
+				auto novel = Novel::create();
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->setCharaL(0, "chara/tuguru1.png");
+				novel->addSentence(0, "継「UFOをカメラで撮影してみよう」");
+				novel->addEvent(0, CallFunc::create([this] {
+					ItemMgr::sharedItem()->getItem("picture", Director::getInstance()->getVisibleSize() / 2);
+					Control::me->showMsg("写真を手に入れた");
+					removeChildByName("ufo");
+				}));
+				novel->setFontColor(0, Color3B::BLACK);
+				novel->addSentence(0, "パシャッ");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継「よし、写真が撮れたよ」");
+				novel->setEndTask(0);
+				addChild(novel, 10, "novel");
+			}
+		}));
+		addObject(ufo, "ufo", 3, false);
 
 		auto gate = ObjectN::create();
 		gate->setArea(Rect(780, 0, 74, 480));

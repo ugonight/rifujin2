@@ -32,7 +32,7 @@ namespace day1 {
 
 		//シナリオ
 		mFuncList.push_back([this]() {
-			mSituation = "Chapter1 : 狂愛";
+			mSituation = "狂愛";
 			AudioEngine::play2d("SE/chapter.ogg");
 			auto bg = Sprite::create("bg/chapter1.png");
 			bg->setPosition(Director::getInstance()->getVisibleSize() / 2);

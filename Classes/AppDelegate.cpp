@@ -1,5 +1,6 @@
 #include "AppDelegate.h"
 #include "Sequence/Title.h"
+#include <time.h>
 
 #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -122,6 +123,10 @@ void AppDelegate::applicationDidEnterBackground() {
     SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
     SimpleAudioEngine::getInstance()->pauseAllEffects();
 #endif
+
+	UserDefault *userDef = UserDefault::getInstance();
+	userDef->setIntegerForKey("totalTime", (int)time(NULL) - userDef->getIntegerForKey("startTime"));
+	userDef->flush();
 }
 
 // this function will be called when the app is active again
@@ -134,4 +139,8 @@ void AppDelegate::applicationWillEnterForeground() {
     SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
     SimpleAudioEngine::getInstance()->resumeAllEffects();
 #endif
+
+	UserDefault *userDef = UserDefault::getInstance();
+	userDef->setIntegerForKey("startTime", (int)time(NULL));
+	userDef->flush();
 }

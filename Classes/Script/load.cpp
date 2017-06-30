@@ -38,6 +38,12 @@ void Record::load() {
 		scene->addChild(chapter, 0,"chapter");
 		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, scene, Color3B::WHITE));
 		((Chapter*)scene->getChildByName("chapter"))->load(mSelectNum);
+
+		//Šî€ŽžŠÔ‚Ì‰Šú‰»
+		UserDefault *userDef = UserDefault::getInstance();
+		userDef->setIntegerForKey("startTime", (int)time(NULL));
+		userDef->setIntegerForKey("totalTime", data["totalTime"].asInt());
+		userDef->flush();
 	}
 
 }

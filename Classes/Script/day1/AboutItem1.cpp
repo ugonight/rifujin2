@@ -62,6 +62,20 @@ namespace day1 {
 		ai->setMsg("宇沢から渡されたカメラだ");
 		ai->setArea(ai->getBoundingBox());
 		addObject(ai, "camera", 1, false);
+
+		//雑誌
+		ai = ObjectN::create();
+		ai->setTexture("item/magazine_a.png");
+		ai->setMsg("恋巳から渡されたオカルト雑誌だ");
+		ai->setArea(ai->getBoundingBox());
+		addObject(ai, "magazine", 1, false);
+
+		//写真
+		ai = ObjectN::create();
+		ai->setTexture("item/picture_a.png");
+		ai->setMsg("UFOの写真だ");
+		ai->setArea(ai->getBoundingBox());
+		addObject(ai, "picture", 1, false);
 	}
 	void AboutItem::changedField() {}
 	void AboutItem::setAboutItem(std::string itemName) {

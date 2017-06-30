@@ -122,7 +122,7 @@ namespace day1 {
 				novel->addSentence(0, "宇沢「はぁ？新聞部の調査能力をなめてもらっちゃあ困りますねぇ？」");
 				novel->addSentence(0, "宇沢「そう、例えば…立花さん、あなたは現在美術部のマドンナ、マリア・ミルフィーユさんとお付き合いしていてあんなことやこんなことまで…」");
 				novel->addSentence(0, "寿甘「してませんけど」");
-				novel->addSentence(0, "宇沢「またまた、御冗談を～」");
+				novel->addSentence(0, "宇沢「またまた、御冗談を～わたくしの地獄耳は騙せませんよぉ？」");
 				novel->addSentence(0, "宇沢「それにわたくし、今あなた方にとっておきの耳寄りな情報があるんですよ…聞いていきます？」");
 				novel->addSentence(0, "寿甘「うさんくさいわね…」");
 				novel->addSentence(0, "宇沢「そこまで言われちゃあ、教えてあげないわけにもいきませんねぇ？」");
@@ -132,6 +132,8 @@ namespace day1 {
 				novel->addEvent(0, CallFunc::create([this] {
 					ItemMgr::sharedItem()->getItem("camera", Director::getInstance()->getVisibleSize() / 2);
 					Control::me->showMsg("カメラを手に入れた");
+					Control::me->getField("gate")->getObject("renji")->setState(2);
+					Control::me->getField("gate")->getObject("renji")->setCursor(Cursor::NEW);
 				}));
 				novel->setFontColor(0, Color3B::RED);
 				novel->addSentence(0, "宇沢「んじゃあこれ貸すんで、いいスクープ撮ってきてくださいね～」");
@@ -190,7 +192,7 @@ namespace day1 {
 		maria->setTouchEvent(CallFunc::create([this] {
 			if (mObjectList["maria"]->getState() == 0) {
 				auto novel = Novel::create();
-				//novel->setCharaR(0, "chara/maria1.png");
+				novel->setCharaR(0, "chara/maria1.png");
 				novel->setCharaL(0, "chara/suama1.png");
 				novel->setFontColor(0, Color3B::RED);
 				novel->addSentence(0, "寿甘「あ、マリアちゃんおはよー！」");
@@ -200,10 +202,40 @@ namespace day1 {
 				novel->setEndTask(0);
 				this->addChild(novel, 10, "novel");
 				mObjectList["maria"]->setState(1);
+				mObjectList["maria"]->addCanUseItem("magazine");
+			}
+			else if (ItemMgr::sharedItem()->getSelectedItem() == "magazine") {
+				auto novel = Novel::create();
+				novel->setCharaR(0, "chara/maria1.png");
+				novel->setCharaL(0, "chara/suama1.png");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "寿甘「マリアちゃん、お願いがあるんだけど」");
+				novel->addSentence(0, "マリア「ん？何かな？」");
+				novel->addSentence(0, "寿甘「また例のアレをお願いしたいんだー大丈夫ー？」");
+				novel->addSentence(0, "マリア「ちょっと恥ずかしいけど…まだ部員の人たちは来てないし、寿甘ちゃん達だけだったらいいよー」");
+				novel->addSentence(0, "寿甘「ほんと！？ありがとー！」");
+				novel->addSentence(0, "寿甘「ほんじゃ、これでお願いねー」");
+				novel->addSentence(0, "マリア「わかった。今から描くからちょっと待っててね」");
+				novel->setCharaC(0, "chara/tuguru1.png");
+				novel->addSentence(0, "継「例のアレって何のこと…？」");
+				novel->addSentence(0, "寿甘「まあ見てればわかるって！」");
+				novel->addSentence(0, "マリア「できたよー」");
+				novel->addSentence(0, "継「これは…UFOの絵かな？」");
+				novel->addSentence(0, "マリア「これをこうやって…えいっ！」");
+				novel->addSentence(0, "継「うわあ！UFOが絵の中から出て来たよ！」");
+				novel->addSentence(0, "マリア「実は、私の特殊能力は絵に描いたものを具現化することだったの。余計引かれちゃうから秘密にしてたんだけど…」");
+				novel->addSentence(0, "寿甘「だーかーらそんなことないって！みんなマリアちゃんの絵、大好きだよ！」");
+				novel->addSentence(0, "マリア「ありがとう…そう言ってもらえるとうれしいな」");
+				novel->addSentence(0, "継「UFOが窓の外へ飛んだ行ったよ。見失う前に撮影しに行こう。」");
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+				
+				ItemMgr::sharedItem()->deleteItem("magazine");
+				Control::me->getField("entrance")->addChild(Control::me->getField("entrance")->getObject("ufo"), 3, "ufo");
 			}
 			else {
 				auto novel = Novel::create();
-				//novel->setCharaR(0, "chara/maria1.png");
+				novel->setCharaR(0, "chara/maria1.png");
 				novel->setCharaL(0, "chara/suama1.png");
 				novel->setFontColor(0, Color3B::RED);
 				novel->addSentence(0, "マリア「おはよー」");

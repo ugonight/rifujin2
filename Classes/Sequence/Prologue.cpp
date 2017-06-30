@@ -5,6 +5,7 @@
 #include "Script\day0\fieldDef.h"
 #include "Script\day1\fieldDef.h"	//次のchapter
 
+#include <time.h>
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
 USING_NS_CC;
@@ -40,6 +41,12 @@ bool Prologue::init()
 	auto path = FileUtils::getInstance()->getWritablePath();
 	auto file = path + "speak.plist";
 	FileUtils::getInstance()->removeFile(file);
+
+	//基準時間の初期化
+	UserDefault *userDef = UserDefault::getInstance();
+	userDef->setIntegerForKey("startTime", (int)time(NULL));
+	userDef->setIntegerForKey("totalTime", 0);
+	userDef->flush();
 
 	mFuncNum = 1;
 
