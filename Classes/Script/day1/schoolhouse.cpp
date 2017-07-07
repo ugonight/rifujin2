@@ -17,14 +17,40 @@ namespace day1 {
 		remon->setArea(Rect(30, 110, 140, 370));
 		remon->setCursor(Cursor::INFO);
 		remon->setTouchEvent(CallFunc::create([this] {
-			auto novel = Novel::create();
-			novel->setCharaR(0, "chara/remon1.png");
-			novel->setCharaL(0, "chara/bandana1.png");
-			novel->setFontColor(0, Color3B::RED);
-			novel->addSentence(0, "檸檬「うふふ、御機嫌よう」");
-			novel->setEndTask(0);
-			this->addChild(novel, 10, "novel");
+			if (ItemMgr::sharedItem()->getSelectedItem() == "paper") {
+				auto novel = Novel::create();
+				novel->setCharaR(0, "chara/remon1.png");
+				novel->setCharaL(0, "chara/bandana1.png");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "バンダナ「ちょっといいか」");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "檸檬「何かしら」");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "バンダナ「このメモの持ち主を知らないか？」");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "檸檬「あら…？これは【ひゃっくりさん】だわ」");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "バンダナ「ひゃっくりさん…？なんじゃそりゃ」");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "檸檬「一種の占いみたいなものよ。幽霊を呼び出してその質問に答えてもらうの。」");
+				novel->addSentence(0, "檸檬「リアスが恋愛運を占いたいって言うから、前に一緒にやったことがあるわ。あの子、あの時は面白いくらいに怖がってたけど、今は何だかんだでハマってたりして」");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "バンダナ「んーそうか、サンキュ」");
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+				Control::me->getField("gate")->getObject("cenotaph")->setState(1);
+			}
+			else {
+				auto novel = Novel::create();
+				novel->setCharaR(0, "chara/remon1.png");
+				novel->setCharaL(0, "chara/bandana1.png");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "檸檬「うふふ、御機嫌よう」");
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+			}
 		}));
+		remon->addCanUseItem("paper");
 		addObject(remon, "remon", 1, true);
 
 		auto entrance = ObjectN::create();
@@ -44,10 +70,38 @@ namespace day1 {
 		artroom->setCursor(Cursor::FORWARD);
 		artroom->setFieldChangeEvent("artroom");
 		addObject(artroom, "artroom", 2, true);
+
+		auto flag = ObjectN::create();
+		addObject(flag, "flag", 0, false);
 	}
 
 	void Corridor::changedField() {
-
+		if (mObjectList["flag"]->getState() == 1) {
+			auto novel = Novel::create();
+			novel->setCharaL(0, "chara/bandana1.png");
+			novel->setFontColor(0, Color3B::BLACK);
+			novel->addSentence(0, "ガチャ…");
+			novel->setCharaC(0, "chara/rias1.png");
+			novel->addSentence(0, "ドンッ！");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "バンダナ「うおっ」");
+			//novel->addEvent(0, CallFunc::create([this] {addChild(mObjectList["paper"], 1, "paper"); }));
+			novel->setFontColor(0, Color3B::RED);
+			novel->addSentence(0, "リアス「きゃっ」");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "バンダナ「わりぃ、怪我はなかったか？」");
+			novel->setFontColor(0, Color3B::RED);
+			novel->addSentence(0, "リアス「ぁ…バンダナ様…」");
+			novel->setCharaC(0, "");
+			novel->addSentence(0, "リアス「ひぃ～～～……」");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "バンダナ「相変わらずだな…」");
+			//novel->addSentence(0, "バンダナ「…ん？なんか落としていったぞ」");
+			novel->setEndTask(0);
+			this->addChild(novel, 10, "novel");
+			mObjectList["flag"]->setState(0);
+			Control::me->getField("gate")->addChild(Control::me->getField("gate")->getObject("paper"), 1, "paper");
+		}
 	}
 
 	void ClassRoom::initField() {
@@ -156,14 +210,63 @@ namespace day1 {
 		usawa->setArea(Rect(330, 70, 130, 190));
 		usawa->setCursor(Cursor::INFO);
 		usawa->setTouchEvent(CallFunc::create([this] {
-			auto novel = Novel::create();
-			novel->setCharaL(0, "chara/tuguru1.png");
-			novel->setCharaR(0, "chara/usawa1.png");
-			novel->setFontColor(0, Color3B::RED);
-			novel->addSentence(0, "宇沢「わたくしを楽しませてくれそうなものは持ってきてくれたかしら？」");
-			novel->setEndTask(0);
-			this->addChild(novel, 10, "novel");
+			if (mObjectList["usawa"]->getState() == 0) {
+				if (ItemMgr::sharedItem()->getSelectedItem() == "picture") {
+					auto novel = Novel::create();
+					novel->setCharaL(0, "chara/suama1.png");
+					novel->setCharaR(0, "chara/usawa1.png");
+					novel->setFontColor(0, Color3B::RED);
+					novel->addSentence(0, "寿甘「はいこれ」");
+					novel->addSentence(0, "宇沢「なんですかこれ」");
+					novel->addSentence(0, "寿甘「UFO」");
+					novel->addSentence(0, "宇沢「…はぁ～～～～～」");
+					novel->addSentence(0, "宇沢「わたくし、オカルトってあんまり好きじゃないんですよねぇ。大体、魔法で何でもできるこのご時世にオカルトなんて今更じゃないですか。」");
+					novel->setCharaC(0, "chara/bandana1.png");
+					novel->setFontColor(0, Color3B::BLUE);
+					novel->addSentence(0, "バンダナ「確かに」");
+					novel->setFontColor(0, Color3B::RED);
+					novel->addSentence(0, "宇沢「まぁ、付き合ってくれたお礼に、例の特ダネ教えてあげますよ」");
+					novel->addSentence(0, "宇沢「実はですねぇ…校庭の植え込みに時限爆弾のようなものが仕組まれていたんですよ」");
+					novel->setFontColor(0, Color3B::BLUE);
+					novel->addSentence(0, "バンダナ「ホントかよ…」");
+					novel->setFontColor(0, Color3B::RED);
+					novel->addSentence(0, "宇沢「もしかしたら、どっかの国のスパイが爆発テロを企ててるのかも…！？」");
+					novel->setCharaL(0, "chara/tuguru1.png");
+					novel->setFontColor(0, Color3B::BLUE);
+					novel->addSentence(0, "継「それは大変だ…！」");
+					novel->setFontColor(0, Color3B::RED);
+					novel->addSentence(0, "宇沢「よろしければ様子を見に行っていただけます？そしたら、わたくしがこの前代未聞の特ダネ…いや緊急事態を責任をもって学校中にお知らせしますので」");
+					novel->setFontColor(0, Color3B::BLUE);
+					novel->addSentence(0, "継「うん、王子としても、そんなことは見過ごせないからね」");
+					novel->addSentence(0, "バンダナ「まさかねえ…」");
+					novel->setEndTask(0);
+					this->addChild(novel, 10, "novel");
+					ItemMgr::sharedItem()->deleteItem("picture");
+					mObjectList["usawa"]->setState(1);
+					Control::me->getField("corridor")->getObject("flag")->setState(1);
+					Control::me->getField("entrance")->addChild(Control::me->getField("entrance")->getObject("box"), 3, "box");
+				}
+				else {
+					auto novel = Novel::create();
+					novel->setCharaL(0, "chara/tuguru1.png");
+					novel->setCharaR(0, "chara/usawa1.png");
+					novel->setFontColor(0, Color3B::RED);
+					novel->addSentence(0, "宇沢「わたくしを楽しませてくれそうなものは持ってきてくれたかしら？」");
+					novel->setEndTask(0);
+					this->addChild(novel, 10, "novel");
+				}
+			} else
+			if (mObjectList["usawa"]->getState() == 1) {
+				auto novel = Novel::create();
+				novel->setCharaL(0, "chara/tuguru1.png");
+				novel->setCharaR(0, "chara/usawa1.png");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "宇沢「校庭の様子はどうでしたか？」");
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+			}
 		}));
+		usawa->addCanUseItem("picture");
 		addObject(usawa, "usawa", 1, false);
 
 		auto corridor = ObjectN::create();
@@ -199,6 +302,9 @@ namespace day1 {
 				novel->addSentence(0, "マリア「あ！寿甘ちゃんおはよー」");
 				novel->addSentence(0, "寿甘「美術部の朝練？朝からおつかれー！」");
 				novel->addSentence(0, "マリア「えへへ…ありがとー」");
+				novel->addSentence(0, "寿甘「あ、それと、この前のアレありがとうねー助かったよー」");
+				novel->addSentence(0, "マリア「よかったーまた何か描いてほしいものがあったら持ってきていいよー」");
+				novel->addSentence(0, "寿甘「ほんと！？じゃあ遠慮なくー！」");
 				novel->setEndTask(0);
 				this->addChild(novel, 10, "novel");
 				mObjectList["maria"]->setState(1);
@@ -222,6 +328,10 @@ namespace day1 {
 				novel->addSentence(0, "マリア「できたよー」");
 				novel->addSentence(0, "継「これは…UFOの絵かな？」");
 				novel->addSentence(0, "マリア「これをこうやって…えいっ！」");
+				novel->setCharaL(0, "");
+				novel->setCharaR(0, "");
+				novel->setCharaC(0, "");
+				novel->setBg(0, "chara/scene4.png");
 				novel->addSentence(0, "継「うわあ！UFOが絵の中から出て来たよ！」");
 				novel->addSentence(0, "マリア「実は、私の特殊能力は絵に描いたものを具現化することだったの。余計引かれちゃうから秘密にしてたんだけど…」");
 				novel->addSentence(0, "寿甘「だーかーらそんなことないって！みんなマリアちゃんの絵、大好きだよ！」");

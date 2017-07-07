@@ -228,6 +228,7 @@ void Control::showMsg(std::string s) {
 
 void Control::showAI(std::string itemName) {
 	//CCLOG("super");
+	if (getChildByName("AboutItem")) removeChildByName("AboutItem");
 	auto ai = (SAboutItem*)mFieldList["AboutItem"];
 	ai->setAboutItem(itemName);
 	addChild(ai, 3, "AboutItem");

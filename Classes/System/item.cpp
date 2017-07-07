@@ -140,6 +140,7 @@ void Item::getItem(std::string s, Point p) {
 	m_emitter->setTexture(Director::getInstance()->getTextureCache()->addImage("spark.png"));
 
 	// v2.x及びv3.xで使用することができます
+	m_emitter->setAutoRemoveOnFinish(true);
 	m_emitter->setDuration(0.2f);
 	m_emitter->setGravity(Point(0, -240)); // v2.xでは CCPoint( 0, -240 )
 	m_emitter->setAngle(90.0f);
@@ -201,7 +202,8 @@ bool Item::touchEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 		Control::me->setCursor(Cursor::NOMAL);
 
 		//AI表示
-		if (mTouchTime > 0 && mSelectedItem != "" && !mShowAboutItem) {
+		if (mTouchTime > 0 && mSelectedItem != "" /*&& !mShowAboutItem*/) {
+			if (getChildByName("AboutItem")) removeChildByName("AboutItem");	//表示済みなら削除
 			showAboutItem();
 			mShowAboutItem = 1;
 		} else if (mTouchTime == 0) mTouchTime = 1;

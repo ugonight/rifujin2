@@ -76,6 +76,13 @@ namespace day1 {
 		ai->setMsg("UFOの写真だ");
 		ai->setArea(ai->getBoundingBox());
 		addObject(ai, "picture", 1, false);
+
+		//紙切れ
+		ai = ObjectN::create();
+		ai->setTexture("item/paper_a.png");
+		ai->setMsg("誰かが落としたメモだ");
+		ai->setArea(ai->getBoundingBox());
+		addObject(ai, "paper", 1, false);
 	}
 	void AboutItem::changedField() {}
 	void AboutItem::setAboutItem(std::string itemName) {

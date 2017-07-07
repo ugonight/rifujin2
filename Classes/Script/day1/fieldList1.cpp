@@ -17,6 +17,7 @@ namespace day1 {
 		mFieldList["corridor"] = Corridor::create();
 		mFieldList["classroom"] = ClassRoom::create();
 		mFieldList["artroom"] = ArtRoom::create();
+		mFieldList["box"] = Box::create();
 
 		mFieldList["AboutItem"] = AboutItem::create();
 

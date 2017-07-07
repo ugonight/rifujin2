@@ -104,7 +104,7 @@ bool Record::init()
 		str << "chapter_" << i + 1;
 		addChild(label, 3, str.str());
 		//プレイ時間
-		label = Label::createWithTTF("time", FONT_NAME, 25);
+		label = Label::createWithTTF("time", FONT_NAME, 20);
 		label->setPosition(Vec2(visibleSize.width / 2 + 20, my - 70 * i - 50));
 		label->setColor(Color3B::BLACK);
 		resetStr(str);
@@ -221,10 +221,10 @@ void Record::updateInfo() {
 		str << "time_" << i + 1;
 		label = (Label*)getChildByName(str.str());
 		if (data["totalTime"].asInt() > 0) {
-			char text[256];
+			resetStr(str);
 			int time = data["totalTime"].asInt();
-			sprintf_s(text, 256, "プレイ時間 : %02dh%02dm%02ds", time / (60 * 60), time / 60, time % 60);
-			label->setString(std::string(text));
+			str << "プレイ時間 : " << StringUtils::format("%02d", time / (60 * 60)) << "h" << StringUtils::format("%02d", time / 60) << "m" << StringUtils::format("%02d", time % 60) << "s";
+			label->setString(str.str());
 		}
 		else {
 			label->setString("");

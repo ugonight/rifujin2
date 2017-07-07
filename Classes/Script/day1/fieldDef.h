@@ -13,11 +13,12 @@
 namespace day1
 {
 	//メンバを追加できるように}は定義しない
-	CREATE_FIELD(Gate)};
-	CREATE_FIELD(Entrance)};
+	CREATE_FIELD(Gate) private: void callSpirit(bool move);};
+	CREATE_FIELD(Entrance) };
 	CREATE_FIELD(Corridor)};
 	CREATE_FIELD(ClassRoom)};
 	CREATE_FIELD(ArtRoom)};
+	CREATE_FIELD(Box)};
 
 	class Day : public Chapter
 	{
