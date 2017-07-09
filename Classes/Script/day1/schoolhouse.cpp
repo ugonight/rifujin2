@@ -39,6 +39,7 @@ namespace day1 {
 				novel->setEndTask(0);
 				this->addChild(novel, 10, "novel");
 				Control::me->getField("gate")->getObject("cenotaph")->setState(1);
+				Control::me->getField("gate")->getObject("cenotaph")->addCanUseItem("paper");
 			}
 			else {
 				auto novel = Novel::create();

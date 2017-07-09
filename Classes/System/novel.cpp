@@ -3,6 +3,7 @@
 #include "novel.h"
 #include "define.h"
 
+#include "ui/CocosGUI.h"
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
 
@@ -40,6 +41,7 @@ bool Novel::init() {
 		mNovelNum[i] = 0;
 		mNovelSetNum[i] = 1;
 		mSentense[i].push_back("");
+		mTaskNum[i] = mColorNum[i] = mFuncNum[i] = mSwitchNum[i] = mJumpNum[i] = 0;
 	}
 	
 
@@ -160,8 +162,6 @@ bool Novel::touchEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 		mHideMsg = false;
 	}
 
-
-
 	return true;
 }
 
@@ -233,6 +233,7 @@ void Novel::update(float delta) {
 	updateColor();
 	updateFunc();
 	updateSwitch();
+	updateJump();
 }
 
 void Novel::addSentence(int branch,std::string s) {
@@ -244,7 +245,7 @@ void Novel::updateImg() {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	int num = 0;
+	int num = mTaskNum[mBranch];
 	std::stringstream name;
 	while (mTask[mBranch][num].num == mNovelNum[mBranch]) {
 		name.clear(); name.str("");
@@ -372,17 +373,40 @@ void Novel::setCharaR(int branch, std::string s) {
 }
 
 void Novel::setEndTask(int branch) {
-	Task tsk = {-1,IMG_NONE,""};
-	mTask[branch].push_back(tsk);
+	if (branch > 0) {
+		Task tsk = { -1,IMG_NONE,"" };
+		mTask[branch].push_back(tsk);
 
-	CTask ctsk = { -1, Color3B::BLACK};
-	mColorTask[branch].push_back(ctsk);
+		CTask ctsk = { -1, Color3B::BLACK };
+		mColorTask[branch].push_back(ctsk);
 
-	FTask ftsk = { -1, CallFunc::create([] {}) };
-	mFuncTask[branch].push_back(ftsk);
+		FTask ftsk = { -1, CallFunc::create([] {}) };
+		mFuncTask[branch].push_back(ftsk);
 
-	STask stsk = { -1 };
-	mSwitchTask[branch].push_back(stsk);
+		STask stsk = { -1 };
+		mSwitchTask[branch].push_back(stsk);
+
+		JTask jtsk = { -1 };
+		mJumpTask[branch].push_back(jtsk);
+	}
+	else {	//-の場合はまとめて入れる
+		for (int i = 0; i < MAX_BRANCH; i++) {
+			Task tsk = { -1,IMG_NONE,"" };
+			mTask[i].push_back(tsk);
+
+			CTask ctsk = { -1, Color3B::BLACK };
+			mColorTask[i].push_back(ctsk);
+
+			FTask ftsk = { -1, CallFunc::create([] {}) };
+			mFuncTask[i].push_back(ftsk);
+
+			STask stsk = { -1 };
+			mSwitchTask[i].push_back(stsk);
+
+			JTask jtsk = { -1 };
+			mJumpTask[i].push_back(jtsk);
+		}
+	}
 
 	updateImg();
 	updateColor();
@@ -390,31 +414,33 @@ void Novel::setEndTask(int branch) {
 }
 
 void Novel::updateColor() {
-	if (mColorTask[mBranch][0].num == mNovelNum[mBranch]) {
+	if (mColorTask[mBranch][mColorNum[mBranch]].num == mNovelNum[mBranch]) {
 		//for (int i = 0; i < 3; i++)mLabel[i]->setColor(mColorTask[0].color);
 		auto label = (Label*)this->getChildByName("label");
-		label->setTextColor((Color4B)mColorTask[mBranch][0].color);
-		mColorTask[mBranch].erase(mColorTask[mBranch].begin());
+		label->setTextColor((Color4B)mColorTask[mBranch][mColorNum[mBranch]].color);
+		//mColorTask[mBranch].erase(mColorTask[mBranch].begin());
+		mColorNum[mBranch]++;
 	}
 }
 
 void Novel::updateFunc() {
-	if (mFuncTask[mBranch][0].num == mNovelNum[mBranch]) {
-		this->runAction(mFuncTask[mBranch][0].func);
-		mFuncTask[mBranch].erase(mFuncTask[mBranch].begin());
+	if (mFuncTask[mBranch][mFuncNum[mBranch]].num == mNovelNum[mBranch]) {
+		this->runAction(mFuncTask[mBranch][mFuncNum[mBranch]].func);
+		//mFuncTask[mBranch].erase(mFuncTask[mBranch].begin());
+		mFuncNum[mBranch]++;
 	}
 }
 
 void Novel::updateSwitch() {
-	if (mSwitchTask[mBranch][0].num == mNovelNum[mBranch]) {
+	if (mSwitchTask[mBranch][mSwitchNum[mBranch]].num == mNovelNum[mBranch]) {
 		Size visibleSize = Director::getInstance()->getVisibleSize();
 		Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 		mSwitch = true;
 
-		if (mSwitchTask[mBranch][0].branchStr[0] == "") {	//ルート変更のみ
-			mCurrentSTask = mSwitchTask[mBranch][0];
-			int branchTo = mSwitchTask[mBranch][0].branchTo[0];
+		if (mSwitchTask[mBranch][mSwitchNum[mBranch]].branchStr[0] == "") {	//ルート変更のみ
+			mCurrentSTask = mSwitchTask[mBranch][mSwitchNum[mBranch]];
+			int branchTo = mSwitchTask[mBranch][mSwitchNum[mBranch]].branchTo[0];
 			auto fake = Layer::create();
 			fake->setPosition(visibleSize / 2);
 			fake->setSwallowsTouches(true);
@@ -436,9 +462,8 @@ void Novel::updateSwitch() {
 			this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, fake);
 		}
 		else {
-
 			int bNum; //選択肢の数
-			for (bNum = 0; mSwitchTask[mBranch][0].branchTo[bNum] != -1; bNum++);
+			for (bNum = 0; mSwitchTask[mBranch][mSwitchNum[mBranch]].branchTo[bNum] != -1; bNum++);
 
 			std::stringstream name;
 			for (int i = 0; i < bNum; i++) {
@@ -449,7 +474,7 @@ void Novel::updateSwitch() {
 				name.clear(); name.str("");
 				name << "branch" << i;
 				addChild(box, 3, name.str());
-				auto text = Label::createWithTTF(mSwitchTask[mBranch][0].branchStr[i], FONT_NAME, 24);
+				auto text = Label::createWithTTF(mSwitchTask[mBranch][mSwitchNum[mBranch]].branchStr[i], FONT_NAME, 24);
 				text->setPosition(box->getPosition());
 				text->setTextColor(Color4B::BLACK);
 				text->enableOutline(Color4B::WHITE, 2);
@@ -458,8 +483,9 @@ void Novel::updateSwitch() {
 				name.clear(); name.str("");
 				name << "text" << i;
 				addChild(text, 4, name.str());
-				mCurrentSTask = mSwitchTask[mBranch][0];
+				mCurrentSTask = mSwitchTask[mBranch][mSwitchNum[mBranch]];
 				auto listener = EventListenerTouchOneByOne::create();
+				listener->setSwallowTouches(true);
 				listener->onTouchBegan = [this, i, bNum](Touch* touch, Event* event) {
 					if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
 						//log("switch : %d", i);
@@ -487,8 +513,74 @@ void Novel::updateSwitch() {
 			}
 		}
 
-		mSwitchTask[mBranch].erase(mSwitchTask[mBranch].begin());
+		//mSwitchTask[mBranch].erase(mSwitchTask[mBranch].begin());
+		mSwitchNum[mBranch]++;
 	}	
+}
+
+void Novel::updateJump() {
+	if (mJumpTask[mBranch][mJumpNum[mBranch]].num == mNovelNum[mBranch]) {
+		int branch = mJumpTask[mBranch][mJumpNum[mBranch]].branch;
+		mNovelNum[branch] = mJumpTask[mBranch][mJumpNum[mBranch]].novelNum;
+		mBranch =  branch;
+		
+		//タスクの位置も戻す
+		int i = 0;
+		for (auto tsk : mTask[mBranch]) {
+			if (tsk.num >= mNovelNum[mBranch]) {
+				mTaskNum[mBranch] = i;
+				break;
+			}
+			i++;
+		}
+		i = 0;
+		for (auto tsk : mColorTask[mBranch]) {
+			if (tsk.num >= mNovelNum[mBranch]) {
+				mColorNum[mBranch] = i;
+				break;
+			}
+			i++;
+		}
+		i = 0;
+		for (auto tsk : mFuncTask[mBranch]) {
+			if (tsk.num >= mNovelNum[mBranch]) {
+				mFuncNum[mBranch] = i;
+				break;
+			}
+			i++;
+		}
+		i = 0;
+		for (auto tsk : mFuncTask[mBranch]) {
+			if (tsk.num >= mNovelNum[mBranch]) {
+				mFuncNum[mBranch] = i;
+				break;
+			}
+			i++;
+		}
+		i = 0;
+		for (auto tsk : mSwitchTask[mBranch]) {
+			if (tsk.num >= mNovelNum[mBranch]) {
+				mSwitchNum[mBranch] = i;
+				break;
+			}
+			i++;
+		}
+		i = 0;
+		for (auto tsk : mJumpTask[mBranch]) {
+			if (tsk.num >= mNovelNum[mBranch]) {
+				mJumpNum[mBranch] = i;
+				break;
+			}
+			i++;
+		}
+
+		//メインルート以外は全部初期化
+		for (i = 1; i < MAX_BRANCH; i++) {
+			mNovelNum[i] = mTaskNum[i] = mColorNum[i] = mFuncNum[i] = mSwitchNum[i] = mJumpNum[i] = 0;
+		}
+
+		//mJumpNum[mBranch]++;
+	}
 }
 
 void Novel::setFontColor(int branch,cocos2d::Color3B c) {
@@ -514,6 +606,12 @@ void Novel::addSwitchEvent(int branch, int br1, std::string st1, int br2, std::s
 	tsk.branchTo[3] = br4;
 	tsk.branchStr[3] = st4;
 	mSwitchTask[branch].push_back(tsk);
+}
+
+void Novel::setJump(int branch, int branchTo, int novelNum) {
+	JTask tsk = { mNovelSetNum[branch], branchTo,novelNum };
+	mJumpTask[branch].push_back(tsk);
+	mSentense[branch].push_back("");	//終了しないように
 }
 
 bool Novel::endCheck() {
@@ -573,12 +671,12 @@ bool Novel::logEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 		listener->onTouchBegan = [this](Touch* touch, Event* event) {
 			mLogScrollX = touch->getLocation().x;
 			mLogScrollY = touch->getLocation().y;
-			return true; 
+			return true;
 		};
 		listener->onTouchMoved = [this](Touch* touch, Event* event) {
 			auto label = (Label*)this->getChildByName("layer_l")->getChildByName("label");
 			auto height = Director::getInstance()->getVisibleSize().height;
-			label->setPosition(label->getPositionX() + touch->getLocation().x - mLogScrollX,label->getPositionY() + touch->getLocation().y - mLogScrollY);
+			label->setPosition(label->getPositionX() + touch->getLocation().x - mLogScrollX, label->getPositionY() + touch->getLocation().y - mLogScrollY);
 			if (label->getPositionY() > label->getDimensions().height + height) {
 				label->setPositionY(label->getDimensions().height + height);
 			}
@@ -599,7 +697,7 @@ bool Novel::logEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 
 		//文字
 		std::stringstream str;
-		int lineNum = 0;
+		int lineNum = 0, returnNum = 0;
 		for (auto s : mLog) { lineNum++; }
 		if (lineNum > 100) {	//100行越えなら最新の100行を表示
 			for (int i = 0; i < 100; i++) {
@@ -614,21 +712,26 @@ bool Novel::logEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 		}
 
 		auto label = Label::createWithTTF(str.str(), FONT_NAME, 24);
-		label->setPosition(Vec2(origin.x + 20 ,origin.y + visibleSize.height - 20));
+		label->setPosition(Vec2(origin.x + 20, origin.y + visibleSize.height - 20));
 		label->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
 		label->setColor(Color3B::WHITE);
-		label->setDimensions(visibleSize.width * 3, label->getLineHeight() * (label->getStringNumLines() + 1));
-		label->setPositionY(label->getDimensions().height);
-		layer->addChild(label, 3, "label");
+		label->setDimensions(visibleSize.width - 20/* * 3*/, visibleSize.height * 8 /*label->getLineHeight() * (label->getStringNumLines() + 1)*/);
+		//label->setPositionY(label->getDimensions().height);
+		label->setPositionY(visibleSize.height * 7.5);
+		//layer->addChild(label, 3, "label");
+		auto labelLayer = Layer::create();
+		labelLayer->setContentSize(Size(visibleSize.width, visibleSize.height * 5));
+		labelLayer->addChild(label, 1, "label");
 
 		//閉じる
 		auto close = Sprite::create("log_.png");
 		close->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
+		close->setOpacity(150.0f);
 		close->setPosition(Vec2(visibleSize.width - 15 + origin.x, -15 + origin.y + visibleSize.height));
-		layer->addChild(close, 1, "close");
+		layer->addChild(close, 5, "close");
 		listener = EventListenerTouchOneByOne::create();
 		listener->onTouchBegan = [this](Touch* touch, Event* event) { return true; };
-		listener->onTouchEnded =[this](Touch* touch, Event* event) {
+		listener->onTouchEnded = [this](Touch* touch, Event* event) {
 			auto target = (Sprite*)event->getCurrentTarget();
 			Rect targetBox = target->getBoundingBox();
 			Point touchPoint = Vec2(touch->getLocation().x, touch->getLocation().y);
@@ -638,7 +741,22 @@ bool Novel::logEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 			}
 		};
 		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, close);
-	return true;	
+
+		auto _scrollView = ui::ScrollView::create();
+		_scrollView->setPosition(Vec2::ZERO);
+		_scrollView->setDirection(ui::ScrollView::Direction::VERTICAL);
+		_scrollView->setTouchEnabled(true);
+		_scrollView->setBounceEnabled(true);
+		layer->addChild(_scrollView, 3, "scroll");
+		//スクロールする中身を追加（LayerやSpriteなど）
+		_scrollView->addChild(labelLayer, 2, "label");
+		//中身のサイズを指定
+		_scrollView->setInnerContainerSize(Size(visibleSize.width, visibleSize.height * 8));
+		//実際に表示される領域（これ以外は隠れる)
+		_scrollView->setContentSize(Size(visibleSize.width, visibleSize.height));
+		//_scrollView->setInnerContainerPosition(Vec2(visibleSize.width, visibleSize.height * 5));
+
+		return true;
 	}
 	return false;
 }

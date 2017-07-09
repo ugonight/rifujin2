@@ -2,7 +2,7 @@
 #pragma  execution_character_set("utf-8")
 #include "cocos2d.h"
 
-#define MAX_BRANCH 10
+#define MAX_BRANCH 20
 
 class Novel : public cocos2d::Layer {
 
@@ -37,6 +37,11 @@ private:
 		std::string branchStr[4];
 	} STask;
 
+	typedef struct JTask {
+		int num;
+		int branch, novelNum;
+	} JTask;
+
 	int mNovelNum[MAX_BRANCH], mNovelSetNum[MAX_BRANCH], mCount, mCharNum, mBranch;
 	int mTouchTime; bool mHideMsg, mFast;
 	int mImageNum[4]; //Bg,CharaC,CharaL,CharaR
@@ -49,6 +54,8 @@ private:
 	std::vector<CTask> mColorTask[MAX_BRANCH];
 	std::vector<FTask> mFuncTask[MAX_BRANCH];
 	std::vector<STask> mSwitchTask[MAX_BRANCH];
+	std::vector<JTask> mJumpTask[MAX_BRANCH];
+	int mTaskNum[MAX_BRANCH], mColorNum[MAX_BRANCH], mFuncNum[MAX_BRANCH], mSwitchNum[MAX_BRANCH], mJumpNum[MAX_BRANCH];
 	cocos2d::ValueVector mLog;
 	int mLogScrollX, mLogScrollY;
 
@@ -70,6 +77,8 @@ private:
 	void updateFunc();
 	//選択肢実行
 	void updateSwitch();
+	//文章ジャンプ
+	void updateJump();
 
 public:
 	virtual ~Novel();
@@ -103,6 +112,9 @@ public:
 
 	//選択肢モード追加
 	void addSwitchEvent(int branch, int br1, std::string st1 = "", int br2 = -1, std::string st2 = "", int br3 = -1, std::string st3 = "", int br4 = -1, std::string st4 = "");
+
+	//ジャンプタスク追加
+	void setJump(int branch, int branchTo, int novelNum);
 
 	//ログだけ表示するモード
 	void setLogOnly();
