@@ -1,6 +1,9 @@
 ﻿#pragma  execution_character_set("utf-8")
 #include "Script\day1\fieldDef.h"
 
+#include "audio/include/AudioEngine.h"
+using namespace cocos2d::experimental;
+
 USING_NS_CC;
 
 namespace day1 {
@@ -278,6 +281,7 @@ namespace day1 {
 			novel->addSentence(0, "継「よし、開いたみたいだ」");
 			novel->addSentence(0, "継「中身を確認してみよう」");
 			novel->setCharaL(0, "");
+			novel->addEvent(0, CallFunc::create([this] {AudioEngine::stopAll();}));
 			novel->setBg(0, "chara/scene5.png");
 			novel->addSentence(0, "継「これは…」");
 			novel->addSentence(0, "バンダナ「げ…俺の名前を書きなぐったノートと、俺の写真の山…よく撮れてるなぁ」");
@@ -295,7 +299,7 @@ namespace day1 {
 			novel->addSentence(0, "バンダナ「ええと…」");
 			novel->setFontColor(0, Color3B::RED);
 			novel->addSentence(0, "リアス「…うわぁ…ひどいですね、これ…いったい誰がこんなことを…」");
-			novel->addSentence(0, "リアス「も、もしかして宇澤さんですかね、彼女、いつも写真撮ってますし…」");
+			novel->addSentence(0, "リアス「も、もしかして宇沢さんですかね、彼女、いつも写真撮ってますし…」");
 			novel->setCharaL(0, "chara/tuguru1.png");
 			novel->setFontColor(0, Color3B::BLUE);
 			novel->addSentence(0, "継「！」");
@@ -332,15 +336,17 @@ namespace day1 {
 			novel->setCharaR(3, "chara/suama1.png");
 			novel->setFontColor(3, Color3B::RED);
 			novel->addSentence(3, "寿甘「いいぞもっとやれ」");
+			novel->setFontColor(3, Color3B::BLUE);
 			novel->addSentence(3, "継「うん、違うね」");
 			novel->setJump(3, 0, 22);
 
 			novel->addSentence(4, "継「リアス、君だ」");
-			novel->setFontColor(1, Color3B::RED);
+			novel->setFontColor(4, Color3B::RED);
 			novel->addSentence(4, "リアス「ひぃぃ…」");
 			novel->addSwitchEvent(4, 0);
 			novel->addSentence(4, "リアス「な、なにを根拠に…」");
 
+			novel->setFontColor(0, Color3B::BLUE);
 			novel->addSentence(0, "継「まず、この箱の中にあるものについて見てみよう」");
 			novel->setCharaR(0, "");
 			novel->setCharaC(0, "");
@@ -364,7 +370,7 @@ namespace day1 {
 			novel->addSentence(6, "継「血液検査をすれば、きっと君の君の血液型と一致するはずだ…！」");
 			novel->setFontColor(6, Color3B::RED);
 			novel->addSentence(6, "リアス「私でもそこまではしないわよ…」");
-			novel->setFontColor(5, Color3B::BLUE);
+			novel->setFontColor(6, Color3B::BLUE);
 			novel->setJump(6, 0, 24);
 
 			novel->addSentence(7, "継「”バンダナ様”なんて呼んでいるのは君くらいだよ、リアス」");
@@ -397,7 +403,39 @@ namespace day1 {
 			novel->addSentence(9, "継「言ってなかったね」");
 			novel->setJump(9, 0, 30);
 
-			novel->addSentence(0, "継「」");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "継「これが僕の推理だ」");
+			novel->setFontColor(0, Color3B::RED);
+			novel->addSentence(0, "リアス「…ふふふ、ご名答。そうよ、私が全部やったの。隠し撮りも、このおまじないも」");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "バンダナ「知ってた」");
+			novel->setFontColor(0, Color3B::RED);
+			novel->addSentence(0, "リアス「今日もいつも通り、私の自慢の特殊能力の探知でバンダナ様をストーキングしてたの。その途中でメモを無くしちゃってね。」");
+			novel->addSentence(0, "リアス「あわてて探知でメモの在処を探してたら、先にあなた達に拾われちゃって、どうやって取り返すか悩んでるうちに箱まで開けられちゃって…」");
+			novel->addSentence(0, "リアス「あはは…私、ものすごく惨め。好きな人の目の前で…こんな形でバラされて…」");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "継「…ごめん、そんなつもりじゃなかったんだ」");
+			novel->addSentence(0, "バンダナ「こいつ生真面目な性格だからな…悪気はないんだ、許してやってくれ」");
+			novel->setFontColor(0, Color3B::RED);
+			novel->setCharaL(0, "chara/suama1.png");
+			novel->addSentence(0, "寿甘「ちょっと待って、なんでつぐるんが悪いみたいな流れになってんの。」");
+			novel->addSentence(0, "寿甘「この子、あんたのこと付け回して、こんな事してたのよ！？」");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "バンダナ「いや、頼むからそっとしといてやれよ…」");
+			novel->setFontColor(0, Color3B::RED);
+			novel->addSentence(0, "リアス「…許さない……許さないゆるさないユルサナイ……！！！」");
+			novel->addSentence(0, "リアス「こうなったら力づくであなた達からバンダナ様を奪い取って見せる…」");
+			novel->addSentence(0, "リアス「バンダナ様は私のもの…あなたがどこでなにしているか全部知ってる…私は…絶対あなたを逃がさない…」");
+			novel->addSentence(0, "リアス「うふふふふ…えへへへ…あーっはっはっは！！！！」");
+			novel->setCharaC(0, "");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "バンダナ「逃げていったぞ」");
+			novel->addSentence(0, "バンダナ「めんどくさいことになったな…」");
+			novel->setCharaL(0, "chara/tuguru1.png");
+			novel->addSentence(0, "継「とりあえず宇沢さんに箱のことを伝えに行こう」");
+			novel->addEvent(0, CallFunc::create([this] {
+				Control::me->getField("box")->getObject("flag")->setState(3);
+			}));
 
 			novel->setEndTask(-1);
 			addChild(novel, 10, "novel");
@@ -455,6 +493,9 @@ namespace day1 {
 				mObjectList["num4"]->getState() == 4) {
 				mObjectList["flag"]->setState(2);
 				Control::me->changeField("entrance");
+			}
+			else if(mObjectList["flag"]->getState() == 3) {
+				Control::me->showMsg("もう開ける必要はない");
 			}
 			else {
 				Control::me->showMsg("パスワードが間違っているようだ。");

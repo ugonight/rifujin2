@@ -256,16 +256,45 @@ namespace day1 {
 					novel->setEndTask(0);
 					this->addChild(novel, 10, "novel");
 				}
-			} else
-			if (mObjectList["usawa"]->getState() == 1) {
-				auto novel = Novel::create();
-				novel->setCharaL(0, "chara/tuguru1.png");
-				novel->setCharaR(0, "chara/usawa1.png");
-				novel->setFontColor(0, Color3B::RED);
-				novel->addSentence(0, "宇沢「校庭の様子はどうでしたか？」");
-				novel->setEndTask(0);
-				this->addChild(novel, 10, "novel");
-			}
+			} else if (mObjectList["usawa"]->getState() == 1) {
+					if (Control::me->getField("box")->getObject("flag")->getState() == 3) {
+						auto novel = Novel::create();
+						novel->setCharaL(0, "chara/tuguru1.png");
+						novel->setCharaR(0, "chara/usawa1.png");
+						novel->setFontColor(0, Color3B::RED);
+						novel->addSentence(0, "宇沢「ふむふむ…かくかくしかじかでこういうわけだったのですか…」");
+						novel->addSentence(0, "宇沢「リアスさんですねぇ…彼女、珍しいドラゴン族の末裔みたいで、おかしな宗教とか引き継いじゃってるみたいですよ？何されるかわかったもんじゃないですねぇ」");
+						novel->setCharaC(0, "chara/suama1.png");
+						novel->addSentence(0, "寿甘「ソースは」");
+						novel->addSentence(0, "宇沢「そ、ソース…？わたくしは目玉焼きには醤油ですよ。ソースなんてかける人の気が知れないですねぇ」");
+						novel->setCharaC(0, "chara/bandana1.png");
+						novel->setFontColor(0, Color3B::BLUE);
+						novel->addSentence(0, "バンダナ「は？お前全国のソース派を敵に回したな？生きて帰れると思うなよ？」");
+						novel->setFontColor(0, Color3B::RED);
+						novel->addSentence(0, "宇沢「ドラゴン族の呪いより恐ろしそうですねぇ…」");
+						novel->setFontColor(0, Color3B::BLUE);
+						novel->addSentence(0, "継「とにかく、今日は帰りもみんなで一緒に帰ろう。いいね？」");
+						novel->addSentence(0, "バンダナ「まあ、用心に越したことはないか…何かあったら面倒くさいし」");
+						novel->setFontColor(0, Color3B::RED);
+						novel->setCharaR(0, "chara/suama1.png");
+						novel->addSentence(0, "寿甘「よし、じゃあ決まりね！先に帰ったら許さないんだから！」");
+						novel->setFontColor(0, Color3B::BLUE);
+						novel->addSentence(0, "継「あ、始業のチャイムが鳴ったよ。みんな席に着こう」");
+						novel->addEvent(0, CallFunc::create([this] { Control::me->setEndFlag(); }));
+
+						novel->setEndTask(0);
+						this->addChild(novel, 10, "novel");
+					}
+					else {
+						auto novel = Novel::create();
+						novel->setCharaL(0, "chara/tuguru1.png");
+						novel->setCharaR(0, "chara/usawa1.png");
+						novel->setFontColor(0, Color3B::RED);
+						novel->addSentence(0, "宇沢「校庭の様子はどうでしたか？」");
+						novel->setEndTask(0);
+						this->addChild(novel, 10, "novel");
+					}
+				}
 		}));
 		usawa->addCanUseItem("picture");
 		addObject(usawa, "usawa", 1, false);

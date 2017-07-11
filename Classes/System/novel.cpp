@@ -742,9 +742,9 @@ bool Novel::logEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 		};
 		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, close);
 
-		auto _scrollView = ui::ScrollView::create();
+		auto _scrollView = cocos2d::ui::ScrollView::create();
 		_scrollView->setPosition(Vec2::ZERO);
-		_scrollView->setDirection(ui::ScrollView::Direction::VERTICAL);
+		_scrollView->setDirection(cocos2d::ui::ScrollView::Direction::VERTICAL);
 		_scrollView->setTouchEnabled(true);
 		_scrollView->setBounceEnabled(true);
 		layer->addChild(_scrollView, 3, "scroll");

@@ -104,6 +104,20 @@ namespace day1 {
 
 			return 1;
 		});
+
+		mFuncList.push_back([this]() {
+			mSituation = "放課後にて（ノベル）";
+			//AudioEngine::play2d("BGM/school.ogg", true);
+
+			auto novel = Novel::create();
+
+			novel->addSentence(0, "");
+
+			novel->setEndTask(0);
+			this->addChild(novel, 0, "novel");
+
+			return 0;
+		});
 	}
 
 }
