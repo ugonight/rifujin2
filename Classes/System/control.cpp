@@ -6,10 +6,11 @@
 #include "field.h"
 #include "item.h"
 #include "novel.h"
+#include "object.h"
 #include "define.h"
 //#include "Script/fieldDef.h"
 
-
+#include "ui/CocosGUI.h"
 USING_NS_CC;
 
 Control* Control::me;
@@ -49,30 +50,31 @@ bool Control::init() {
 	//menu->setPosition(Vec2::ZERO);
 	//this->addChild(menu, 1, "save");
 
-	auto help = Sprite::create("help.png");
-	help->setPosition(Vec2(origin.x + 30, origin.y + 30));
-	this->addChild(help, 1, "help");
-	auto listener = EventListenerTouchOneByOne::create();
-	listener->setSwallowTouches(true);
-	listener->onTouchBegan = [this](Touch* touch, Event* event) {
-		if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
-			auto explain = Sprite::create("explain.png");
-			explain->setPosition(Director::getInstance()->getVisibleSize() / 2);
-			this->addChild(explain, 5, "explain");
-			auto listener2 = EventListenerTouchOneByOne::create();
-			listener2->setSwallowTouches(true);
-			listener2->onTouchBegan = [this](Touch* touch, Event* event) {
-				return true;
-			};
-			listener2->onTouchEnded = [this](Touch* touch, Event* event) {
-				removeChildByName("explain");
-			};
-			this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener2, explain);
-			return true;
-		}
-		return false;
-	};
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, help);
+	//継承先のinitFieldで記述
+	//auto help = Sprite::create("help.png");
+	//help->setPosition(Vec2(origin.x + 30, origin.y + 30));
+	//this->addChild(help, 1, "help");
+	//auto listener = EventListenerTouchOneByOne::create();
+	//listener->setSwallowTouches(true);
+	//listener->onTouchBegan = [this](Touch* touch, Event* event) {
+	//	if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
+	//		auto explain = Sprite::create("explain.png");
+	//		explain->setPosition(Director::getInstance()->getVisibleSize() / 2);
+	//		this->addChild(explain, 5, "explain");
+	//		auto listener2 = EventListenerTouchOneByOne::create();
+	//		listener2->setSwallowTouches(true);
+	//		listener2->onTouchBegan = [this](Touch* touch, Event* event) {
+	//			return true;
+	//		};
+	//		listener2->onTouchEnded = [this](Touch* touch, Event* event) {
+	//			removeChildByName("explain");
+	//		};
+	//		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener2, explain);
+	//		return true;
+	//	}
+	//	return false;
+	//};
+	//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, help);
 
 	auto novel = Novel::create();
 	novel->addSentence(0,"");
@@ -115,7 +117,8 @@ void Control::update(float delta) {
 	if (field->getChildByName("novel") /*&& ((MenuItemImage*)getChildByName("save"))->getOpacity() >= 255*/) {
 		//((MenuItemImage*)getChildByName("save"))->setOpacity(0.0f);
 		
-		if (getChildByName("log")) removeChildByName("log");
+		if (getChildByName("log")) 
+			removeChildByName("log");
 	}
 	else if (!field->getChildByName("novel")) {
 		//((MenuItemImage*)getChildByName("save"))->setOpacity(255.0f);
@@ -148,8 +151,13 @@ void Control::save(int i,cocos2d::ValueMap data) {
 				break;
 			}
 		}
+
 		auto item = (Item*)getChildByName("item");
 		item->saveItem(&data);
+
+		//ヒントフラグ
+		auto hint = (Hint*)getChildByName("hint");
+		//data["hint"] = hint->getState();
 
 		if (FileUtils::getInstance()->writeToFile(data, file))
 		{
@@ -189,6 +197,10 @@ void Control::load(int i) {
 
 	auto item = (Item*)getChildByName("item");
 	item->loadItem(data);
+
+	//ヒントフラグ
+	//auto hint = (Hint*)getChildByName("hint");
+	//hint->setState(data["hint"].asInt());
 
 	//フィールドごとのオブジェクトの状態
 	for (auto field : mFieldList) {
@@ -236,6 +248,11 @@ void Control::showAI(std::string itemName) {
 
 void Control::deleteAI() { removeChildByName("AboutItem"); }
 
+//void Control::setHintState(int i) {
+//	auto hint = (Hint*)getChildByName("hint");
+//	hint->setState(i);
+//}
+
 bool Control::getExistObject(std::string field, std::string obj) {
 	return mFieldList[field]->getExistObject(obj);
 }
@@ -271,3 +288,57 @@ void Control::initField() {
 	//	it->second->retain();
 	//}
 }
+
+bool Hint::init() {
+	if (!Layer::init())
+	{
+		return false;
+	}
+	scheduleUpdate();
+
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	//mState = 0;
+
+	auto hint = Sprite::create("help.png");
+	hint->setPosition(Vec2(origin.x + 30, origin.y + 30));
+	this->addChild(hint, 1, "hint");
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->setSwallowTouches(true);
+	listener->onTouchBegan = [this](Touch* touch, Event* event) {
+		if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation()) &&
+			!this->getChildByName("novel")) {
+			return true;
+		}
+		return false;
+	};
+	listener->onTouchEnded = [this](Touch* touch, Event* event) {
+		if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
+			showHint();
+		}
+	};
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, hint);
+
+	return true;
+}
+
+void Hint::update(float delta) {
+	//ノベルの表示が終わっていたらタッチイベントを有効にする
+	Novel* novel = (Novel*)(this->getChildByName("novel"));
+	if (novel) {
+		if (novel->getEndFlag()) {
+			removeChild(novel);
+		}
+		else {
+			Control::me->setCursor(Cursor::NOVEL);
+		}
+	}
+}
+
+void Hint::showHint() {
+	//継承先で記述
+}
+
+//void Hint::setState(int i) { mState = i; }
+//int Hint::getState() { return mState; }

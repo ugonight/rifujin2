@@ -2,6 +2,8 @@
 #pragma  execution_character_set("utf-8")
 #include "cocos2d.h"
 #include "cursor.h"
+#include "object.h"
+#include "field.h"
 
 class Field;
 
@@ -22,7 +24,8 @@ public:
 	void showMsg(std::string msg);
 	void showAI(std::string itemName);
 	void deleteAI();
-	
+	//void setHintState(int i);
+
 	void pauseField();
 	void resumeField();
 
@@ -43,3 +46,22 @@ public:
 	CREATE_FUNC(Control);
 };
 
+class Hint : public cocos2d::Layer {
+protected:
+	//int mState;
+public:
+	virtual bool init();
+	virtual void update(float delta);
+
+	virtual void showHint();
+
+	//void setState(int i);
+	//int getState();
+
+	CREATE_FUNC(Hint);
+};
+
+//他フィールドのオブジェクトの状態を取得
+inline int getObjState(std::string field, std::string obj) {
+	return Control::me->getField(field)->getObject(obj)->getState();
+}

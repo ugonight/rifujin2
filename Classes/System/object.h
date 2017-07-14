@@ -51,6 +51,7 @@ public:
 	//int getCursor();
 	Cursor::CursorID getCursor();
 	bool getCanUse();
+	std::vector<std::string> getCanUseItemList();
 
 	CREATE_FUNC(ObjectN);
 };

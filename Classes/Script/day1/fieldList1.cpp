@@ -34,6 +34,10 @@ namespace day1 {
 		item->initItem();
 		this->addChild(item, 2, "item");
 
+		//ヒントの初期化
+		auto hint = HintMgr::create();
+		this->addChild(hint, 2, "hint");
+
 		mEndFlag = false;
 	}
 }

@@ -13,7 +13,8 @@ Novel::~Novel() {
 	for (int i = 0; i < MAX_BRANCH; i++) {
 		if (mFuncTask[i].size() > 1) {
 			for (auto tsk : mFuncTask[i]) {
-				CC_SAFE_RELEASE_NULL(tsk.func);
+				if (tsk.func->getReferenceCount() > 0)
+					CC_SAFE_RELEASE_NULL(tsk.func);
 			}
 		}
 	}
@@ -666,33 +667,33 @@ bool Novel::logEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 		square->setColor(Color3B(0, 0, 0));
 		square->setOpacity(128);
 		layer->addChild(square, 0, "back_l");
-		auto listener = EventListenerTouchOneByOne::create();
-		listener->setSwallowTouches(true);
-		listener->onTouchBegan = [this](Touch* touch, Event* event) {
-			mLogScrollX = touch->getLocation().x;
-			mLogScrollY = touch->getLocation().y;
-			return true;
-		};
-		listener->onTouchMoved = [this](Touch* touch, Event* event) {
-			auto label = (Label*)this->getChildByName("layer_l")->getChildByName("label");
-			auto height = Director::getInstance()->getVisibleSize().height;
-			label->setPosition(label->getPositionX() + touch->getLocation().x - mLogScrollX, label->getPositionY() + touch->getLocation().y - mLogScrollY);
-			if (label->getPositionY() > label->getDimensions().height + height) {
-				label->setPositionY(label->getDimensions().height + height);
-			}
-			else if (label->getPositionY() < 0) {
-				label->setPositionY(0.0f);
-			}
-			mLogScrollY = touch->getLocation().y;
-			if (label->getPositionX() < -label->getDimensions().width) {
-				label->setPositionX(-label->getDimensions().width);
-			}
-			else if (label->getPositionX() > 20) {
-				label->setPositionX(20.0f);
-			}
-			mLogScrollX = touch->getLocation().x;
-		};
-		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, square);
+		//auto listener = EventListenerTouchOneByOne::create();
+		//listener->setSwallowTouches(true);
+		//listener->onTouchBegan = [this](Touch* touch, Event* event) {
+		//	mLogScrollX = touch->getLocation().x;
+		//	mLogScrollY = touch->getLocation().y;
+		//	return true;
+		//};
+		//listener->onTouchMoved = [this](Touch* touch, Event* event) {
+		//	auto label = (Label*)this->getChildByName("layer_l")->getChildByName("label");
+		//	auto height = Director::getInstance()->getVisibleSize().height;
+		//	label->setPosition(label->getPositionX() + touch->getLocation().x - mLogScrollX, label->getPositionY() + touch->getLocation().y - mLogScrollY);
+		//	if (label->getPositionY() > label->getDimensions().height + height) {
+		//		label->setPositionY(label->getDimensions().height + height);
+		//	}
+		//	else if (label->getPositionY() < 0) {
+		//		label->setPositionY(0.0f);
+		//	}
+		//	mLogScrollY = touch->getLocation().y;
+		//	if (label->getPositionX() < -label->getDimensions().width) {
+		//		label->setPositionX(-label->getDimensions().width);
+		//	}
+		//	else if (label->getPositionX() > 20) {
+		//		label->setPositionX(20.0f);
+		//	}
+		//	mLogScrollX = touch->getLocation().x;
+		//};
+		//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, square);
 
 
 		//文字
@@ -729,7 +730,7 @@ bool Novel::logEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 		close->setOpacity(150.0f);
 		close->setPosition(Vec2(visibleSize.width - 15 + origin.x, -15 + origin.y + visibleSize.height));
 		layer->addChild(close, 5, "close");
-		listener = EventListenerTouchOneByOne::create();
+		auto listener = EventListenerTouchOneByOne::create();
 		listener->onTouchBegan = [this](Touch* touch, Event* event) { return true; };
 		listener->onTouchEnded = [this](Touch* touch, Event* event) {
 			auto target = (Sprite*)event->getCurrentTarget();

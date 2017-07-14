@@ -140,7 +140,6 @@ void Item::getItem(std::string s, Point p) {
 	m_emitter->setTexture(Director::getInstance()->getTextureCache()->addImage("spark.png"));
 
 	// v2.x及びv3.xで使用することができます
-	m_emitter->setAutoRemoveOnFinish(true);
 	m_emitter->setDuration(0.2f);
 	m_emitter->setGravity(Point(0, -240)); // v2.xでは CCPoint( 0, -240 )
 	m_emitter->setAngle(90.0f);

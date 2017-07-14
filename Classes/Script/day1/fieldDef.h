@@ -18,7 +18,7 @@ namespace day1
 	CREATE_FIELD(Corridor)};
 	CREATE_FIELD(ClassRoom)};
 	CREATE_FIELD(ArtRoom)};
-	CREATE_FIELD(Box)};
+	CREATE_FIELD(Box) private: int mNumber[4]; };
 
 	class Day : public Chapter
 	{
@@ -49,4 +49,9 @@ namespace day1
 		void initItem();
 	};
 
+	class HintMgr : public Hint {
+	public:
+		virtual void showHint();
+		CREATE_FUNC(HintMgr);
+	};
 }

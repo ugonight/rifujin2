@@ -407,6 +407,7 @@ namespace day1 {
 			novel->addSentence(0, "継「これが僕の推理だ」");
 			novel->setFontColor(0, Color3B::RED);
 			novel->addSentence(0, "リアス「…ふふふ、ご名答。そうよ、私が全部やったの。隠し撮りも、このおまじないも」");
+			novel->setCharaR(0, "chara/bandana1.png");
 			novel->setFontColor(0, Color3B::BLUE);
 			novel->addSentence(0, "バンダナ「知ってた」");
 			novel->setFontColor(0, Color3B::RED);
@@ -435,6 +436,7 @@ namespace day1 {
 			novel->addSentence(0, "継「とりあえず宇沢さんに箱のことを伝えに行こう」");
 			novel->addEvent(0, CallFunc::create([this] {
 				Control::me->getField("box")->getObject("flag")->setState(3);
+				AudioEngine::play2d("BGM/school.ogg");
 			}));
 
 			novel->setEndTask(-1);
@@ -453,44 +455,52 @@ namespace day1 {
 		auto flag = ObjectN::create();
 		addObject(flag, "flag", 0, false);
 
+		for (int i = 0; i < 4; i++) mNumber[i] = 1;
+
 		auto spr = Sprite::create("number.png");
 		auto w = spr->getContentSize().width , h = spr->getContentSize().height;
 		auto rect = Rect(0, 0, w / 9, h);
-		ObjectN* number; EventListenerTouchOneByOne *listener;
+		Sprite* /*ObjectN**/ number; EventListenerTouchOneByOne *listener;
 		std::stringstream name;
 		for (int i = 0; i < 4; i++) {
-			number = ObjectN::create();
+			number = Sprite::create();
 			number->setTexture("number.png");
 			number->setTextureRect(rect);
 			number->setPosition(250 + 110 * i, 335);
-			number->setState(1);
+			//number->setState(1);
 			resetStr(name);
 			name << "num" << i + 1;
 			listener = EventListenerTouchOneByOne::create();
 			listener->setSwallowTouches(true);
 			listener->onTouchBegan = [this, i, w, h](Touch *touch, Event *event) {
 				if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
-					auto num = (ObjectN*)event->getCurrentTarget();
-					int next = num->getState() + 1;
-					if (next > 9) next = 1;
-					num->setTextureRect(Rect(w / 9 * (next - 1), 0, w / 9, h));
-					num->setState(next);
+					auto num = (Sprite*)event->getCurrentTarget();
+					mNumber[i]++;
+					if (mNumber[i] > 9) mNumber[i] = 1;
+					num->setTextureRect(Rect(w / 9 * (mNumber[i] - 1), 0, w / 9, h));
+					//num->setState(next);
 					return true;
 				}
 				return false;
 			};
 			this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, number);
-			addObject(number, name.str(), 2, true);
+			//addObject(number, name.str(), 2, true);
+			addChild(number, 2, name.str());
 		}
 
 		auto ok = ObjectN::create();
 		ok->setArea(Rect(330, 280, 200, 40));
 		ok->setCursor(Cursor::INFO);
 		ok->setTouchEvent(CallFunc::create([this]() {
-			if (mObjectList["num1"]->getState() == 1 &&
+			if (/*mObjectList["num1"]->getState() == 1 &&
 				mObjectList["num2"]->getState() == 4 && 
 				mObjectList["num3"]->getState() == 8 &&
-				mObjectList["num4"]->getState() == 4) {
+				mObjectList["num4"]->getState() == 4*/ 
+				mNumber[0] == 1 &&
+				mNumber[1] == 4 &&
+				mNumber[2] == 8 &&
+				mNumber[3] == 4 &&
+				mObjectList["flag"]->getState() == 1) {
 				mObjectList["flag"]->setState(2);
 				Control::me->changeField("entrance");
 			}

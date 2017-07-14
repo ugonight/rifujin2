@@ -73,13 +73,17 @@ bool Record::init()
 	};
 	listener->onTouchEnded = [this](Touch* touch, Event* event) {
 		getChildByName("select")->runAction(FadeOut::create(0.1));
+		int my = event->getCurrentTarget()->getBoundingBox().getMaxY() - 25;
+		int i = mSelectNum - mPage * 5 - 1;
 		if (mSelectNum) {
-			if (mMode) {
-				mSaveFunc(mSelectNum);
-				updateInfo();
-			}
-			else {
-				load();
+			if (touch->getLocation().y >= my - 70 * (i + 1) && touch->getLocation().y <= my - 70 * i) {
+				if (mMode) {
+					mSaveFunc(mSelectNum);
+					updateInfo();
+				}
+				else {
+					load();
+				}
 			}
 		}
 	};

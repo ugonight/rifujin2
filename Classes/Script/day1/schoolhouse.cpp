@@ -257,33 +257,35 @@ namespace day1 {
 					this->addChild(novel, 10, "novel");
 				}
 			} else if (mObjectList["usawa"]->getState() == 1) {
-					if (Control::me->getField("box")->getObject("flag")->getState() == 3) {
-						auto novel = Novel::create();
-						novel->setCharaL(0, "chara/tuguru1.png");
-						novel->setCharaR(0, "chara/usawa1.png");
-						novel->setFontColor(0, Color3B::RED);
-						novel->addSentence(0, "宇沢「ふむふむ…かくかくしかじかでこういうわけだったのですか…」");
-						novel->addSentence(0, "宇沢「リアスさんですねぇ…彼女、珍しいドラゴン族の末裔みたいで、おかしな宗教とか引き継いじゃってるみたいですよ？何されるかわかったもんじゃないですねぇ」");
-						novel->setCharaC(0, "chara/suama1.png");
-						novel->addSentence(0, "寿甘「ソースは」");
-						novel->addSentence(0, "宇沢「そ、ソース…？わたくしは目玉焼きには醤油ですよ。ソースなんてかける人の気が知れないですねぇ」");
-						novel->setCharaC(0, "chara/bandana1.png");
-						novel->setFontColor(0, Color3B::BLUE);
-						novel->addSentence(0, "バンダナ「は？お前全国のソース派を敵に回したな？生きて帰れると思うなよ？」");
-						novel->setFontColor(0, Color3B::RED);
-						novel->addSentence(0, "宇沢「ドラゴン族の呪いより恐ろしそうですねぇ…」");
-						novel->setFontColor(0, Color3B::BLUE);
-						novel->addSentence(0, "継「とにかく、今日は帰りもみんなで一緒に帰ろう。いいね？」");
-						novel->addSentence(0, "バンダナ「まあ、用心に越したことはないか…何かあったら面倒くさいし」");
-						novel->setFontColor(0, Color3B::RED);
-						novel->setCharaR(0, "chara/suama1.png");
-						novel->addSentence(0, "寿甘「よし、じゃあ決まりね！先に帰ったら許さないんだから！」");
-						novel->setFontColor(0, Color3B::BLUE);
-						novel->addSentence(0, "継「あ、始業のチャイムが鳴ったよ。みんな席に着こう」");
-						novel->addEvent(0, CallFunc::create([this] { Control::me->setEndFlag(); }));
+				if (Control::me->getField("box")->getObject("flag")->getState() == 3) {
+					//auto novel = Novel::create();
+					//novel->setCharaL(0, "chara/tuguru1.png");
+					//novel->setCharaR(0, "chara/usawa1.png");
+					//novel->setFontColor(0, Color3B::RED);
+					//novel->addSentence(0, "宇沢「ふむふむ…かくかくしかじかでこういうわけだったのですか…」");
+					//novel->addSentence(0, "宇沢「リアスさんですねぇ…彼女、珍しいドラゴン族の末裔みたいで、おかしな宗教とか引き継いじゃってるみたいですよ？何されるかわかったもんじゃないですねぇ」");
+					//novel->setCharaC(0, "chara/suama1.png");
+					//novel->addSentence(0, "寿甘「ソースは」");
+					//novel->addSentence(0, "宇沢「そ、ソース…？わたくしは目玉焼きには醤油ですよ。ソースなんてかける人の気が知れないですねぇ」");
+					//novel->setCharaC(0, "chara/bandana1.png");
+					//novel->setFontColor(0, Color3B::BLUE);
+					//novel->addSentence(0, "バンダナ「は？お前全国のソース派を敵に回したな？生きて帰れると思うなよ？」");
+					//novel->setFontColor(0, Color3B::RED);
+					//novel->addSentence(0, "宇沢「ドラゴン族の呪いより恐ろしそうですねぇ…」");
+					//novel->setFontColor(0, Color3B::BLUE);
+					//novel->addSentence(0, "継「とにかく、今日は帰りもみんなで一緒に帰ろう。いいね？」");
+					//novel->addSentence(0, "バンダナ「まあ、用心に越したことはないか…何かあったら面倒くさいし」");
+					//novel->setFontColor(0, Color3B::RED);
+					//novel->setCharaR(0, "chara/suama1.png");
+					//novel->addSentence(0, "寿甘「よし、じゃあ決まりね！先に帰ったら許さないんだから！」");
+					//novel->setFontColor(0, Color3B::BLUE);
+					//novel->addSentence(0, "継「あ、始業のチャイムが鳴ったよ。みんな席に着こう」");
+					//novel->addEvent(0, CallFunc::create([this] { 
+					this->runAction(Sequence::create(FadeOut::create(1.0f), CallFunc::create([this] {Control::me->setEndFlag(); }), NULL));
+						//}));
 
-						novel->setEndTask(0);
-						this->addChild(novel, 10, "novel");
+						//novel->setEndTask(0);
+						//this->addChild(novel, 10, "novel");
 					}
 					else {
 						auto novel = Novel::create();
@@ -353,25 +355,33 @@ namespace day1 {
 				novel->addSentence(0, "寿甘「ほんじゃ、これでお願いねー」");
 				novel->addSentence(0, "マリア「わかった。今から描くからちょっと待っててね」");
 				novel->setCharaC(0, "chara/tuguru1.png");
+				novel->setFontColor(0, Color3B::BLUE);
 				novel->addSentence(0, "継「例のアレって何のこと…？」");
+				novel->setFontColor(0, Color3B::RED);
 				novel->addSentence(0, "寿甘「まあ見てればわかるって！」");
 				novel->addSentence(0, "マリア「できたよー」");
+				novel->setFontColor(0, Color3B::BLUE);
 				novel->addSentence(0, "継「これは…UFOの絵かな？」");
+				novel->setFontColor(0, Color3B::RED);
 				novel->addSentence(0, "マリア「これをこうやって…えいっ！」");
 				novel->setCharaL(0, "");
 				novel->setCharaR(0, "");
 				novel->setCharaC(0, "");
 				novel->setBg(0, "chara/scene4.png");
+				novel->setFontColor(0, Color3B::BLUE);
 				novel->addSentence(0, "継「うわあ！UFOが絵の中から出て来たよ！」");
+				novel->setFontColor(0, Color3B::RED);
 				novel->addSentence(0, "マリア「実は、私の特殊能力は絵に描いたものを具現化することだったの。余計引かれちゃうから秘密にしてたんだけど…」");
 				novel->addSentence(0, "寿甘「だーかーらそんなことないって！みんなマリアちゃんの絵、大好きだよ！」");
 				novel->addSentence(0, "マリア「ありがとう…そう言ってもらえるとうれしいな」");
+				novel->setFontColor(0, Color3B::BLUE);
 				novel->addSentence(0, "継「UFOが窓の外へ飛んだ行ったよ。見失う前に撮影しに行こう。」");
 				novel->setEndTask(0);
 				this->addChild(novel, 10, "novel");
 				
 				ItemMgr::sharedItem()->deleteItem("magazine");
 				Control::me->getField("entrance")->addChild(Control::me->getField("entrance")->getObject("ufo"), 3, "ufo");
+				mObjectList["maria"]->setState(2);
 			}
 			else {
 				auto novel = Novel::create();

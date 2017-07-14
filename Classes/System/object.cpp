@@ -76,7 +76,7 @@ bool ObjectN::touchOn(cocos2d::Touch* touch, cocos2d::Event* event) {
 	else {
 		//Control::me->setCursor(0);
 	}
-
+	return false;
 }
 
 void ObjectN::touchOff(cocos2d::Touch* touch, cocos2d::Event* event) {
@@ -135,6 +135,7 @@ bool ObjectN::getCanUse() {
 	}
 	return false;
 }
+std::vector<std::string> ObjectN::getCanUseItemList() { return mCanUseItemList; }
 
 void ObjectN::update(float delta) {
 	if (mTouchTime > 0) mTouchTime++;

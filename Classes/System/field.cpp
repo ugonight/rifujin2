@@ -149,7 +149,7 @@ void Field::resumeEventListener() {
 }
 
 cocos2d::ValueMap Field::saveField() {
-	ValueMap data;
+	ValueMap data; int i;
 	for (auto obj : mObjectList) {
 			data[obj.first + "_visible"] = getChildByName(obj.first);//obj.second->getReferenceCount() > 1;		//addChild()されてるか
 			data[obj.first + "_state"] = obj.second->getState();					//状態
@@ -158,11 +158,19 @@ cocos2d::ValueMap Field::saveField() {
 			data[obj.first + "_field"] = obj.second->getField();	//移動先フィールド
 			data[obj.first + "_opacity"] = (float)obj.second->getOpacity();	//透明度
 			data[obj.first + "_cursor"] = static_cast<int>(obj.second->getCursor());	//カーソル
+			i = 0;
+			for (auto itemName : obj.second->getCanUseItemList()) {
+				if (itemName != "") {
+					data[obj.first + StringUtils::format("_canuse%d", i)] = itemName;
+					i++;
+				}
+			}
 	}
 	return data;
 }
 
 void Field::loadField(cocos2d::ValueMap data) {
+	int i; bool exist;
 	for (auto obj : mObjectList) {
 		if (data[obj.first + "_visible"].asBool()) {
 			if (!this->getChildByName(obj.first)) {	//初期状態で消えている時
@@ -187,5 +195,13 @@ void Field::loadField(cocos2d::ValueMap data) {
 		obj.second->setOpacity(data[obj.first + "_opacity"].asFloat());
 		//カーソル
 		obj.second->setCursor(static_cast<Cursor::CursorID>(data[obj.first + "_cursor"].asInt()));
+		//使えるアイテム
+		i = 0; exist = 0;
+		while (!data[obj.first + StringUtils::format("_canuse%d", i)].isNull()) {
+			std::string itemName = data[obj.first + StringUtils::format("_canuse%d", i)].asString();
+			for (auto name : obj.second->getCanUseItemList())  if (name == itemName) exist = 1;	//すでに追加されていたら無視
+			if (!exist) obj.second->addCanUseItem(itemName);
+			i++;
+		}
 	}
 }
