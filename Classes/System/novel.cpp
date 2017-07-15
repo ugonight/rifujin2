@@ -11,12 +11,12 @@ USING_NS_CC;
 
 Novel::~Novel() {
 	for (int i = 0; i < MAX_BRANCH; i++) {
-		if (mFuncTask[i].size() > 1) {
+		//if (mFuncTask[i].size() > 1) {
 			for (auto tsk : mFuncTask[i]) {
-				if (tsk.func->getReferenceCount() > 0)
+				if (tsk.func/*->getReferenceCount() > 0*/) 
 					CC_SAFE_RELEASE_NULL(tsk.func);
 			}
-		}
+		//}
 	}
 }
 
@@ -381,7 +381,9 @@ void Novel::setEndTask(int branch) {
 		CTask ctsk = { -1, Color3B::BLACK };
 		mColorTask[branch].push_back(ctsk);
 
-		FTask ftsk = { -1, CallFunc::create([] {}) };
+		auto fnc = CallFunc::create([] {});
+		fnc->retain();
+		FTask ftsk = { -1, fnc };
 		mFuncTask[branch].push_back(ftsk);
 
 		STask stsk = { -1 };
@@ -398,7 +400,9 @@ void Novel::setEndTask(int branch) {
 			CTask ctsk = { -1, Color3B::BLACK };
 			mColorTask[i].push_back(ctsk);
 
-			FTask ftsk = { -1, CallFunc::create([] {}) };
+			auto fnc = CallFunc::create([] {});
+			fnc->retain();
+			FTask ftsk = { -1, fnc };
 			mFuncTask[i].push_back(ftsk);
 
 			STask stsk = { -1 };
@@ -490,21 +494,22 @@ void Novel::updateSwitch() {
 				listener->onTouchBegan = [this, i, bNum](Touch* touch, Event* event) {
 					if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
 						//log("switch : %d", i);
-						mSwitch = false;
+						mSwitch = false;  
 						mBranch = mCurrentSTask.branchTo[i];
 						std::stringstream name;
 						for (int j = 0; j < bNum; j++) {
 							name << "branch" << j;
-							getChildByName(name.str())->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5f), RemoveSelf::create()));
+							getChildByName(name.str())->runAction(Sequence::createWithTwoActions(FadeOut::create(0.3f), RemoveSelf::create()));
 							name.clear(); name.str("");
 							name << "text" << j;
-							getChildByName(name.str())->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5f), RemoveSelf::create()));
+							getChildByName(name.str())->runAction(Sequence::createWithTwoActions(FadeOut::create(0.3f), RemoveSelf::create()));
 							name.clear(); name.str("");
 						}
 						auto label = (Label*)this->getChildByName("label");
 						mNovelNum[mBranch]++;
 						label->setString(mSentense[mBranch][mNovelNum[mBranch]]);
 						setDelayAnime();
+						AudioEngine::play2d("SE/choice.ogg");
 
 						return true;
 					}
@@ -538,14 +543,6 @@ void Novel::updateJump() {
 		for (auto tsk : mColorTask[mBranch]) {
 			if (tsk.num >= mNovelNum[mBranch]) {
 				mColorNum[mBranch] = i;
-				break;
-			}
-			i++;
-		}
-		i = 0;
-		for (auto tsk : mFuncTask[mBranch]) {
-			if (tsk.num >= mNovelNum[mBranch]) {
-				mFuncNum[mBranch] = i;
 				break;
 			}
 			i++;

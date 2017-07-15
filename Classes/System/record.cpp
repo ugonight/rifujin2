@@ -54,7 +54,8 @@ bool Record::init()
 		if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
 			int my = event->getCurrentTarget()->getBoundingBox().getMaxY() - 25;
 			for (int i = 0; i < 5; i++) {
-				if (touch->getLocation().y >= my - 70 * (i + 1) && touch->getLocation().y <= my - 70 * i) {
+				if (touch->getLocation().y >= my - 70 * (i + 1) && touch->getLocation().y <= my - 70 * i &&
+					touch->getLocation().x >= 200 && touch->getLocation().x <= 640) {
 					auto select = getChildByName("select");
 					select->setPosition(Vec2(visibleSize.width / 2, my - 70 * i - 35));
 					select->setOpacity(0.0);

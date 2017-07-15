@@ -52,6 +52,16 @@ bool Title::init()
 			auto record = Record::create();
 			addChild(record, 5, "record");
 		}
+		else if (Rect(620, 0, 234, 50).containsPoint(touch->getLocationInView())) {
+			auto explain = Sprite::create("explain_.png");
+			explain->setPosition(Director::getInstance()->getVisibleSize() / 2);
+			auto listener2 = EventListenerTouchOneByOne::create();
+			listener2->setSwallowTouches(true);
+			listener2->onTouchBegan = [this](Touch* touch, Event* event) {return true; };
+			listener2->onTouchEnded = [this](Touch* touch, Event* event) { removeChildByName("explain"); };
+			this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener2, explain);
+			addChild(explain, 5, "explain");
+		}
 		return true;
 	};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
@@ -78,6 +88,8 @@ bool Title::init()
 	AudioEngine::preload("SE/record_on.ogg");
 	AudioEngine::preload("SE/record_off.ogg");
 	AudioEngine::preload("SE/chapter.ogg");
+	AudioEngine::preload("SE/choice.ogg");
+
 
     return true;
 }

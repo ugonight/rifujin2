@@ -401,7 +401,7 @@ namespace day1 {
 			novel->addSentence(9, "寿甘「マリアちゃんそんなこと言ってたっけなー…？」");
 			novel->setFontColor(9, Color3B::BLUE);
 			novel->addSentence(9, "継「言ってなかったね」");
-			novel->setJump(9, 0, 30);
+			novel->setJump(9, 0, 29);
 
 			novel->setFontColor(0, Color3B::BLUE);
 			novel->addSentence(0, "継「これが僕の推理だ」");
