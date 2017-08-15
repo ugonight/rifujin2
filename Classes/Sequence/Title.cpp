@@ -80,8 +80,10 @@ bool Title::init()
 	}
 
 	//BGM
+	AudioEngine::preload("BGM/curse_inst.ogg");	AudioEngine::play2d("BGM/curse_inst.ogg", true);
 	AudioEngine::preload("BGM/days.ogg");
 	AudioEngine::preload("BGM/school.ogg");
+	AudioEngine::preload("BGM/mystery.ogg");
 
 	//SE
 	AudioEngine::preload("SE/po.ogg");
