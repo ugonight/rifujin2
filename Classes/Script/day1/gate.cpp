@@ -438,7 +438,7 @@ namespace day1 {
 			novel->addEvent(0, CallFunc::create([this] {
 				Control::me->getField("box")->getObject("flag")->setState(3);
 				AudioEngine::stopAll();
-				AudioEngine::play2d("BGM/school.ogg");
+				AudioEngine::play2d("BGM/school.ogg", true);
 			}));
 
 			novel->setEndTask(-1);

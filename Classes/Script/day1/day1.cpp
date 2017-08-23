@@ -3,6 +3,7 @@
 #include "System/cursor.h"
 #include "Sequence/Title.h"
 #include "Script\day1\fieldDef.h"
+#include "Script\day2\fieldDef.h"
 
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
@@ -197,7 +198,7 @@ namespace day1 {
 			novel->addSentence(1, "継「もしかしたら、校舎裏とかにいるかもしれない」");
 			novel->addSentence(1, "継「行ってみよう」");
 			novel->addEvent(1, CallFunc::create([this] {
-				AudioEngine::stopAll();
+				if (AudioEngine::getPlayingAudioCount())AudioEngine::stopAll();
 			}));
 			novel->setBg(1, "");
 			novel->addSentence(1, "継「薄暗くなってきたな…」");
@@ -205,6 +206,9 @@ namespace day1 {
 			novel->setFontColor(1, Color3B::BLACK);
 			novel->addSentence(1, "裏庭に回り込んだ僕はすぐに異様な空気を感じた");
 			novel->addSentence(1, "壁の隅の暗がりに目を凝らしてみると、そこにいたのは…");
+			novel->addEvent(1, CallFunc::create([this] {
+				AudioEngine::play2d("BGM/fear.ogg", true);
+			}));
 			novel->setFontColor(1, Color3B::BLUE);
 			novel->setCharaL(1, "");
 			novel->setBg(1, "chara/scene6.png");
@@ -232,7 +236,7 @@ namespace day1 {
 			novel->setBg(2, "");
 			novel->setCharaL(2, "");
 			novel->addEvent(2, CallFunc::create([this] {
-				AudioEngine::stopAll();
+				if (AudioEngine::getPlayingAudioCount())AudioEngine::stopAll();
 			}));
 			novel->setFontColor(2, Color3B::BLACK);
 			novel->addSentence(2, "僕は、迎えに来たセリーヌに連れられて、何事もなく家に帰ることができた。");
@@ -254,6 +258,7 @@ namespace day1 {
 
 		mFuncList.push_back([this]() {
 			mSituation = "chapter1 end";
+			AudioEngine::stopAll();
 
 			auto origin = Director::getInstance()->getVisibleOrigin();
 			auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -263,7 +268,9 @@ namespace day1 {
 			label->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 			label->setColor(Color3B::WHITE);
 			label->setOpacity(0.0f);
-			label->runAction(Sequence::create(FadeIn::create(1.0f), DelayTime::create(2.0f), FadeOut::create(1.0f), NULL));
+			label->runAction(Sequence::create(FadeIn::create(1.0f), DelayTime::create(2.0f), FadeOut::create(1.0f), CallFunc::create([this] {
+				Director::getInstance()->replaceScene(TransitionFade::create(1.0f, day2::Day::createScene(), Color3B::WHITE));
+			}), NULL));
 			this->addChild(label, 3, "label");
 
 			return 10;

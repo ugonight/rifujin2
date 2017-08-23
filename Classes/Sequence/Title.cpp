@@ -84,6 +84,7 @@ bool Title::init()
 	AudioEngine::preload("BGM/days.ogg");
 	AudioEngine::preload("BGM/school.ogg");
 	AudioEngine::preload("BGM/mystery.ogg");
+	AudioEngine::preload("BGM/fear.ogg");
 
 	//SE
 	AudioEngine::preload("SE/po.ogg");
