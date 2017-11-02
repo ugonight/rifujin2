@@ -108,7 +108,22 @@ bool Control::init() {
 	listener->onTouchEnded = [=](Touch* touch, Event* event) {};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, resetCursor);*/
 
-
+	// フィールド名
+	{
+		auto back = Sprite::create("fieldName.png");
+		back->setPosition(Director::getInstance()->getVisibleSize() / 2);
+		back->setOpacity(0.0f);
+		back->setBlendFunc(BlendFunc{ GL_SRC_ALPHA, GL_ONE });
+		auto label = Label::createWithTTF("", FONT_NAME, 24);
+		label->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
+		label->setPosition(Vec2(854, 400));
+		label->setOpacity(0.0f);
+		label->setTextColor(Color4B::WHITE);
+		label->enableOutline(Color4B::BLACK, 1);
+		addChild(back, 1, "fname_back");
+		addChild(label, 2, "fname_label");
+	}
+	
 	return true;
 }
 
@@ -227,6 +242,16 @@ void Control::changeField(std::string s) {
 	field->FadeOut();
 	mFieldList[s]->FadeIn();
 	addChild(mFieldList[s], 0, "field");
+
+	// フィールド名表示
+	{
+		auto action = Sequence::create(FadeIn::create(1.0f), DelayTime::create(2.0f), FadeOut::create(1.0f), NULL);
+		getChildByName("fname_back")->stopAllActions();
+		getChildByName("fname_back")->runAction(action);
+		((Label*)getChildByName("fname_label"))->setString(mFieldList[s]->getFieldName());
+		getChildByName("fname_label")->stopAllActions();
+		getChildByName("fname_label")->runAction(action->clone());
+	}
 }
 
 void Control::showMsg(std::string s) {

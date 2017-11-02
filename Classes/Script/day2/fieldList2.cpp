@@ -14,6 +14,8 @@ namespace day2 {
 		//フィールド一覧
 		mFieldList["prison"] = Prison::create();
 		mFieldList["magic_team"] = MagicTeam::create();
+		mFieldList["aisle"] = Aisle::create();
+		mFieldList["aisle2"] = Aisle2::create();
 
 		mFieldList["AboutItem"] = AboutItem::create();
 

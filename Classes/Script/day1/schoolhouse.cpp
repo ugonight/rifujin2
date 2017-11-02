@@ -8,6 +8,8 @@ namespace day1 {
 		Size visibleSize = Director::getInstance()->getVisibleSize();
 		Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+		mFieldName = "廊下";
+
 		auto bg = Sprite::create("corridor.png");
 		bg->setPosition(visibleSize / 2);
 		addChild(bg, 0, "bg");
@@ -108,6 +110,8 @@ namespace day1 {
 	void ClassRoom::initField() {
 		Size visibleSize = Director::getInstance()->getVisibleSize();
 		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+		mFieldName = "教室";
 
 		auto bg = Sprite::create("classroom.png");
 		bg->setPosition(visibleSize / 2);
@@ -315,6 +319,8 @@ namespace day1 {
 	void ArtRoom::initField() {
 		Size visibleSize = Director::getInstance()->getVisibleSize();
 		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+		mFieldName = "美術室";
 
 		auto bg = Sprite::create("art_room.png");
 		bg->setPosition(visibleSize / 2);

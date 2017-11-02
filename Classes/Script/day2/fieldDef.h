@@ -15,6 +15,8 @@ namespace day2
 	//メンバを追加できるように}は定義しない
 	CREATE_FIELD(Prison) private: int mHit; void attackZombie(); };
 	CREATE_FIELD(MagicTeam) private: int mNumber[3][3]; bool mMatch[8]; bool mCanMove;  };
+	CREATE_FIELD(Aisle) };
+	CREATE_FIELD(Aisle2)};
 
 
 	class Day : public Chapter

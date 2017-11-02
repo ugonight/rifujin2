@@ -237,9 +237,10 @@ void Novel::update(float delta) {
 	updateJump();
 }
 
-void Novel::addSentence(int branch,std::string s) {
+int Novel::addSentence(int branch,std::string s) {
 	mSentense[branch].push_back(s);
 	mNovelSetNum[branch]++;
+	return mNovelSetNum[branch] - 1;
 }
 
 void Novel::updateImg() {

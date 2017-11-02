@@ -90,8 +90,8 @@ public:
 	//終了フラグ
 	bool getEndFlag();
 
-	//文追加
-	void addSentence(int branch,std::string s);
+	//文追加 (mNovelSetNumを返す)
+	int addSentence(int branch,std::string s);
 	//背景設定
 	void setBg(int branch,std::string s);
 	//キャラクター・センター

@@ -12,12 +12,14 @@ class ObjectN;
 class Field : public cocos2d::Layer {
 protected:
 	std::map<std::string, ObjectN*> mObjectList;
+	std::string mFieldName;
 	void addObject(ObjectN* obj,std::string objName, int ZOder, bool addChild);
 
 	//void pauseEventListener();
 	//void resumeEventListener();
 
 public:
+	Field();
 	virtual ~Field();
 
 	virtual bool init();
@@ -27,6 +29,7 @@ public:
 
 	bool getExistObject(std::string objName);
 	ObjectN* getObject(std::string objName);
+	std::string getFieldName();
 
 	void FadeOut();
 	void FadeIn();

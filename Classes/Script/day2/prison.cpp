@@ -11,6 +11,8 @@ namespace day2 {
 		Size visibleSize = Director::getInstance()->getVisibleSize();
 		Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+		mFieldName = "牢屋";
+
 		auto bg = Sprite::create("prison.png");
 		bg->setPosition(visibleSize / 2);
 		addChild(bg, 0, "bg");
@@ -107,6 +109,9 @@ namespace day2 {
 					Control::me->changeField("magic_team");
 				}
 			}
+			else if (mObjectList["paper"]->getState() == 2) {
+				Control::me->changeField("aisle");
+			}
 		}));
 		addObject(blanket, "blanket", 1, true);
 
@@ -136,6 +141,9 @@ namespace day2 {
 
 	void Prison::attackZombie() {
 		AudioEngine::play2d("BGM/fear.ogg");
+		auto layer = Layer::create();
+		layer->setPosition(Vec2::ZERO);
+		this->addChild(layer, 6, "layer_z");
 		auto zombie = Sprite::create("chara/zombie.png");
 		zombie->setPosition(Director::getInstance()->getVisibleSize() / 2);
 		zombie->setOpacity(0.0f);
@@ -147,22 +155,48 @@ namespace day2 {
 				event->getCurrentTarget()->runAction(Sequence::create(MoveBy::create(0.1,Vec2(50,0)), MoveBy::create(0.1, Vec2(-100, 0)), MoveBy::create(0.1, Vec2(50, 0)), NULL));
 				AudioEngine::play2d("SE/tm2_hit004.ogg");
 			}
+			if (mHit == 100) {
+				getChildByName("layer_z")->setCascadeOpacityEnabled(true);
+				getChildByName("layer_z")->runAction(Sequence::create(FadeOut::create(1.0f), CallFunc::create([this] {
+					if (AudioEngine::getPlayingAudioCount())AudioEngine::stopAll();
+					auto novel = Novel::create();
+					novel->setCharaR(0, "chara/tuguru1.png");
+					novel->setFontColor(0, Color3B::BLUE);
+					novel->addSentence(0, "継「はぁ…はぁ…」");
+					novel->addSentence(0, "継「何とか振り切れたみたいだ…」");
+					novel->addSentence(0, "継「…ん、行き止まり…？」");
+					novel->addSentence(0, "継「あ、上が開くみたいだ」");
+					novel->setBg(0, "aisle.png");
+					novel->addSentence(0, "継「牢屋の外に出れたみたいだね」");
+					novel->addSentence(0, "継「見付からないように行動しよう」");
+					novel->addEvent(0, CallFunc::create([this] {
+						removeChildByName("black");
+						Control::me->changeField("aisle");
+						mObjectList["paper"]->setState(2);
+					}));
+
+					novel->setEndTask(0);
+					this->addChild(novel, 10, "novel");
+				}),RemoveSelf::create(),NULL));
+			}
 
 			return true;
 		};
 		listener->setSwallowTouches(true);
 		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, zombie);
-		addChild(zombie, 10, "zombie");
+		layer->addChild(zombie, 1, "zombie");
 		auto label = Label::createWithTTF("連打！！", FONT_NAME, 30);
 		label->setPosition(Vec2(427, 80));
 		label->setColor(Color3B::WHITE);
 		label->runAction(RepeatForever::create(Sequence::create(FadeOut::create(1), FadeIn::create(1), NULL)));
-		this->addChild(label, 11, "label");
+		layer->addChild(label, 2, "label");
 	}
 
 	void MagicTeam::initField() {
 		Size visibleSize = Director::getInstance()->getVisibleSize();
 		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+		mFieldName = "毛布の下";
 
 		auto bg = Sprite::create("magic_team.png");
 		bg->setPosition(visibleSize / 2);
@@ -310,5 +344,33 @@ namespace day2 {
 				getChildByName(StringUtils::format("num%d", i + 1 + j * 3))->setPosition(205 + 100 * i, Director::getInstance()->getVisibleSize().height - 100 * j - 100);
 			}
 		}
+	}
+
+
+	void Aisle::initField() {
+		Size visibleSize = Director::getInstance()->getVisibleSize();
+		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+		mFieldName = "通路（牢屋）";
+
+		auto bg = Sprite::create("aisle.png");
+		bg->setPosition(visibleSize / 2);
+		addChild(bg, 0, "bg");
+
+		auto entrance = ObjectN::create();
+		entrance->setArea(Rect(460, 380, 160, 70));
+		entrance->setCursor(Cursor::INFO);
+		entrance->setFieldChangeEvent("prison");
+		addObject(entrance, "prison", 1, true);
+
+		auto b2f = ObjectN::create();
+		b2f->setArea(Rect(100, 430, 320, 50));
+		b2f->setCursor(Cursor::BACK);
+		b2f->setFieldChangeEvent("aisle2");
+		addObject(b2f, "b2f", 1, true);
+	}
+
+	void Aisle::changedField() {
+
 	}
 }

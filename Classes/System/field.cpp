@@ -8,6 +8,10 @@
 
 USING_NS_CC;
 
+Field::Field() :mFieldName("") {
+
+}
+
 Field::~Field() {
 	for (auto obj : mObjectList) {
 		CC_SAFE_RELEASE_NULL(obj.second);
@@ -100,6 +104,10 @@ bool Field::getExistObject(std::string s) {
 
 ObjectN* Field::getObject(std::string s) {
 	return mObjectList[s];
+}
+
+std::string Field::getFieldName() {
+	return mFieldName;
 }
 
 void Field::FadeOut(){
