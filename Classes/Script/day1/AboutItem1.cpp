@@ -28,10 +28,10 @@ namespace day1 {
 				auto novel = Novel::create();
 				novel->setCharaL(0, "chara/tuguru1.png");
 				novel->setFontColor(0, Color3B::BLUE);
-				novel->addSentence(0, "継「ごしごしごし…」");
+				novel->addSentence(0, "継", "ごしごしごし…");
 				novel->setCharaR(0, "chara/suama1.png");
 				novel->setFontColor(0, Color3B::RED);
-				novel->addSentence(0, "寿甘「あーつぐるんがまた奇行に走ってるー！」");
+				novel->addSentence(0, "寿甘", "あーつぐるんがまた奇行に走ってるー！");
 				novel->addEvent(0, CallFunc::create([this] {
 					ItemMgr::sharedItem()->deleteItem("fruit");
 					ItemMgr::sharedItem()->deleteItem("net");
@@ -39,9 +39,9 @@ namespace day1 {
 					Control::me->showMsg("コショウを手に入れた");
 				}));
 				novel->setFontColor(0, Color3B::BLUE);
-				novel->addSentence(0, "継「できた」");
+				novel->addSentence(0, "継", "できた");
 				novel->setFontColor(0, Color3B::RED);
-				novel->addSentence(0, "寿甘「は、はっくしょん！…なんでコショウなんて作ってるのよー！」");
+				novel->addSentence(0, "寿甘", "は、はっくしょん！…なんでコショウなんて作ってるのよー！");
 				novel->setEndTask(0);
 				this->addChild(novel, 10, "novel");
 			}

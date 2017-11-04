@@ -77,7 +77,7 @@ bool Control::init() {
 	//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, help);
 
 	auto novel = Novel::create();
-	novel->addSentence(0,"");
+	novel->addSentence(0,"","");
 	novel->setEndTask(0);
 	novel->setLogOnly();
 	addChild(novel, 1, "log");
@@ -131,16 +131,16 @@ void Control::update(float delta) {
 	auto field = getChildByName("field");
 	if (field->getChildByName("novel") /*&& ((MenuItemImage*)getChildByName("save"))->getOpacity() >= 255*/) {
 		//((MenuItemImage*)getChildByName("save"))->setOpacity(0.0f);
-		
-		if (getChildByName("log")) 
+
+		if (getChildByName("log"))
 			removeChildByName("log");
 	}
 	else if (!field->getChildByName("novel")) {
 		//((MenuItemImage*)getChildByName("save"))->setOpacity(255.0f);
-		
+
 		if (!getChildByName("log")) {
 			auto novel = Novel::create();
-			novel->addSentence(0,"");
+			novel->addSentence(0, "", "");
 			novel->setEndTask(0);
 			novel->setLogOnly();
 			addChild(novel, 1, "log");

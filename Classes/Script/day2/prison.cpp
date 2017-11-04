@@ -22,16 +22,16 @@ namespace day2 {
 		bandana->setArea(Rect(180, 130, 120, 260));
 		bandana->setCursor(Cursor::INFO);
 		bandana->setTouchEvent(CallFunc::create([this] {
-				auto novel = Novel::create();
-				novel->setCharaR(0, "chara/bandana1.png");
-				novel->setCharaL(0, "chara/tuguru1.png");
-				novel->setFontColor(0, Color3B::BLUE);	
+			auto novel = Novel::create();
+			novel->setCharaR(0, "chara/bandana1.png");
+			novel->setCharaL(0, "chara/tuguru1.png");
+			novel->setFontColor(0, Color3B::BLUE);
 
-				novel->addSentence(0, "バンダナ「俺はここで休んでるから、薬を探してきてくれ」");
-				novel->addSentence(0, "継「わかった、なるべく急ぐよ」");
+			novel->addSentence(0, "バンダナ", "俺はここで休んでるから、薬を探してきてくれ");
+			novel->addSentence(0, "継", "わかった、なるべく急ぐよ");
 
-				novel->setEndTask(0);
-				this->addChild(novel, 10, "novel");
+			novel->setEndTask(0);
+			this->addChild(novel, 10, "novel");
 		}));
 		//renji->addCanUseItem("clothes");
 		addObject(bandana, "bandana", 1, true);
@@ -45,18 +45,18 @@ namespace day2 {
 
 			if (mObjectList["paper"]->getState() == 0) {
 				novel->setFontColor(0, Color3B::BLUE);
-				novel->addSentence(0, "継「壁のヒビの隙間に何か挟まっている…慎重に取り出してみよう」");
-				novel->addSentence(0, "継「よいしょっ…と。これは紙切れかな、読んでみよう。」");
+				novel->addSentence(0, "継", "壁のヒビの隙間に何か挟まっている…慎重に取り出してみよう");
+				novel->addSentence(0, "継", "よいしょっ…と。これは紙切れかな、読んでみよう。");
 			}
 			novel->setFontColor(0, Color3B::BLACK);
-			novel->addSentence(0, "この手紙を読んでいる君へ");
-			novel->addSentence(0, "毛布の下に通路へとつながる穴を掘った");
-			novel->addSentence(0, "監視にバレないように魔法で入り口をロックしておいた");
-			novel->addSentence(0, "私も逃げ切れるかはわからないが、君はどうか生き残って欲しい。健闘を祈る。");
-			novel->addSentence(0, "ロック解除に必要な暗号:全ての方向の和を同一にせよ");
+			novel->addSentence(0, "", "この手紙を読んでいる君へ");
+			novel->addSentence(0, "", "毛布の下に通路へとつながる穴を掘った");
+			novel->addSentence(0, "", "監視にバレないように魔法で入り口をロックしておいた");
+			novel->addSentence(0, "", "私も逃げ切れるかはわからないが、君はどうか生き残って欲しい。健闘を祈る。");
+			novel->addSentence(0, "", "ロック解除に必要な暗号:全ての方向の和を同一にせよ");
 			if (mObjectList["paper"]->getState() == 0) {
 				novel->setFontColor(0, Color3B::BLUE);
-				novel->addSentence(0, "継「なるほど。布団の下を調べてみよう」");
+				novel->addSentence(0, "継", "なるほど。布団の下を調べてみよう");
 				mObjectList["paper"]->setState(1);
 			}
 
@@ -77,26 +77,26 @@ namespace day2 {
 					auto novel = Novel::create();
 					novel->setCharaL(0, "chara/tuguru1.png");
 					novel->setFontColor(0, Color3B::BLUE);
-					novel->addSentence(0, "継「地下へ降りてみよう」");
+					novel->addSentence(0, "継", "地下へ降りてみよう");
 					novel->setBg(0, "bg/black.png");
-					novel->addSentence(0, "継「狭いから這っていかないと…」");
-					novel->addSentence(0, "継「…んしょ…んしょと……」");
+					novel->addSentence(0, "継", "狭いから這っていかないと…");
+					novel->addSentence(0, "継", "…んしょ…んしょと……");
 					novel->setFontColor(0, Color3B::BLACK);
-					novel->addSentence(0, "ガサッ…ガサッ…");
+					novel->addSentence(0, "", "ガサッ…ガサッ…");
 					novel->setFontColor(0, Color3B::BLUE);
-					novel->addSentence(0, "継「？」");
-					novel->addSentence(0, "継「バンダナ…？ついてきたのか…？」");
+					novel->addSentence(0, "継", "？");
+					novel->addSentence(0, "継", "バンダナ…？ついてきたのか…？");
 					novel->setFontColor(0, Color3B::BLACK);
-					novel->addSentence(0, "ガサッ…ガサッ…");
-					novel->addSentence(0, "…ガサガサガサガサッ！！！");
+					novel->addSentence(0, "", "ガサッ…ガサッ…");
+					novel->addSentence(0, "", "…ガサガサガサガサッ！！！");
 					novel->setFontColor(0, Color3B::BLUE);
-					novel->addSentence(0, "継「！」");
+					novel->addSentence(0, "継", "！");
 					novel->addEvent(0, CallFunc::create([this] {
 						auto black = Sprite::create("bg/black.png");
 						black->setPosition(Director::getInstance()->getVisibleSize() / 2);
 						auto listener = EventListenerTouchOneByOne::create();
 						listener->setSwallowTouches(true);
-						listener->onTouchBegan = [](Touch* touch, Event* event) {return true;};
+						listener->onTouchBegan = [](Touch* touch, Event* event) {return true; };
 						this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, black);
 						black->runAction(Sequence::create(DelayTime::create(3.0f), CallFunc::create(CC_CALLBACK_0(Prison::attackZombie, this)), NULL));
 						addChild(black, 5, "black");
@@ -119,7 +119,7 @@ namespace day2 {
 		addObject(flag, "flag", 0, false);
 
 		mHit = 0;
-		
+
 		this->setCascadeOpacityEnabled(true);
 		this->setOpacity(0);
 		this->runAction(FadeIn::create(0.5f));
@@ -131,8 +131,8 @@ namespace day2 {
 			auto novel = Novel::create();
 			novel->setCharaR(0, "chara/tuguru1.png");
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "継「ロックが解除されたみたいだ」");
-			novel->addSentence(0, "継「床下に降りてみよう」");
+			novel->addSentence(0, "継", "ロックが解除されたみたいだ");
+			novel->addSentence(0, "継", "床下に降りてみよう");
 			novel->setEndTask(0);
 			this->addChild(novel, 10, "novel");
 			mObjectList["flag"]->setState(1);
@@ -152,7 +152,7 @@ namespace day2 {
 		listener->onTouchBegan = [this](Touch* touch, Event* event) {
 			mHit++;
 			if (mHit % 5 == 0) {
-				event->getCurrentTarget()->runAction(Sequence::create(MoveBy::create(0.1,Vec2(50,0)), MoveBy::create(0.1, Vec2(-100, 0)), MoveBy::create(0.1, Vec2(50, 0)), NULL));
+				event->getCurrentTarget()->runAction(Sequence::create(MoveBy::create(0.1, Vec2(50, 0)), MoveBy::create(0.1, Vec2(-100, 0)), MoveBy::create(0.1, Vec2(50, 0)), NULL));
 				AudioEngine::play2d("SE/tm2_hit004.ogg");
 			}
 			if (mHit == 100) {
@@ -162,13 +162,13 @@ namespace day2 {
 					auto novel = Novel::create();
 					novel->setCharaR(0, "chara/tuguru1.png");
 					novel->setFontColor(0, Color3B::BLUE);
-					novel->addSentence(0, "継「はぁ…はぁ…」");
-					novel->addSentence(0, "継「何とか振り切れたみたいだ…」");
-					novel->addSentence(0, "継「…ん、行き止まり…？」");
-					novel->addSentence(0, "継「あ、上が開くみたいだ」");
+					novel->addSentence(0, "継", "はぁ…はぁ…");
+					novel->addSentence(0, "継", "何とか振り切れたみたいだ…");
+					novel->addSentence(0, "継", "…ん、行き止まり…？");
+					novel->addSentence(0, "継", "あ、上が開くみたいだ");
 					novel->setBg(0, "aisle.png");
-					novel->addSentence(0, "継「牢屋の外に出れたみたいだね」");
-					novel->addSentence(0, "継「見付からないように行動しよう」");
+					novel->addSentence(0, "継", "牢屋の外に出れたみたいだね");
+					novel->addSentence(0, "継", "見付からないように行動しよう");
 					novel->addEvent(0, CallFunc::create([this] {
 						removeChildByName("black");
 						Control::me->changeField("aisle");
@@ -177,7 +177,7 @@ namespace day2 {
 
 					novel->setEndTask(0);
 					this->addChild(novel, 10, "novel");
-				}),RemoveSelf::create(),NULL));
+				}), RemoveSelf::create(), NULL));
 			}
 
 			return true;
@@ -330,8 +330,8 @@ namespace day2 {
 			auto novel = Novel::create();
 			novel->setCharaR(0, "chara/tuguru1.png");
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "継「これがその隠し通路の扉かな」");
-			novel->addSentence(0, "継「このパズルを暗号に従って解けば開きそうだね」");
+			novel->addSentence(0, "継", "これがその隠し通路の扉かな");
+			novel->addSentence(0, "継", "このパズルを暗号に従って解けば開きそうだね");
 			novel->setEndTask(0);
 			this->addChild(novel, 10, "novel");
 			mObjectList["flag"]->setState(1);

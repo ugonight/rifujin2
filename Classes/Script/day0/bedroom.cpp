@@ -8,6 +8,8 @@ namespace day0 {
 		Size visibleSize = Director::getInstance()->getVisibleSize();
 		Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+		mFieldName = "寝室（ベッド）";
+
 		auto bg = Sprite::create("bedroom.png");
 		bg->setPosition(visibleSize / 2);
 		addChild(bg, 0, "bg");
@@ -26,8 +28,8 @@ namespace day0 {
 				auto novel = Novel::create();
 				novel->setCharaR(0, "chara/tuguru2.png");
 				novel->setFontColor(0, Color3B::BLUE);
-				novel->addSentence(0, "継「パジャマから普通の服に着替えよう」");
-				novel->addSentence(0, "継「クローゼットは移動すれば見つかるよ」");
+				novel->addSentence(0, "継","パジャマから普通の服に着替えよう");
+				novel->addSentence(0, "継","クローゼットは移動すれば見つかるよ");
 				novel->setEndTask(0);
 				this->addChild(novel, 10, "novel");
 			}
@@ -53,6 +55,8 @@ namespace day0 {
 	void Closet::initField() {
 		Size visibleSize = Director::getInstance()->getVisibleSize();
 		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+		mFieldName = "寝室（クローゼット）";
 
 		auto bg = Sprite::create("closet.png");
 		bg->setPosition(visibleSize / 2);

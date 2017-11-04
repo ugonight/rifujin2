@@ -42,6 +42,7 @@ bool Novel::init() {
 		mNovelNum[i] = 0;
 		mNovelSetNum[i] = 1;
 		mSentense[i].push_back("");
+		mName[i].push_back("");
 		mTaskNum[i] = mColorNum[i] = mFuncNum[i] = mSwitchNum[i] = mJumpNum[i] = 0;
 	}
 	
@@ -86,6 +87,14 @@ bool Novel::init() {
 	label->enableOutline(Color4B::WHITE, 2);
 	label->setDimensions(750, 130);
 	this->addChild(label, 3, "label");
+	//名前
+	label = Label::createWithTTF("", FONT_NAME, 20);
+	label->setPosition(Vec2(origin.x + 130,
+		origin.y + visibleSize.height - 320));
+	label->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	label->setColor(Color3B::WHITE);
+	label->enableOutline(Color4B::BLACK, 2);
+	this->addChild(label, 3, "name");
 
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
@@ -135,6 +144,8 @@ void Novel::func() {
 	mNovelNum[0] = 1;
 	auto label = (Label*)this->getChildByName("label");
 	label->setString(mSentense[0][mNovelNum[0]]);
+	label = (Label*)this->getChildByName("name");
+	label->setString(mName[0][mNovelNum[0]]);
 	setDelayAnime();
 }
 
@@ -168,13 +179,20 @@ bool Novel::touchEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 
 void Novel::readTalk() {
 	auto label = (Label*)this->getChildByName("label");
+	auto name = (Label*)this->getChildByName("name");
 	if (endCheck()) {	//文がすべて表示されていたら
-						//バックログに記録
-		if (this->getOpacity() == 255) mLog.push_back(Value(mSentense[mBranch][mNovelNum[mBranch]]));
+		//バックログに記録
+		if (this->getOpacity() == 255) {
+			std::string log = "";
+			if (mName[mBranch][mNovelNum[mBranch]] != "")log += mName[mBranch][mNovelNum[mBranch]] + " : ";
+			log += mSentense[mBranch][mNovelNum[mBranch]];
+			mLog.push_back(Value(log));
+		} 
 		if (mSentense[mBranch].size() - 1 > mNovelNum[mBranch]) {	//文リストの最後でなければ
 																	//次の分をセット
 			mNovelNum[mBranch]++;
 			label->setString(mSentense[mBranch][mNovelNum[mBranch]]);
+			name->setString(mName[mBranch][mNovelNum[mBranch]]);
 			setDelayAnime();
 		}
 		else if (mSentense[mBranch].size() - 1 == mNovelNum[mBranch] && this->getOpacity() == 255) {	//文リストの最後なら
@@ -237,8 +255,9 @@ void Novel::update(float delta) {
 	updateJump();
 }
 
-int Novel::addSentence(int branch,std::string s) {
+int Novel::addSentence(int branch, std::string name, std::string s) {
 	mSentense[branch].push_back(s);
+	mName[branch].push_back(name);
 	mNovelSetNum[branch]++;
 	return mNovelSetNum[branch] - 1;
 }
@@ -423,7 +442,9 @@ void Novel::updateColor() {
 	if (mColorTask[mBranch][mColorNum[mBranch]].num == mNovelNum[mBranch]) {
 		//for (int i = 0; i < 3; i++)mLabel[i]->setColor(mColorTask[0].color);
 		auto label = (Label*)this->getChildByName("label");
+		auto name = (Label*)this->getChildByName("name");
 		label->setTextColor((Color4B)mColorTask[mBranch][mColorNum[mBranch]].color);
+		name->enableOutline((Color4B)mColorTask[mBranch][mColorNum[mBranch]].color, 2);
 		//mColorTask[mBranch].erase(mColorTask[mBranch].begin());
 		mColorNum[mBranch]++;
 	}
@@ -459,8 +480,10 @@ void Novel::updateSwitch() {
 			listener->onTouchEnded = [this, branchTo](Touch* touch, Event* event) {
 				mBranch = mCurrentSTask.branchTo[branchTo];
 				auto label = (Label*)this->getChildByName("label");
+				auto name = (Label*)this->getChildByName("name");
 				mNovelNum[mBranch]++;
 				label->setString(mSentense[mBranch][mNovelNum[mBranch]]);
+				name->setString(mName[mBranch][mNovelNum[mBranch]]);
 				setDelayAnime();
 				this->removeChildByName("fakeLayer");
 				mSwitch = false;
@@ -507,8 +530,10 @@ void Novel::updateSwitch() {
 							name.clear(); name.str("");
 						}
 						auto label = (Label*)this->getChildByName("label");
+						auto nlabel = (Label*)this->getChildByName("name");
 						mNovelNum[mBranch]++;
 						label->setString(mSentense[mBranch][mNovelNum[mBranch]]);
+						nlabel->setString(mName[mBranch][mNovelNum[mBranch]]);
 						setDelayAnime();
 						AudioEngine::play2d("SE/choice.ogg");
 

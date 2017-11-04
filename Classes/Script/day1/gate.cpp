@@ -22,36 +22,36 @@ namespace day1 {
 		renji->setArea(Rect(50, 110, 120, 370));
 		renji->setCursor(Cursor::INFO);
 		renji->setTouchEvent(CallFunc::create([this] {
-				auto novel = Novel::create();
-				novel->setCharaR(0, "chara/renji1.png");
-				novel->setCharaL(0, "chara/tuguru1.png");
-				novel->setFontColor(0, Color3B::BLUE);	
-				if (mObjectList["renji"]->getState() == 0) {
-					novel->addSentence(0, "恋巳「御早う、諸君。」");
-					novel->addSentence(0, "恋巳「俺は、神北　恋巳（かみきた　れんじ）。以後、お見知り置きを。」");
-					novel->addSentence(0, "継「うん、おはよう。神北くん」");
+			auto novel = Novel::create();
+			novel->setCharaR(0, "chara/renji1.png");
+			novel->setCharaL(0, "chara/tuguru1.png");
+			novel->setFontColor(0, Color3B::BLUE);
+			if (mObjectList["renji"]->getState() == 0) {
+				novel->addSentence(0, "恋巳", "御早う、諸君。");
+				novel->addSentence(0, "恋巳", "俺は、神北　恋巳（かみきた　れんじ）。以後、お見知り置きを。");
+				novel->addSentence(0, "継", "うん、おはよう。神北くん");
+				mObjectList["renji"]->setState(1);
+			}
+			else if (mObjectList["renji"]->getState() == 1) {
+				novel->addSentence(0, "恋巳", "御早う、諸君。");
+			}
+			else if (mObjectList["renji"]->getState() == 2) {
+				novel->addSentence(0, "恋巳", "ちょっと待ちたまえ、君たち。");
+				novel->addSentence(0, "継", "ん？どうしたのかな、神北くん");
+				novel->addSentence(0, "恋巳", "諸君らはオカルトに、興味はあるか？");
+				novel->addSentence(0, "継", "オカルト…？うーん、特には");
+				novel->addSentence(0, "恋巳", "オカルトはいいぞ…いつまでも俺の知的好奇心を刺激してくれる");
+				novel->addEvent(0, CallFunc::create([this] {
+					ItemMgr::sharedItem()->getItem("magazine", Director::getInstance()->getVisibleSize() / 2);
+					Control::me->showMsg("雑誌を手に入れた");
 					mObjectList["renji"]->setState(1);
-				}
-				else if (mObjectList["renji"]->getState() == 1) {
-					novel->addSentence(0, "恋巳「御早う、諸君。」");
-				}
-				else if (mObjectList["renji"]->getState() == 2){
-					novel->addSentence(0, "恋巳「ちょっと待ちたまえ、君たち。」");
-					novel->addSentence(0, "継「ん？どうしたのかな、神北くん」");
-					novel->addSentence(0, "恋巳「諸君らはオカルトに、興味はあるか？」");
-					novel->addSentence(0, "継「オカルト…？うーん、特には」");
-					novel->addSentence(0, "恋巳「オカルトはいいぞ…いつまでも俺の知的好奇心を刺激してくれる」");
-					novel->addEvent(0, CallFunc::create([this] {
-						ItemMgr::sharedItem()->getItem("magazine", Director::getInstance()->getVisibleSize() / 2);
-						Control::me->showMsg("雑誌を手に入れた");
-						mObjectList["renji"]->setState(1);
-						mObjectList["renji"]->setCursor(Cursor::INFO);
-					}));
-					novel->addSentence(0, "恋巳「これをあげるから、諸君らも是非読んで興味を持ってくれると嬉しい。」");
-					novel->addSentence(0, "継「ありがとう、神北くん。」");
-				}
-				novel->setEndTask(0);
-				this->addChild(novel, 10, "novel");
+					mObjectList["renji"]->setCursor(Cursor::INFO);
+				}));
+				novel->addSentence(0, "恋巳", "これをあげるから、諸君らも是非読んで興味を持ってくれると嬉しい。");
+				novel->addSentence(0, "継", "ありがとう、神北くん。");
+			}
+			novel->setEndTask(0);
+			this->addChild(novel, 10, "novel");
 		}));
 		//renji->addCanUseItem("clothes");
 		addObject(renji, "renji", 1, true);
@@ -66,24 +66,24 @@ namespace day1 {
 					auto novel = Novel::create();
 					novel->setCharaL(0, "chara/suama1.png");
 					novel->setFontColor(0, Color3B::RED);
-					novel->addSentence(0, "寿甘「ねえ、つぐるん」");
+					novel->addSentence(0, "寿甘", "ねえ、つぐるん");
 					novel->setCharaR(0, "chara/tuguru1.png");
 					novel->setFontColor(0, Color3B::BLUE);
-					novel->addSentence(0, "継「ん？」");
+					novel->addSentence(0, "継", "ん？");
 					novel->setFontColor(0, Color3B::RED);
-					novel->addSentence(0, "寿甘「確か、【ひゃっくりさん】って幽霊を呼び出す占いだったわよね」");
+					novel->addSentence(0, "寿甘", "確か、【ひゃっくりさん】って幽霊を呼び出す占いだったわよね");
 					novel->setFontColor(0, Color3B::BLUE);
-					novel->addSentence(0, "継「そうだね」");
+					novel->addSentence(0, "継", "そうだね");
 					novel->setFontColor(0, Color3B::RED);
-					novel->addSentence(0, "寿甘「学校の霊のことなら初代校長先生の霊なら何か知ってるかも」");
-					novel->addSentence(0, "寿甘「ちょっと聞いてみるねー」");
+					novel->addSentence(0, "寿甘", "学校の霊のことなら初代校長先生の霊なら何か知ってるかも");
+					novel->addSentence(0, "寿甘", "ちょっと聞いてみるねー");
 					novel->setFontColor(0, Color3B::BLACK);
-					novel->addSentence(0, "寿甘は幽霊とも会話できる特殊能力を持っているのだ");
+					novel->addSentence(0, "", "寿甘は幽霊とも会話できる特殊能力を持っているのだ");
 					novel->setFontColor(0, Color3B::RED);
 					novel->addEvent(0, CallFunc::create([this] {callSpirit(false); }));
 					novel->setCharaR(0, "");
-					novel->addSentence(0, "寿甘「おつかれさまでーす」");
-					novel->addSentence(0, "寿甘「最近、【ひゃっくりさん】で呼び出してきた子とかいませんでしたかー？」");
+					novel->addSentence(0, "寿甘", "おつかれさまでーす");
+					novel->addSentence(0, "寿甘", "最近、【ひゃっくりさん】で呼び出してきた子とかいませんでしたかー？");
 					novel->addEvent(0, CallFunc::create([this] {
 						getChildByName("kokkuri")->getChildByName("spirit")->runAction(RepeatForever::create(Sequence::create(
 							EaseSineInOut::create(MoveTo::create(2.0f, Vec2(45, 300))),	// 1
@@ -96,8 +96,8 @@ namespace day1 {
 							DelayTime::create(3.0f),
 							NULL)));
 					}));
-					novel->addSentence(0, "寿甘「ふむふむ…なるほど…」");
-					novel->addSentence(0, "寿甘「何かメッセージを残していったみたいね」");
+					novel->addSentence(0, "寿甘", "ふむふむ…なるほど…");
+					novel->addSentence(0, "寿甘", "何かメッセージを残していったみたいね");
 					novel->setEndTask(0);
 					this->addChild(novel, 10, "novel");
 					mObjectList["cenotaph"]->setState(2);
@@ -121,9 +121,9 @@ namespace day1 {
 			novel->setCharaR(0, "chara/tuguru1.png");
 			novel->setCharaL(0, "chara/bandana1.png");
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "継「これは何だろう」");
-			novel->addSentence(0, "バンダナ「何かのメモかな、誰が落としたんだろう」");
-			novel->addSentence(0, "継「会ったらちゃんと渡しておこう」");
+			novel->addSentence(0, "継", "これは何だろう");
+			novel->addSentence(0, "バンダナ", "何かのメモかな、誰が落としたんだろう");
+			novel->addSentence(0, "継", "会ったらちゃんと渡しておこう");
 			novel->setEndTask(0);
 			this->addChild(novel, 10, "novel");
 		}));
@@ -203,7 +203,7 @@ namespace day1 {
 				DelayTime::create(3.0f),
 				NULL)));
 		}
-		layer->addChild(m_emitter, 10, "spirit"); 
+		layer->addChild(m_emitter, 10, "spirit");
 
 		auto back = Sprite::create("black.png");
 		back->setPosition(size / 2);
@@ -242,16 +242,16 @@ namespace day1 {
 				auto novel = Novel::create();
 				novel->setFontColor(0, Color3B::BLUE);
 				novel->setCharaL(0, "chara/tuguru1.png");
-				novel->addSentence(0, "継「UFOをカメラで撮影してみよう」");
+				novel->addSentence(0, "継", "UFOをカメラで撮影してみよう");
 				novel->addEvent(0, CallFunc::create([this] {
 					ItemMgr::sharedItem()->getItem("picture", Director::getInstance()->getVisibleSize() / 2);
 					Control::me->showMsg("写真を手に入れた");
 					removeChildByName("ufo");
 				}));
 				novel->setFontColor(0, Color3B::BLACK);
-				novel->addSentence(0, "パシャッ");
+				novel->addSentence(0, "", "パシャッ");
 				novel->setFontColor(0, Color3B::BLUE);
-				novel->addSentence(0, "継「よし、写真が撮れたよ」");
+				novel->addSentence(0, "継", "よし、写真が撮れたよ");
 				novel->setEndTask(0);
 				addChild(novel, 10, "novel");
 			}
@@ -282,163 +282,163 @@ namespace day1 {
 			auto novel = Novel::create();
 			novel->setFontColor(0, Color3B::BLUE);
 			novel->setCharaL(0, "chara/tuguru1.png");
-			novel->addSentence(0, "継「よし、開いたみたいだ」");
-			novel->addSentence(0, "継「中身を確認してみよう」");
+			novel->addSentence(0, "継", "よし、開いたみたいだ");
+			novel->addSentence(0, "継", "中身を確認してみよう");
 			novel->setCharaL(0, "");
-			novel->addEvent(0, CallFunc::create([this] {AudioEngine::stopAll();}));
+			novel->addEvent(0, CallFunc::create([this] {AudioEngine::stopAll(); }));
 			novel->setBg(0, "chara/scene5.png");
-			novel->addSentence(0, "継「これは…」");
-			novel->addSentence(0, "バンダナ「げ…俺の名前を書きなぐったノートと、俺の写真の山…よく撮れてるなぁ」");
+			novel->addSentence(0, "継", "これは…");
+			novel->addSentence(0, "バンダナ", "げ…俺の名前を書きなぐったノートと、俺の写真の山…よく撮れてるなぁ");
 			novel->setFontColor(0, Color3B::RED);
-			novel->addSentence(0, "寿甘「感心してる場合！？…盗撮よ？盗撮！」");
-			novel->addSentence(0, "寿甘「このノートだって何かのおまじないなのよ、きっと…あんたかなり執着されてるわよ」");
+			novel->addSentence(0, "寿甘", "感心してる場合！？…盗撮よ？盗撮！");
+			novel->addSentence(0, "寿甘", "このノートだって何かのおまじないなのよ、きっと…あんたかなり執着されてるわよ");
 			novel->setBg(0, "");
 			novel->setCharaL(0, "chara/suama1.png");
 			novel->setCharaR(0, "chara/bandana1.png");
-			novel->addSentence(0, "寿甘「…これ、もしかしてあの子が…」");
+			novel->addSentence(0, "寿甘", "…これ、もしかしてあの子が…");
 			novel->setCharaC(0, "chara/rias1.png");
-			novel->addSentence(0, "リアス「あの…」");
-			novel->addSentence(0, "寿甘「あ…」");
+			novel->addSentence(0, "リアス", "あの…");
+			novel->addSentence(0, "寿甘", "あ…");
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "バンダナ「ええと…」");
+			novel->addSentence(0, "バンダナ", "ええと…");
 			novel->setFontColor(0, Color3B::RED);
-			novel->addSentence(0, "リアス「…うわぁ…ひどいですね、これ…いったい誰がこんなことを…」");
-			novel->addSentence(0, "リアス「も、もしかして宇沢さんですかね、彼女、いつも写真撮ってますし…」");
+			novel->addSentence(0, "リアス", "…うわぁ…ひどいですね、これ…いったい誰がこんなことを…");
+			novel->addSentence(0, "リアス", "も、もしかして宇沢さんですかね、彼女、いつも写真撮ってますし…");
 			novel->setCharaL(0, "chara/tuguru1.png");
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "継「！」");
-			novel->addEvent(0, CallFunc::create([this] {AudioEngine::play2d("BGM/mystery.ogg",true); }));
-			novel->addSentence(0, "継「それは違うと思うよ」");
-			novel->addSentence(0, "リアス「ど、どうしてですか」");
-			novel->addSentence(0, "継「確か…僕たちが写真を宇沢さんに見せた時…」");
+			novel->addSentence(0, "継", "！");
+			novel->addEvent(0, CallFunc::create([this] {AudioEngine::play2d("BGM/mystery.ogg", true); }));
+			novel->addSentence(0, "継", "それは違うと思うよ");
+			novel->addSentence(0, "リアス", "ど、どうしてですか");
+			novel->addSentence(0, "継", "確か…僕たちが写真を宇沢さんに見せた時…");
 			novel->addSwitchEvent(0, 1, "オカルトは嫌い", 2, "バンダナが好き");
-			novel->addSentence(0, "継「彼女はこう言っていたはずだ」");
+			novel->addSentence(0, "継", "彼女はこう言っていたはずだ");
 
-			novel->addSentence(1, "継「そう、彼女はオカルトが嫌いだったはずだ」");
+			novel->addSentence(1, "継", "そう、彼女はオカルトが嫌いだったはずだ");
 			novel->addSwitchEvent(1, 0);
 			novel->setFontColor(1, Color3B::RED);
-			novel->addSentence(1, "リアス「そ、それがなんだって言うのよ…！」");
+			novel->addSentence(1, "リアス", "そ、それがなんだって言うのよ…！");
 
-			novel->addSentence(2, "バンダナ「あいつがそんなこと言ってたのか…」");
-			novel->addSentence(2, "継「え！…あ、違うね」");
-			novel->addSentence(2, "継「もう一度考え直そう」");
+			novel->addSentence(2, "バンダナ", "あいつがそんなこと言ってたのか…");
+			novel->addSentence(2, "継", "え！…あ、違うね");
+			novel->addSentence(2, "継", "もう一度考え直そう");
 			novel->setJump(2, 0, 16);
 
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "継「オカルト嫌いの人が、こんなおまじないなんかに頼るかな」");
+			novel->addSentence(0, "継", "オカルト嫌いの人が、こんなおまじないなんかに頼るかな");
 			novel->setFontColor(0, Color3B::RED);
-			novel->addSentence(0, "リアス「うぅ…」");
+			novel->addSentence(0, "リアス", "うぅ…");
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "継「それにこの箱の存在を教えてくれたのも宇沢さんだ。わざわざ見つからないように隠していたものを、自分から明かすとは考えにくい」");
+			novel->addSentence(0, "継", "それにこの箱の存在を教えてくれたのも宇沢さんだ。わざわざ見つからないように隠していたものを、自分から明かすとは考えにくい");
 			novel->setFontColor(0, Color3B::RED);
-			novel->addSentence(0, "リアス「わからないよ…？もしかしたらわざと探させて想いを伝えたかったのかもしれないし…」");
+			novel->addSentence(0, "リアス", "わからないよ…？もしかしたらわざと探させて想いを伝えたかったのかもしれないし…");
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "継「それに、宇沢さんよりもっと怪しい人がいるんだ」");
+			novel->addSentence(0, "継", "それに、宇沢さんよりもっと怪しい人がいるんだ");
 			novel->addSwitchEvent(0, 3, "神北恋巳", 4, "リアス・アレキサンドライト");
-			novel->addSentence(0, "継「その人物は…」");
+			novel->addSentence(0, "継", "その人物は…");
 
-			novel->addSentence(3, "バンダナ「神北が俺のことを…？」");
+			novel->addSentence(3, "バンダナ", "神北が俺のことを…？");
 			novel->setCharaR(3, "chara/suama1.png");
 			novel->setFontColor(3, Color3B::RED);
-			novel->addSentence(3, "寿甘「いいぞもっとやれ」");
+			novel->addSentence(3, "寿甘", "いいぞもっとやれ");
 			novel->setFontColor(3, Color3B::BLUE);
-			novel->addSentence(3, "継「うん、違うね」");
+			novel->addSentence(3, "継", "うん、違うね");
 			novel->setJump(3, 0, 22);
 
-			novel->addSentence(4, "継「リアス、君だ」");
+			novel->addSentence(4, "継", "リアス、君だ");
 			novel->setFontColor(4, Color3B::RED);
-			novel->addSentence(4, "リアス「ひぃぃ…」");
+			novel->addSentence(4, "リアス", "ひぃぃ…");
 			novel->addSwitchEvent(4, 0);
-			novel->addSentence(4, "リアス「な、なにを根拠に…」");
+			novel->addSentence(4, "リアス", "な、なにを根拠に…");
 
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "継「まず、この箱の中にあるものについて見てみよう」");
+			novel->addSentence(0, "継", "まず、この箱の中にあるものについて見てみよう");
 			novel->setCharaR(0, "");
 			novel->setCharaC(0, "");
 			novel->setCharaL(0, "");
 			novel->setBg(0, "chara/scene5.png");
 			novel->addSwitchEvent(0, 5, "写真", 6, "文字のインク", 7, "書いてある名前");
-			novel->addSentence(0, "継「この中でリアスちゃんを連想できるものは…」");
+			novel->addSentence(0, "継", "この中でリアスちゃんを連想できるものは…");
 
-			novel->addSentence(5, "バンダナ「俺の写真がどうかしたか？」");
-			novel->addSentence(5, "継「いやぁ、よく撮れてるなと思って」");
+			novel->addSentence(5, "バンダナ", "俺の写真がどうかしたか？");
+			novel->addSentence(5, "継", "いやぁ、よく撮れてるなと思って");
 			novel->setFontColor(5, Color3B::RED);
-			novel->addSentence(5, "リアス「いやぁ、それほどでも～…」");
+			novel->addSentence(5, "リアス", "いやぁ、それほどでも～…");
 			novel->setFontColor(5, Color3B::BLUE);
-			novel->addSentence(5, "継「ん？」");
+			novel->addSentence(5, "継", "ん？");
 			novel->setFontColor(5, Color3B::RED);
-			novel->addSentence(5, "リアス「はぅっ…なんでもないです…」");
+			novel->addSentence(5, "リアス", "はぅっ…なんでもないです…");
 			novel->setFontColor(5, Color3B::BLUE);
 			novel->setJump(5, 0, 24);
 
-			novel->addSentence(6, "継「こんなどす黒い赤色のインクなんてそうそうないだろう…きっと血を使ったに違いない」");
-			novel->addSentence(6, "継「血液検査をすれば、きっと君の君の血液型と一致するはずだ…！」");
+			novel->addSentence(6, "継", "こんなどす黒い赤色のインクなんてそうそうないだろう…きっと血を使ったに違いない");
+			novel->addSentence(6, "継", "血液検査をすれば、きっと君の君の血液型と一致するはずだ…！");
 			novel->setFontColor(6, Color3B::RED);
-			novel->addSentence(6, "リアス「私でもそこまではしないわよ…」");
+			novel->addSentence(6, "リアス", "私でもそこまではしないわよ…");
 			novel->setFontColor(6, Color3B::BLUE);
 			novel->setJump(6, 0, 24);
 
-			novel->addSentence(7, "継「”バンダナ様”なんて呼んでいるのは君くらいだよ、リアス」");
+			novel->addSentence(7, "継", "”バンダナ様”なんて呼んでいるのは君くらいだよ、リアス");
 			novel->setFontColor(7, Color3B::RED);
 			novel->addSwitchEvent(7, 0);
-			novel->addSentence(7, "リアス「うぐっ…」");
+			novel->addSentence(7, "リアス", "うぐっ…");
 
 			novel->setBg(0, "");
 			novel->setCharaL(0, "chara/tuguru1.png");
 			novel->setCharaR(0, "chara/bandana1.png");
 			novel->setCharaC(0, "chara/rias1.png");
-			novel->addSentence(0, "リアス「でもでも！！もしかしたら…もしかしたら！！陰でそう呼んでる人もいるかもしれないじゃない！！」");
+			novel->addSentence(0, "リアス", "でもでも！！もしかしたら…もしかしたら！！陰でそう呼んでる人もいるかもしれないじゃない！！");
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "バンダナ「お前以外にいたかなぁ…そんなやつ」");
-			novel->addSentence(0, "継「根拠はそれだけじゃないよ。この箱を開けるまでの経緯を振り返ってみよう」");
-			novel->addSentence(0, "継「僕たちは、このメモを拾って、それをヒントにこの箱を開けた。つまり、このメモの持ち主が箱の持ち主と一致する可能性が高いということだ。」");
+			novel->addSentence(0, "バンダナ", "お前以外にいたかなぁ…そんなやつ");
+			novel->addSentence(0, "継", "根拠はそれだけじゃないよ。この箱を開けるまでの経緯を振り返ってみよう");
+			novel->addSentence(0, "継", "僕たちは、このメモを拾って、それをヒントにこの箱を開けた。つまり、このメモの持ち主が箱の持ち主と一致する可能性が高いということだ。");
 			novel->addSwitchEvent(0, 8, "水無月　檸檬", 9, "マリア・ミルフィーユ");
-			novel->addSentence(0, "継「このメモについて、ある人が証言してくれたよ。それは…」");
+			novel->addSentence(0, "継", "このメモについて、ある人が証言してくれたよ。それは…");
 
-			novel->addSentence(8, "継「君は水無月さんから【ひゃっくり】さんのやり方を教えてもらっていた」");
-			novel->addSentence(8, "継「はっきりとこのメモは君のものだとは言わなかったけど、少なくとも君はこのメモをどうやって使うかはわかっていたことがわかる」");
+			novel->addSentence(8, "継", "君は水無月さんから【ひゃっくり】さんのやり方を教えてもらっていた");
+			novel->addSentence(8, "継", "はっきりとこのメモは君のものだとは言わなかったけど、少なくとも君はこのメモをどうやって使うかはわかっていたことがわかる");
 			novel->setFontColor(8, Color3B::RED);
 			novel->addSwitchEvent(8, 0);
-			novel->addSentence(8, "リアス「うぅ…」");
+			novel->addSentence(8, "リアス", "うぅ…");
 
 			novel->setCharaR(9, "chara/suama1.png");
 			novel->setFontColor(9, Color3B::RED);
-			novel->addSentence(9, "寿甘「マリアちゃんそんなこと言ってたっけなー…？」");
+			novel->addSentence(9, "寿甘", "マリアちゃんそんなこと言ってたっけなー…？");
 			novel->setFontColor(9, Color3B::BLUE);
-			novel->addSentence(9, "継「言ってなかったね」");
+			novel->addSentence(9, "継", "言ってなかったね");
 			novel->setJump(9, 0, 29);
 
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "継「これが僕の推理だ」");
+			novel->addSentence(0, "継", "これが僕の推理だ");
 			novel->setFontColor(0, Color3B::RED);
-			novel->addSentence(0, "リアス「…ふふふ、ご名答。そうよ、私が全部やったの。隠し撮りも、このおまじないも」");
+			novel->addSentence(0, "リアス", "…ふふふ、ご名答。そうよ、私が全部やったの。隠し撮りも、このおまじないも");
 			novel->setCharaR(0, "chara/bandana1.png");
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "バンダナ「知ってた」");
+			novel->addSentence(0, "バンダナ", "知ってた");
 			novel->setFontColor(0, Color3B::RED);
-			novel->addSentence(0, "リアス「今日もいつも通り、私の自慢の特殊能力の探知でバンダナ様をストーキングしてたの。その途中でメモを無くしちゃってね。」");
-			novel->addSentence(0, "リアス「あわてて探知でメモの在処を探してたら、先にあなた達に拾われちゃって、どうやって取り返すか悩んでるうちに箱まで開けられちゃって…」");
-			novel->addSentence(0, "リアス「あはは…私、ものすごく惨め。好きな人の目の前で…こんな形でバラされて…」");
+			novel->addSentence(0, "リアス", "今日もいつも通り、私の自慢の特殊能力の探知でバンダナ様をストーキングしてたの。その途中でメモを無くしちゃってね。");
+			novel->addSentence(0, "リアス", "あわてて探知でメモの在処を探してたら、先にあなた達に拾われちゃって、どうやって取り返すか悩んでるうちに箱まで開けられちゃって…");
+			novel->addSentence(0, "リアス", "あはは…私、ものすごく惨め。好きな人の目の前で…こんな形でバラされて…");
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "継「…ごめん、そんなつもりじゃなかったんだ」");
-			novel->addSentence(0, "バンダナ「こいつ生真面目な性格だからな…悪気はないんだ、許してやってくれ」");
+			novel->addSentence(0, "継", "…ごめん、そんなつもりじゃなかったんだ");
+			novel->addSentence(0, "バンダナ", "こいつ生真面目な性格だからな…悪気はないんだ、許してやってくれ");
 			novel->setFontColor(0, Color3B::RED);
 			novel->setCharaL(0, "chara/suama1.png");
-			novel->addSentence(0, "寿甘「ちょっと待って、なんでつぐるんが悪いみたいな流れになってんの。」");
-			novel->addSentence(0, "寿甘「この子、あんたのこと付け回して、こんな事してたのよ！？」");
+			novel->addSentence(0, "寿甘", "ちょっと待って、なんでつぐるんが悪いみたいな流れになってんの。");
+			novel->addSentence(0, "寿甘", "この子、あんたのこと付け回して、こんな事してたのよ！？");
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "バンダナ「いや、頼むからそっとしといてやれよ…」");
+			novel->addSentence(0, "バンダナ", "いや、頼むからそっとしといてやれよ…");
 			novel->setFontColor(0, Color3B::RED);
-			novel->addSentence(0, "リアス「…許さない……許さないゆるさないユルサナイ……！！！」");
-			novel->addSentence(0, "リアス「こうなったら力づくであなた達からバンダナ様を奪い取って見せる…」");
-			novel->addSentence(0, "リアス「バンダナ様は私のもの…あなたがどこでなにしているか全部知ってる…私は…絶対あなたを逃がさない…」");
-			novel->addSentence(0, "リアス「うふふふふ…えへへへ…あーっはっはっは！！！！」");
+			novel->addSentence(0, "リアス", "…許さない……許さないゆるさないユルサナイ……！！！");
+			novel->addSentence(0, "リアス", "こうなったら力づくであなた達からバンダナ様を奪い取って見せる…");
+			novel->addSentence(0, "リアス", "バンダナ様は私のもの…あなたがどこでなにしているか全部知ってる…私は…絶対あなたを逃がさない…");
+			novel->addSentence(0, "リアス", "うふふふふ…えへへへ…あーっはっはっは！！！！");
 			novel->setCharaC(0, "");
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "バンダナ「逃げていったぞ」");
-			novel->addSentence(0, "バンダナ「めんどくさいことになったな…」");
+			novel->addSentence(0, "バンダナ", "逃げていったぞ");
+			novel->addSentence(0, "バンダナ", "めんどくさいことになったな…");
 			novel->setCharaL(0, "chara/tuguru1.png");
-			novel->addSentence(0, "継「とりあえず宇沢さんに箱のことを伝えに行こう」");
+			novel->addSentence(0, "継", "とりあえず宇沢さんに箱のことを伝えに行こう");
 			novel->addEvent(0, CallFunc::create([this] {
 				Control::me->getField("box")->getObject("flag")->setState(3);
 				AudioEngine::stopAll();
@@ -466,7 +466,7 @@ namespace day1 {
 		for (int i = 0; i < 4; i++) mNumber[i] = 1;
 
 		auto spr = Sprite::create("number.png");
-		auto w = spr->getContentSize().width , h = spr->getContentSize().height;
+		auto w = spr->getContentSize().width, h = spr->getContentSize().height;
 		auto rect = Rect(0, 0, w / 9, h);
 		Sprite* /*ObjectN**/ number; EventListenerTouchOneByOne *listener;
 		std::stringstream name;
@@ -501,9 +501,9 @@ namespace day1 {
 		ok->setCursor(Cursor::INFO);
 		ok->setTouchEvent(CallFunc::create([this]() {
 			if (/*mObjectList["num1"]->getState() == 1 &&
-				mObjectList["num2"]->getState() == 4 && 
+				mObjectList["num2"]->getState() == 4 &&
 				mObjectList["num3"]->getState() == 8 &&
-				mObjectList["num4"]->getState() == 4*/ 
+				mObjectList["num4"]->getState() == 4*/
 				mNumber[0] == 1 &&
 				mNumber[1] == 4 &&
 				mNumber[2] == 8 &&
@@ -512,7 +512,7 @@ namespace day1 {
 				mObjectList["flag"]->setState(2);
 				Control::me->changeField("entrance");
 			}
-			else if(mObjectList["flag"]->getState() == 3) {
+			else if (mObjectList["flag"]->getState() == 3) {
 				Control::me->showMsg("もう開ける必要はない");
 			}
 			else {
@@ -528,15 +528,15 @@ namespace day1 {
 		addObject(entrance, "entrance", 1, true);
 	}
 
-	void Box::changedField(){
+	void Box::changedField() {
 		if (mObjectList["flag"]->getState() == 0) {
 			auto novel = Novel::create();
 			novel->setCharaR(0, "chara/tuguru1.png");
 			novel->setCharaL(0, "chara/bandana1.png");
 			novel->setFontColor(0, Color3B::BLUE);
-			novel->addSentence(0, "継「これがその時限爆弾かな」");
-			novel->addSentence(0, "バンダナ「随分かわいらしい時限爆弾だな…」");
-			novel->addSentence(0, "継「開けるには４けたのパスワードが必要みたいだね、どこかに手掛かりはないかな」");
+			novel->addSentence(0, "継", "これがその時限爆弾かな");
+			novel->addSentence(0, "バンダナ", "随分かわいらしい時限爆弾だな…");
+			novel->addSentence(0, "継", "開けるには４けたのパスワードが必要みたいだね、どこかに手掛かりはないかな");
 			novel->setEndTask(0);
 			this->addChild(novel, 10, "novel");
 			mObjectList["flag"]->setState(1);

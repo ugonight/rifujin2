@@ -50,6 +50,7 @@ private:
 	STask mCurrentSTask;	//選択モード中のタスク
 	bool mLogOnly;
 	std::vector<std::string> mSentense[MAX_BRANCH];	//0がメイン、1～分岐
+	std::vector<std::string> mName[MAX_BRANCH];
 	std::vector<Task> mTask[MAX_BRANCH];
 	std::vector<CTask> mColorTask[MAX_BRANCH];
 	std::vector<FTask> mFuncTask[MAX_BRANCH];
@@ -91,7 +92,7 @@ public:
 	bool getEndFlag();
 
 	//文追加 (mNovelSetNumを返す)
-	int addSentence(int branch,std::string s);
+	int addSentence(int branch, std::string name, std::string s);
 	//背景設定
 	void setBg(int branch,std::string s);
 	//キャラクター・センター
