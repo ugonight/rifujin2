@@ -40,9 +40,9 @@ public:
 	cocos2d::ValueMap saveField();
 	void loadField(cocos2d::ValueMap map);
 
-	virtual void changedField();	//現在のフィールドに切り替わった時のイベント
-	virtual void initField();		//フィールドにオブジェクトを配置
-	
+	virtual void changedField();	// 現在のフィールドに切り替わった時のイベント
+	virtual void initField();		// フィールドにオブジェクトを配置
+	virtual void updateField();		// 追加で何かしたいとき用uodate
 	
 	CREATE_FUNC(Field);
 };

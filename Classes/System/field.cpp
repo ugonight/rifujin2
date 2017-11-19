@@ -89,6 +89,11 @@ void Field::update(float delta) {
 			Control::me->setCursor(Cursor::NOVEL);
 		}
 	}
+	updateField();
+}
+
+void Field::updateField() {
+
 }
 
 void Field::addObject(ObjectN* obj, std::string s, int z, bool addchild){

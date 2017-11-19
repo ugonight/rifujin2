@@ -382,7 +382,7 @@ namespace day1 {
 				novel->addSentence(0, "寿甘", "だーかーらそんなことないって！みんなマリアちゃんの絵、大好きだよ！");
 				novel->addSentence(0, "マリア", "ありがとう…そう言ってもらえるとうれしいな");
 				novel->setFontColor(0, Color3B::BLUE);
-				novel->addSentence(0, "継", "UFOが窓の外へ飛んだ行ったよ。見失う前に撮影しに行こう。");
+				novel->addSentence(0, "継", "UFOが窓の外へ飛んで行ったよ。見失う前に撮影しに行こう。");
 				novel->setEndTask(0);
 				this->addChild(novel, 10, "novel");
 

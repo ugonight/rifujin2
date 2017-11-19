@@ -93,7 +93,7 @@ bool Novel::init() {
 		origin.y + visibleSize.height - 320));
 	label->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	label->setColor(Color3B::WHITE);
-	label->enableOutline(Color4B::BLACK, 2);
+	label->enableOutline(Color4B::BLACK, 1);
 	this->addChild(label, 3, "name");
 
 	auto listener = EventListenerTouchOneByOne::create();
@@ -444,7 +444,7 @@ void Novel::updateColor() {
 		auto label = (Label*)this->getChildByName("label");
 		auto name = (Label*)this->getChildByName("name");
 		label->setTextColor((Color4B)mColorTask[mBranch][mColorNum[mBranch]].color);
-		name->enableOutline((Color4B)mColorTask[mBranch][mColorNum[mBranch]].color, 2);
+		name->enableOutline((Color4B)mColorTask[mBranch][mColorNum[mBranch]].color, 1);
 		//mColorTask[mBranch].erase(mColorTask[mBranch].begin());
 		mColorNum[mBranch]++;
 	}

@@ -38,7 +38,7 @@ namespace day2 {
 
 		auto paper = ObjectN::create();
 		paper->setArea(Rect(480, 270, 20, 30));
-		paper->setCursor(Cursor::INFO);
+		paper->setCursor(Cursor::NEW);
 		paper->setTouchEvent(CallFunc::create([this] {
 			auto novel = Novel::create();
 			novel->setCharaL(0, "chara/tuguru1.png");
@@ -58,6 +58,7 @@ namespace day2 {
 				novel->setFontColor(0, Color3B::BLUE);
 				novel->addSentence(0, "継", "なるほど。布団の下を調べてみよう");
 				mObjectList["paper"]->setState(1);
+				mObjectList["paper"]->setCursor(Cursor::INFO);
 			}
 
 			novel->setEndTask(0);
@@ -114,6 +115,14 @@ namespace day2 {
 			}
 		}));
 		addObject(blanket, "blanket", 1, true);
+
+		{
+			auto searchPoint = ObjectN::create();
+			searchPoint->setArea(Rect(0, 100, 100, 270));
+			searchPoint->setCursor(Cursor::INFO);
+			searchPoint->setMsg("鎖が垂れ下がっている");
+			addObject(searchPoint, "kusari", 1, true);
+		}
 
 		auto flag = ObjectN::create();
 		addObject(flag, "flag", 0, false);

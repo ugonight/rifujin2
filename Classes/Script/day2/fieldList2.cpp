@@ -16,6 +16,8 @@ namespace day2 {
 		mFieldList["magic_team"] = MagicTeam::create();
 		mFieldList["aisle"] = Aisle::create();
 		mFieldList["aisle2"] = Aisle2::create();
+		mFieldList["aisle3"] = Aisle3::create();
+		mFieldList["torture"] = Torture::create();
 
 		mFieldList["AboutItem"] = AboutItem::create();
 

@@ -17,6 +17,8 @@ namespace day2
 	CREATE_FIELD(MagicTeam) private: int mNumber[3][3]; bool mMatch[8]; bool mCanMove;  };
 	CREATE_FIELD(Aisle) };
 	CREATE_FIELD(Aisle2)};
+	CREATE_FIELD(Aisle3)};
+	CREATE_FIELD(Torture) void updateField(); private: void hide(); cocos2d::Point mTouchPos; int mCount; };
 
 
 	class Day : public Chapter
