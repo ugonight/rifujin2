@@ -109,7 +109,7 @@ namespace day2 {
 
 		mFieldName = "拷問室";
 
-		mCount = -1;
+		mCount = -1; mFinish = false;
 
 		auto bg = Sprite::create("torture.png");
 		bg->setPosition(visibleSize / 2);
@@ -177,7 +177,7 @@ namespace day2 {
 					listener->onTouchBegan = [](Touch* touch, Event* event) {return true; };
 					this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, black);
 					black->runAction(Sequence::create(FadeIn::create(1.0f), CallFunc::create(CC_CALLBACK_0(Torture::hide, this)), FadeOut::create(1.0f), NULL));
-					addChild(black, 5, "black");
+					addChild(black, 5, "black_");
 				}));
 
 				novel->setEndTask(0);
@@ -244,7 +244,7 @@ namespace day2 {
 
 		// かくれんぼゲーム
 		auto hide = getChildByName("hideLayer");
-		if (hide) {
+		if (hide && !mFinish) {
 			if (hide->getChildByName("circle")->getBoundingBox().containsPoint(mTouchPos)) {
 				mCount = 0;
 				((Label*)hide->getChildByName("label"))->setTextColor(Color4B::WHITE);
@@ -304,7 +304,7 @@ namespace day2 {
 		bg = Sprite::create("hide2.png");
 		bg->setPosition(Vec2(visibleSize.width, visibleSize.height / 2));
 		bg->runAction(Spawn::createWithTwoActions(
-			Sequence::create(EaseSineInOut::create(MoveBy::create(20.0f, Vec2(-visibleSize.width, 0))), FlipX::create(true), MoveBy::create(20.0f, Vec2(visibleSize.width, 0)), NULL),
+			Sequence::create(EaseSineInOut::create(MoveBy::create(20.0f, Vec2(-visibleSize.width, 0))), FlipX::create(true), MoveBy::create(20.0f, Vec2(visibleSize.width + bg->getContentSize().width, 0)), NULL),
 			Repeat::create(Sequence::create(MoveBy::create(1.0f, Vec2(0, 10)), MoveBy::create(1.0f, Vec2(0, -10)), NULL), 20)
 		));
 		layer->addChild(bg, 1, "hide2");
@@ -329,6 +329,45 @@ namespace day2 {
 		for (int i = 0; i < 10; i++) {
 			act.pushBack(EaseSineInOut::create(MoveTo::create(2.0f, Vec2(cocos2d::random() % (int)visibleSize.width, cocos2d::random() % (int)visibleSize.height))));
 		}
+		// クリア後
+		act.pushBack(CallFunc::create([this] {
+			mFinish = true;
+			auto novel = Novel::create();
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "継", "…もう行ったかな");
+			novel->addSentence(0, "継", "棺から出よう");
+			novel->setBg(0, "bg/black.png");
+			novel->addSentence(0, "継", "よいしょっ…と");
+			novel->addEvent(0, CallFunc::create([this] { 
+				removeChildByName("hideLayer");
+				removeChildByName("black_");
+			}));
+			novel->setBg(0, "");
+			novel->setCharaR(0, "chara/tuguru1.png");
+			novel->addSentence(0, "継", "暗くて調べられないな…電気は点けられないかな");
+			novel->addSentence(0, "継", "お、スイッチはこれかな");
+			novel->setFontColor(0, Color3B::BLACK);
+			novel->addSentence(0, "", "カチッ");
+			novel->addEvent(0, CallFunc::create([this] {
+				getChildByName("black")->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5f), RemoveSelf::create()));
+				mObjectList["flag"]->setState(1);
+				mObjectList["aisle3"]->setFieldChangeEvent("aisle3");
+				mObjectList["aisle3"]->setMsg("");
+				
+				auto aisle3 = Control::me->getField("aisle3");
+				aisle3->getObject("flag")->setState(2);
+				aisle3->getObject("aisle2")->setFieldChangeEvent("aisle2");
+				aisle3->getObject("aisle2")->setMsg("");
+				aisle3->getObject("torture")->setMsg("");
+				aisle3->getObject("torture")->setFieldChangeEvent("torture");
+				aisle3->getObject("torture")->setCursor(Cursor::ENTER);
+				aisle3->getObject("baking")->setCursor(Cursor::ENTER);
+			}));
+			novel->addSentence(0, "継", "これは…ここであったことはあまり想像したくないな…");
+
+			novel->setEndTask(0);
+			addChild(novel, 10, "novel");
+		}));
 		circle->runAction(Sequence::create(act));
 		auto listener = EventListenerTouchOneByOne::create();
 		listener->onTouchBegan = [this](Touch* touch, Event* event) {

@@ -18,7 +18,7 @@ namespace day2
 	CREATE_FIELD(Aisle) };
 	CREATE_FIELD(Aisle2)};
 	CREATE_FIELD(Aisle3)};
-	CREATE_FIELD(Torture) void updateField(); private: void hide(); cocos2d::Point mTouchPos; int mCount; };
+	CREATE_FIELD(Torture) void updateField(); private: void hide(); cocos2d::Point mTouchPos; int mCount; bool mFinish; };
 
 
 	class Day : public Chapter

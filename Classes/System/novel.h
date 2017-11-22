@@ -15,48 +15,55 @@ private:
 		IMG_RIGHT
 	};
 
-	typedef struct Task {
+	struct Task {
 		int num;
+		virtual void update(Novel* parent) {};
+	};
+
+	struct ITask : public Task {
 		ImagePos imgPos;
 		std::string imgName;
-	} Task;
+		//画像更新
+		void update(Novel* parent);
+	};
 
-	typedef struct CTask {
-		int num;
+	struct CTask : public Task {
 		cocos2d::Color3B color;
-	} CTask;
+		//色更新
+		void update(Novel* parent);
+	};
 
-	typedef struct FTask {
-		int num;
+	struct FTask : public Task {
 		cocos2d::CallFunc* func;
-	} FTask;
+		//イベント実行
+		void update(Novel* parent);
+		~FTask();
+	};
 
-	typedef struct STask {
-		int num;
+	struct STask : public Task {
 		int branchTo[4];
 		std::string branchStr[4];
-	} STask;
+		//選択肢実行
+		void update(Novel* parent);
+	};
 
-	typedef struct JTask {
-		int num;
+	struct JTask : public Task {
 		int branch, novelNum;
-	} JTask;
+		//文章ジャンプ
+		void update(Novel* parent);
+	};
 
 	int mNovelNum[MAX_BRANCH], mNovelSetNum[MAX_BRANCH], mCount, mCharNum, mBranch;
 	int mTouchTime; bool mHideMsg, mFast;
 	int mImageNum[4]; //Bg,CharaC,CharaL,CharaR
 	bool mEndFlag;
 	bool mSwitch; //選択肢モード
-	STask mCurrentSTask;	//選択モード中のタスク
+	STask* mCurrentSTask;	//選択モード中のタスク
 	bool mLogOnly;
 	std::vector<std::string> mSentense[MAX_BRANCH];	//0がメイン、1～分岐
 	std::vector<std::string> mName[MAX_BRANCH];
-	std::vector<Task> mTask[MAX_BRANCH];
-	std::vector<CTask> mColorTask[MAX_BRANCH];
-	std::vector<FTask> mFuncTask[MAX_BRANCH];
-	std::vector<STask> mSwitchTask[MAX_BRANCH];
-	std::vector<JTask> mJumpTask[MAX_BRANCH];
-	int mTaskNum[MAX_BRANCH], mColorNum[MAX_BRANCH], mFuncNum[MAX_BRANCH], mSwitchNum[MAX_BRANCH], mJumpNum[MAX_BRANCH];
+	std::vector<std::shared_ptr<Task>> mTask[MAX_BRANCH];
+	int mTaskNum[MAX_BRANCH];
 	cocos2d::ValueVector mLog;
 	int mLogScrollX, mLogScrollY;
 
@@ -69,17 +76,6 @@ private:
 	void end();
 	bool endCheck();
 	void setDelayAnime();
-
-	//画像更新
-	void updateImg();
-	//色更新
-	void updateColor();
-	//イベント実行
-	void updateFunc();
-	//選択肢実行
-	void updateSwitch();
-	//文章ジャンプ
-	void updateJump();
 
 public:
 	virtual ~Novel();
