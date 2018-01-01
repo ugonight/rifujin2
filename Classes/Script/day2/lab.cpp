@@ -19,7 +19,7 @@ namespace day2 {
 		addChild(bg, 0, "bg");
 
 		auto prison = ObjectN::create();
-		prison->setArea(Rect(490, 50, 110, 220)); 
+		prison->setArea(Rect(490, 50, 110, 220));
 		prison->setCursor(Cursor::ENTER);
 		prison->setFieldChangeEvent("aisle");
 		addObject(prison, "prison", 1, true);
@@ -29,9 +29,196 @@ namespace day2 {
 		aisle3->setCursor(Cursor::BACK);
 		aisle3->setFieldChangeEvent("aisle3");
 		addObject(aisle3, "aisle3", 1, true);
+
+		auto aisle4 = ObjectN::create();
+		aisle4->setArea(Rect(260, 0, 150, 150));
+		aisle4->setCursor(Cursor::FORWARD);
+		aisle4->setFieldChangeEvent("aisle4");
+		addObject(aisle4, "aisle4", 1, true);
+
+		auto panel = ObjectN::create();
+		panel->setArea(Rect(760, 330, 40, 70));
+		panel->setCursor(Cursor::INFO);
+		panel->setFieldChangeEvent("panel");
+		addObject(panel, "panel", 1, true);
+
+		auto lab = ObjectN::create();
+		lab->setArea(Rect(690, 110, 65, 310));
+		lab->setCursor(Cursor::ENTER);
+		lab->setTouchEvent(CallFunc::create([this] () {
+			if (Control::me->getField("panel")->getObject("flag")->getState() == 1) {
+				Control::me->changeField("lab");
+			}
+			else {
+				Control::me->showMsg("カギがかかっている");
+			}
+		}));
+		addObject(lab, "lab", 1, true);
+
 	}
 
 	void Aisle2::changedField() {
+
+	}
+
+	void Panel::initField() {
+		Size visibleSize = Director::getInstance()->getVisibleSize();
+		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+		mFieldName = "ドア横（研究室）";
+
+		auto bg = Sprite::create("panel.png");
+		bg->setPosition(visibleSize / 2);
+		addChild(bg, 0, "bg");
+
+		auto aisle2 = ObjectN::create();
+		aisle2->setArea(Rect(50, 430, 800, 50));
+		aisle2->setCursor(Cursor::BACK);
+		aisle2->setFieldChangeEvent("aisle2");
+		addObject(aisle2, "aisle2", 1, true);
+
+		// パネル
+		Sprite* button;
+		auto batchNode = SpriteBatchNode::create("piece.png");
+		for (int i = 0;i < 5; i++) {
+			for (int j = 0;j < 5; j++) {
+				mOnOff[i][j] = 0;
+
+				button = Sprite::createWithTexture(batchNode->getTexture());
+				button->setPosition(Vec2(300 + i * 65, 348 - j * 65));
+				addChild(button, 1, StringUtils::format("button%d%d", i, j));
+
+				auto listener = EventListenerTouchOneByOne::create();
+				listener->onTouchBegan = [this, i, j](Touch* touch, Event* event) {
+					auto target = (Sprite*)event->getCurrentTarget();
+					if (target->getBoundingBox().containsPoint(touch->getLocation()))
+					{
+						if (mObjectList["flag"]->getState() == 0) {
+							// 切り替え
+							if (target->getOpacity() == 0.0f) {
+								mOnOff[i][j] = 0;
+								target->runAction(FadeIn::create(0.1f));
+								AudioEngine::play2d("SE/click.ogg");
+							}
+							else if (target->getOpacity() == 255.0f) {
+								mOnOff[i][j] = 1;
+								target->runAction(FadeOut::create(0.1f));
+								AudioEngine::play2d("SE/click.ogg");
+							}
+
+							// 判定
+							bool correct[5][5] = {
+							{ 0,0,1,0,0 },
+							{ 0,1,0,1,0 },
+							{ 0,0,1,0,0 },
+							{ 0,0,1,0,0 },
+							{ 0,0,0,0,0 } };
+							bool result = true;
+							for (int i = 0; i < 5; i++) for (int j = 0; j < 5; j++) if (mOnOff[j][i] != correct[i][j])result = false;
+							if (result) {
+								mObjectList["flag"]->setState(1);
+								Control::me->showMsg("カギが開いたようだ");
+							}
+						}
+
+						return true;
+					}
+
+					return false;
+				};
+				this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, button);
+			}
+		}
+
+		// メモ
+		auto memo = ObjectN::create();
+		memo->setArea(Rect(190, 45, 60, 375));
+		memo->addCanUseItem("memo1");
+		memo->setTouchEvent(CallFunc::create([this] {
+			if (ItemMgr::sharedItem()->getSelectedItem() == "memo1") {
+				auto novel = Novel::create();
+
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->setCharaR(0, "chara/tuguru1.png");
+				novel->addSentence(0, "継", "このメモ…もしかしてこうやって使うのかな");
+				novel->addEvent(0, CallFunc::create([this] {
+					ItemMgr::sharedItem()->deleteItem("memo1");
+
+					mObjectList["memo"]->setOpacity(0.0f);
+					mObjectList["memo"]->setTexture("panel_memo.png");
+					mObjectList["memo"]->runAction(FadeIn::create(0.5f));
+				}));
+				novel->addSentence(0, "継", "これで解けそうだね");
+				novel->setEndTask(0);
+				addChild(novel, 10, "novel");
+			}
+		}));
+		addObject(memo, "memo", 2, true);
+
+		auto flag = ObjectN::create();
+		addObject(flag, "flag", 0, false);
+	}
+
+	void Panel::changedField() {
+
+	}
+
+	void Lab::initField() {
+		Size visibleSize = Director::getInstance()->getVisibleSize();
+		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+		mFieldName = "研究室";
+
+		auto bg = Sprite::create("lab.png");
+		bg->setPosition(visibleSize / 2);
+		addChild(bg, 0, "bg");
+
+		auto aisle2 = ObjectN::create();
+		aisle2->setArea(Rect(500, 420, 354, 60));
+		aisle2->setCursor(Cursor::BACK);
+		aisle2->setFieldChangeEvent("aisle2");
+		addObject(aisle2, "aisle2", 1, true);
+
+		auto solt = ObjectN::create();
+		solt->setArea(Rect(590, 200, 50, 40));
+		solt->setTexture("solt.png");
+		solt->setCursor(Cursor::NEW);
+		solt->setItemGetEvent("solt");
+		solt->setMsg("塩を手に入れた");
+		addObject(solt, "solt", 1, true);
+
+		auto hikido = ObjectN::create();
+		hikido->setArea(Rect(510, 250, 180, 110));
+		hikido->setTexture("hikido.png");
+		hikido->setCursor(Cursor::INFO);
+		hikido->addCanUseItem("nume");
+		hikido->setTouchEvent(CallFunc::create([this] {
+			if (mObjectList["hikido"]->getState() == 0) {
+				if (ItemMgr::sharedItem()->getSelectedItem() == "nume") {
+					mObjectList["hikido"]->setState(1);
+					Control::me->showMsg("ヌメヌメを塗って引き戸が滑るようにした");
+					ItemMgr::sharedItem()->deleteItem("nume");
+				}
+				else {
+					Control::me->showMsg("さび付いていて開かない");
+				}
+			}
+			else if (mObjectList["hikido"]->getState() == 1) {
+				mObjectList["hikido"]->runAction(MoveBy::create(0.5f, Vec2(-150, 0)));
+				mObjectList["hikido"]->setState(2);
+				mObjectList["hikido"]->setArea(Rect(510 - 150, 250, 180, 110));
+			}
+			else if (mObjectList["hikido"]->getState() == 2) {
+				mObjectList["hikido"]->runAction(MoveBy::create(0.5f, Vec2(150, 0)));
+				mObjectList["hikido"]->setState(1);
+				mObjectList["hikido"]->setArea(Rect(510, 250, 180, 110));
+			}
+		}));
+		addObject(hikido, "hikido", 3, true);
+
+	}
+
+	void Lab::changedField() {
 
 	}
 
@@ -52,7 +239,7 @@ namespace day2 {
 		aisle2->setTouchEvent(CallFunc::create([this] {
 			if (mObjectList["flag"]->getState() == 0) {
 				auto novel = Novel::create();
-				novel->setFontColor(0,Color3B::BLACK);
+				novel->setFontColor(0, Color3B::BLACK);
 				novel->addSentence(0, "", "……コツコツ…");
 				novel->setCharaR(0, "chara/tuguru1.png");
 				novel->setFontColor(0, Color3B::BLUE);
@@ -87,29 +274,45 @@ namespace day2 {
 			}
 		}));
 		addObject(door, "torture", 1, true);
-		
+
 		door = ObjectN::create();
 		door->setArea(Rect(90, 160, 110, 300));
 		door->setCursor(Cursor::ENTER);
 		door->setMsg("鍵がかかっている");
 		addObject(door, "baking", 1, true);
 
+		auto memo = ObjectN::create();
+		memo->setTexture("memo1.png");
+		memo->setArea(Rect(350, 400, 50, 30));
+		memo->setCursor(Cursor::NEW);
+		memo->setMsg("何かのメモを手に入れた");
+		memo->setItemGetEvent("memo1");
+		memo->setTouchEvent(CallFunc::create([this] {
+			auto novel = Novel::create();
+
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->setCharaR(0, "chara/tuguru1.png");
+			novel->addSentence(0, "継", "さっきの奴が落としていったのかな");
+			novel->addSentence(0, "継", "手がかりになるかもしれない、拾っておこう");
+			novel->setEndTask(0);
+			addChild(novel, 10, "novel");
+		}));
+		addObject(memo, "memo", 2, false);
 
 		auto flag = ObjectN::create();
 		addObject(flag, "flag", 0, false);
-
 	}
 
 	void Aisle3::changedField() {
 	}
 
-	void Torture::initField(){ 
+	void Torture::initField() {
 		Size visibleSize = Director::getInstance()->getVisibleSize();
 		Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 		mFieldName = "拷問室";
 
-		mCount = -1; mFinish = false;
+		mCount = -1; mFinish = false; mSE = 1;
 
 		auto bg = Sprite::create("torture.png");
 		bg->setPosition(visibleSize / 2);
@@ -195,8 +398,8 @@ namespace day2 {
 			auto novel = Novel::create();
 			novel->setFontColor(0, Color3B::BLUE);
 			novel->setCharaR(0, "chara/tuguru1.png");
-			novel->addSentence(0, "継", "うっ…");
-			novel->setFontColor(0,Color3B::BLACK);
+			novel->addSentence(0, "継", "おえぇ…");
+			novel->setFontColor(0, Color3B::BLACK);
 			novel->addSentence(0, "", "部屋の中では、血生臭い臭いが辺り一面に立ち込めていた");
 			novel->setFontColor(0, Color3B::BLUE);
 			novel->addSentence(0, "継", "くそっ…カギがかからない…");
@@ -248,13 +451,22 @@ namespace day2 {
 			if (hide->getChildByName("circle")->getBoundingBox().containsPoint(mTouchPos)) {
 				mCount = 0;
 				((Label*)hide->getChildByName("label"))->setTextColor(Color4B::WHITE);
+				if (mSE == 2) {
+					AudioEngine::stopAll();
+					AudioEngine::play2d("SE/heart1.ogg", true);
+					mSE = 1;
+				}
 			}
 			else {
 				if (mCount >= 0) mCount++;
 				((Label*)hide->getChildByName("label"))->setTextColor(Color4B::RED);
+				if (mSE == 1) {
+					AudioEngine::stopAll();
+					AudioEngine::play2d("SE/heart2.ogg", true);
+					mSE = 2;
+				}
 			}
-			// ((Label*)hide->getChildByName("label"))->setString(StringUtils::toString(mCount));
-			// BAD END3
+
 			if (mCount > 100) {
 				mCount = -1;
 				hide->getChildByName("hide2")->stopAllActions();
@@ -267,7 +479,7 @@ namespace day2 {
 				novel->addSentence(0, "継", "あ…");
 				novel->setFontColor(0, Color3B::BLACK);
 				novel->setBg(0, "bg/black.png");
-				novel->addEvent(0, CallFunc::create([this] { getChildByName("hideLayer")->removeChildByName("hide2"); }));
+				novel->addEvent(0, CallFunc::create([this] { getChildByName("hideLayer")->removeChildByName("hide2"); AudioEngine::stopAll(); }));
 				novel->addSentence(0, "", "ガチャリ…");
 				novel->setBg(0, "chara/bad3.png");
 				novel->addSentence(0, "？？？", "…ふふふ");
@@ -308,7 +520,13 @@ namespace day2 {
 			Repeat::create(Sequence::create(MoveBy::create(1.0f, Vec2(0, 10)), MoveBy::create(1.0f, Vec2(0, -10)), NULL), 20)
 		));
 		layer->addChild(bg, 1, "hide2");
-		auto label = Label::createWithTTF("●をカーソルで追っていこう", FONT_NAME, 30);
+		std::string str;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+		str = "●をマウスカーソルで追っていこう";
+#else
+		str = "●を指で追っていこう";
+#endif
+		auto label = Label::createWithTTF(str, FONT_NAME, 30);
 		label->setPosition(Vec2(427, 80));
 		label->setColor(Color3B::WHITE);
 		label->runAction(RepeatForever::create(Sequence::create(FadeOut::create(1), FadeIn::create(1), NULL)));
@@ -323,22 +541,24 @@ namespace day2 {
 		act.pushBack(DelayTime::create(2.0));
 		act.pushBack(CallFunc::create([this] { mCount = 0; }));
 		for (int i = 0; i < 9; i++) {
-			act.pushBack(EaseSineInOut::create(MoveTo::create(2.0f, Vec2(cocos2d::random() % (int)visibleSize.width, cocos2d::random() % (int)visibleSize.height))));
+			act.pushBack(EaseSineInOut::create(MoveTo::create(2.0f, Vec2(cocos2d::random() % ((int)visibleSize.width - 200) + 100, cocos2d::random() % (int)(visibleSize.height - 100) + 50))));
 		}
 		act.pushBack(ScaleBy::create(1.0, 0.5));
 		for (int i = 0; i < 10; i++) {
-			act.pushBack(EaseSineInOut::create(MoveTo::create(2.0f, Vec2(cocos2d::random() % (int)visibleSize.width, cocos2d::random() % (int)visibleSize.height))));
+			act.pushBack(EaseSineInOut::create(MoveTo::create(2.0f, Vec2(cocos2d::random() % ((int)visibleSize.width - 200) + 100, cocos2d::random() % (int)(visibleSize.height - 100) + 50))));
 		}
 		// クリア後
 		act.pushBack(CallFunc::create([this] {
 			mFinish = true;
+			AudioEngine::stopAll();
+
 			auto novel = Novel::create();
 			novel->setFontColor(0, Color3B::BLUE);
 			novel->addSentence(0, "継", "…もう行ったかな");
 			novel->addSentence(0, "継", "棺から出よう");
 			novel->setBg(0, "bg/black.png");
 			novel->addSentence(0, "継", "よいしょっ…と");
-			novel->addEvent(0, CallFunc::create([this] { 
+			novel->addEvent(0, CallFunc::create([this] {
 				removeChildByName("hideLayer");
 				removeChildByName("black_");
 			}));
@@ -353,7 +573,9 @@ namespace day2 {
 				mObjectList["flag"]->setState(1);
 				mObjectList["aisle3"]->setFieldChangeEvent("aisle3");
 				mObjectList["aisle3"]->setMsg("");
-				
+				mObjectList["shojo"]->setCursor(Cursor::INFO);
+				mObjectList["coffin"]->setCursor(Cursor::INFO);
+
 				auto aisle3 = Control::me->getField("aisle3");
 				aisle3->getObject("flag")->setState(2);
 				aisle3->getObject("aisle2")->setFieldChangeEvent("aisle2");
@@ -362,6 +584,7 @@ namespace day2 {
 				aisle3->getObject("torture")->setFieldChangeEvent("torture");
 				aisle3->getObject("torture")->setCursor(Cursor::ENTER);
 				aisle3->getObject("baking")->setCursor(Cursor::ENTER);
+				aisle3->addChild(aisle3->getObject("memo"), 1, "memo");
 			}));
 			novel->addSentence(0, "継", "これは…ここであったことはあまり想像したくないな…");
 
@@ -372,13 +595,13 @@ namespace day2 {
 		auto listener = EventListenerTouchOneByOne::create();
 		listener->onTouchBegan = [this](Touch* touch, Event* event) {
 			mTouchPos = touch->getLocation();
-			return true; 
+			return true;
 		};
 		listener->onTouchMoved = [this](Touch* touch, Event* event) {
 			mTouchPos = touch->getLocation();
 		};
 		listener->onTouchEnded = [this](Touch* touch, Event* event) {
-			mTouchPos = Point(-1,-1);
+			mTouchPos = Point(-1, -1);
 		};
 		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, circle);
 

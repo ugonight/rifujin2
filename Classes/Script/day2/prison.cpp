@@ -285,8 +285,8 @@ namespace day2 {
 								int x1 = end->getPositionX(), y1 = end->getPositionY();
 								while (abs(x0 - x1) > 5 || abs(y0 - y1) > 5) {
 									auto light = Sprite::createWithTexture(batchNode->getTexture());
-									light->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
-									light->setPosition(x0, y0);
+									light->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+									light->setPosition(x0 + 50, y0 - 50);
 									BlendFunc func;
 									func.src = GL_SRC_ALPHA;
 									func.dst = GL_ONE;

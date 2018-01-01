@@ -17,7 +17,11 @@ namespace day2 {
 		mFieldList["aisle"] = Aisle::create();
 		mFieldList["aisle2"] = Aisle2::create();
 		mFieldList["aisle3"] = Aisle3::create();
+		mFieldList["aisle4"] = Aisle4::create();
 		mFieldList["torture"] = Torture::create();
+		mFieldList["panel"] = Panel::create();
+		mFieldList["lab"] = Lab::create();
+		mFieldList["library"] = Library::create();
 
 		mFieldList["AboutItem"] = AboutItem::create();
 

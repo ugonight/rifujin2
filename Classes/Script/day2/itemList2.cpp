@@ -6,7 +6,9 @@ USING_NS_CC;
 namespace day2 {
 
 	void ItemMgr::initItem() {
-		//mItemList["fruit"] = new ItemObj("item/fruit_i.png");
+		mItemList["memo1"] = new ItemObj("item/memo1_i.png");
+		mItemList["solt"] = new ItemObj("item/solt_i.png");
+		mItemList["nume"] = new ItemObj("item/nume_i.png");
 
 	}
 

@@ -87,15 +87,16 @@ void ObjectN::touchOff(cocos2d::Touch* touch, cocos2d::Event* event) {
 			if (mField != "" && getParent()->getOpacity() == 255) {
 				Control::me->changeField(mField);
 			}
-			
+
 			//その他のイベント
 			//mTouchEvent();
-			runAction(mTouchEvent);	
+			runAction(mTouchEvent);
 
 			//メッセージイベント
-			if (mMsg != "")Control::me->showMsg(mMsg);
+			if (mMsg != "") {
+				Control::me->showMsg(mMsg); 
+			}
 
-			
 			//アイテムゲットイベント
 			if (mGetItem != "") {
 				Item::sharedItem()->getItem(mGetItem, touch->getLocation());

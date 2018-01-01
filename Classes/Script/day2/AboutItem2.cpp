@@ -11,6 +11,26 @@ namespace day2 {
 		//オブジェクトを作っておく
 		//基本的にアイテム名と同じ名前でオブジェクトを登録する。必ずaddChildをfalseにして登録。
 
+		//メモ1
+		auto ai = ObjectN::create();
+		ai->setTexture("item/memo1_a.png");
+		ai->setMsg("数字の書かれたメモだ");
+		ai->setArea(ai->getBoundingBox());
+		addObject(ai, "memo1", 1, false);
+
+		// 塩
+		ai = ObjectN::create();
+		ai->setTexture("item/solt_a.png");
+		ai->setMsg("塩だ");
+		ai->setArea(ai->getBoundingBox());
+		addObject(ai, "solt", 1, false);
+
+		// ぬめぬめ
+		ai = ObjectN::create();
+		ai->setTexture("item/nume_a.png");
+		ai->setMsg("ヒルが溶けて出てきたヌメヌメだ");
+		ai->setArea(ai->getBoundingBox());
+		addObject(ai, "nume", 1, false);
 	}
 	void AboutItem::changedField() {}
 	void AboutItem::setAboutItem(std::string itemName) {

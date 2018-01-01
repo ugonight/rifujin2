@@ -12,6 +12,8 @@
 
 #include "ui/CocosGUI.h"
 USING_NS_CC;
+#include "audio/include/AudioEngine.h"
+using namespace cocos2d::experimental;
 
 Control* Control::me;
 
@@ -233,7 +235,10 @@ void Control::load(int i) {
 
 void Control::setCursor(Cursor::CursorID num) {
 	auto cursor = (Cursor*)this->getChildByName("cursor");
-	if (num != cursor->getCursorNum()) cursor->setCursorNum(num);
+	if (num != cursor->getCursorNum()) { 
+		cursor->setCursorNum(num); 
+		if (num != Cursor::NOMAL && num != Cursor::NOVEL) AudioEngine::play2d("SE/picon.ogg");
+	}
 }
 
 void Control::changeField(std::string s) {
@@ -242,6 +247,15 @@ void Control::changeField(std::string s) {
 	field->FadeOut();
 	mFieldList[s]->FadeIn();
 	addChild(mFieldList[s], 0, "field");
+
+	// SE
+	auto cursorNum = ((Cursor*)this->getChildByName("cursor"))->getCursorNum();
+	if (cursorNum == Cursor::LEFT || cursorNum == Cursor::RIGHT || cursorNum == Cursor::BACK || cursorNum == Cursor::FORWARD){
+		AudioEngine::play2d("SE/footsteps.ogg");
+	}
+	else if (cursorNum == Cursor::ENTER) {
+		AudioEngine::play2d("SE/door.ogg");
+	}
 
 	// フィールド名表示
 	{
