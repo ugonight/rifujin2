@@ -13,7 +13,7 @@
 namespace day2
 {
 	//メンバを追加できるように}は定義しない
-	CREATE_FIELD(Prison) private: int mHit; void attackZombie(); };
+	CREATE_FIELD(Prison) void updateField(); private: int mHit; void attackZombie(); };
 	CREATE_FIELD(MagicTeam) private: int mNumber[3][3]; bool mMatch[8]; bool mCanMove;  };
 	CREATE_FIELD(Aisle) };
 	CREATE_FIELD(Aisle2)};
@@ -22,6 +22,7 @@ namespace day2
 	CREATE_FIELD(Torture) void updateField(); private: void hide(); cocos2d::Point mTouchPos; int mCount; bool mFinish; int mSE; };
 	CREATE_FIELD(Panel) private: bool mOnOff[5][5]; };
 	CREATE_FIELD(Lab)};
+	CREATE_FIELD(MWater) void updateField(); private: int mFrom; int mCup[2]; };
 	CREATE_FIELD(Library)};
 
 	class Day : public Chapter

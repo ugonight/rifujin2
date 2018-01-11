@@ -17,7 +17,8 @@ public:
 	void getItem(std::string itemName,cocos2d::Point point);
 
 	void deleteItem(std::string itemName);
-	std::string getSelectedItem();	
+	std::string getSelectedItem();
+	bool getGetItem(std::string itemName);	// 指定のアイテムを手に入れているか取得
 
 	void saveItem(cocos2d::ValueMap* map);
 	void loadItem( cocos2d::ValueMap map);

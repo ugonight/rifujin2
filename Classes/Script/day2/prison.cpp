@@ -124,6 +124,40 @@ namespace day2 {
 			addObject(searchPoint, "kusari", 1, true);
 		}
 
+		auto lizard = ObjectN::create();
+		lizard->setTexture("lizard.png");
+		lizard->setPosition(Vec2(620,480 + 100));
+		lizard->setCursor(Cursor::INFO);
+		auto act = Sequence::create(
+			DelayTime::create(cocos2d::random() % 5 + 5),
+			MoveBy::create(1.0f,Vec2(0,-200)),
+			DelayTime::create(cocos2d::random() % 7 + 3),
+			FlipY::create(true),
+			MoveBy::create(1.0f, Vec2(0, 200)),
+			FlipY::create(false),
+			NULL);
+		lizard->setAction(RepeatForever::create(act));
+		lizard->setTouchEvent(CallFunc::create([this] {
+			mObjectList["lizard"]->stopAllActions();
+			auto novel = Novel::create();
+			novel->setCharaR(0, "chara/tuguru1.png");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "継", "えいっ");
+			novel->addSentence(0, "継", "捕まえたぞ！");
+			novel->addSentence(0, "継", "…あ");
+			novel->addSentence(0, "継", "尻尾を嚙み切って逃げちゃった…");
+			novel->addSentence(0, "継", "注射器に入れておこう");
+			novel->addEvent(0, CallFunc::create([this] {
+				removeChildByName("lizard");
+				Control::me->getField("AboutItem")->getObject("syringe_r")->setState(1);
+			}));
+
+			novel->setEndTask(0);
+			this->addChild(novel, 10, "novel");
+		}));
+		addObject(lizard, "lizard", 3, false);
+		lizard->setArea(lizard->getBoundingBox());
+
 		auto flag = ObjectN::create();
 		addObject(flag, "flag", 0, false);
 
@@ -133,7 +167,12 @@ namespace day2 {
 		this->setOpacity(0);
 		this->runAction(FadeIn::create(0.5f));
 	}
-
+	void Prison::updateField() {
+		if (getChildByName("lizard")) {
+			auto lizard = mObjectList["lizard"];
+			lizard->setArea(Rect(lizard->getBoundingBox().getMinX(), 480 - lizard->getBoundingBox().getMaxY(), lizard->getBoundingBox().size.width, lizard->getBoundingBox().size.height));
+		}
+	}
 	void Prison::changedField() {
 		if (Control::me->getField("magic_team")->getObject("flag")->getState() == 2 &&
 			mObjectList["flag"]->getState() == 0) {
@@ -169,6 +208,10 @@ namespace day2 {
 				getChildByName("layer_z")->runAction(Sequence::create(FadeOut::create(1.0f), CallFunc::create([this] {
 					if (AudioEngine::getPlayingAudioCount())AudioEngine::stopAll();
 					auto novel = Novel::create();
+					novel->setFontColor(0, Color3B::BLACK);
+					novel->addSentence(0, "？？？", "…イタイ…イタイ……");
+					novel->addSentence(0, "？？？", "タスケテ……クレ………");
+					novel->addSentence(0, "？？？", "…………………");
 					novel->setCharaR(0, "chara/tuguru1.png");
 					novel->setFontColor(0, Color3B::BLUE);
 					novel->addSentence(0, "継", "はぁ…はぁ…");
@@ -354,7 +397,6 @@ namespace day2 {
 			}
 		}
 	}
-
 
 	void Aisle::initField() {
 		Size visibleSize = Director::getInstance()->getVisibleSize();

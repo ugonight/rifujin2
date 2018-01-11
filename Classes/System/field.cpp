@@ -57,18 +57,24 @@ bool Field::init() {
 
 void Field::changeCursor(cocos2d::Touch *touch) {
 	Cursor::CursorID cursorNum = Cursor::NOMAL;
+	bool loop = true;
+	for (int z = 10; z > 0; z--) {	// 上にあるものを優先
 		for (auto obj : mObjectList) {
 			if (obj.second->getArea().containsPoint(touch->getLocationInView()) &&
-				getChildByName(obj.first)) {
+				getChildByName(obj.first) &&
+				obj.second->getLocalZOrder() == z) {
 				if (obj.second->getCanUse()) {
 					cursorNum = Cursor::CANUSE;
 				}
 				else {
 					cursorNum = obj.second->getCursor();
 				}
+				loop = false;
 				break;
 			}
 		}
+		if (!loop) break;
+	}
 		
 		Control::me->setCursor(cursorNum);
 }
@@ -131,6 +137,12 @@ void Field::FadeIn() {
 		this->scheduleUpdate();
 		for (auto it : this->getChildren()) {
 			it->scheduleUpdate();
+		}
+		// オブジェクトアクション
+		for (auto obj : mObjectList) {
+			if (getChildByName(obj.first)) {
+				obj.second->runObjectAction();
+			}
 		}
 	}), CallFunc::create(CC_CALLBACK_0(Field::changedField, this)), NULL));
 	

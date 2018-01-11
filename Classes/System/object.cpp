@@ -8,6 +8,7 @@ USING_NS_CC;
 
 ObjectN::~ObjectN() {
 	CC_SAFE_RELEASE_NULL(mTouchEvent);
+	CC_SAFE_RELEASE_NULL(mAction);
 }
 
 bool ObjectN::init(){
@@ -28,6 +29,9 @@ bool ObjectN::init(){
 
 	mTouchEvent = CallFunc::create([]() {return; });
 	mTouchEvent->retain();
+
+	mAction = DelayTime::create(0.0f);
+	mAction->retain();
 
 	//auto listener = EventListenerTouchOneByOne::create();
 	//listener->onTouchBegan = CC_CALLBACK_2(ObjectN::touchOn, this); /*[&](Touch* touch, Event* event) {return true; };*/
@@ -121,7 +125,8 @@ void ObjectN::setFieldChangeEvent(std::string s) { mField = s; }
 void ObjectN::setMsg(std::string s) { mMsg = s; };
 
 //void ObjectN::setTouchEvent(void func()) { mTouchEvent = func; }
-void ObjectN::setTouchEvent(cocos2d::CallFunc *func) { mTouchEvent = func; mTouchEvent->retain(); }
+void ObjectN::setTouchEvent(cocos2d::CallFunc *func) { CC_SAFE_RELEASE_NULL(mTouchEvent); mTouchEvent = func; mTouchEvent->retain(); }
+void ObjectN::setAction(cocos2d::Action *act) { CC_SAFE_RELEASE_NULL(mAction); mAction = act; mAction->retain(); }
 void ObjectN::addCanUseItem(std::string itemName) { mCanUseItemList.push_back(itemName); }
 
 int ObjectN::getState() { return mState; }
@@ -142,3 +147,6 @@ void ObjectN::update(float delta) {
 	if (mTouchTime > 0) mTouchTime++;
 }
 
+void ObjectN::runObjectAction() {
+	runAction(mAction);
+}

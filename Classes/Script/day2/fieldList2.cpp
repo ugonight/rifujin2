@@ -21,6 +21,7 @@ namespace day2 {
 		mFieldList["torture"] = Torture::create();
 		mFieldList["panel"] = Panel::create();
 		mFieldList["lab"] = Lab::create();
+		mFieldList["m_water"] = MWater::create();
 		mFieldList["library"] = Library::create();
 
 		mFieldList["AboutItem"] = AboutItem::create();

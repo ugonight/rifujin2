@@ -9,6 +9,9 @@ namespace day2 {
 		mItemList["memo1"] = new ItemObj("item/memo1_i.png");
 		mItemList["solt"] = new ItemObj("item/solt_i.png");
 		mItemList["nume"] = new ItemObj("item/nume_i.png");
+		mItemList["fak"] = new ItemObj("item/fak_i.png");
+		mItemList["syringe"] = new ItemObj("item/syringe_i.png");
+
 
 	}
 

@@ -18,6 +18,8 @@ class ObjectN : public cocos2d::Sprite {
 	//タッチ時のイベント
 	//void(*mTouchEvent)();
 	cocos2d::CallFunc *mTouchEvent;
+	//オブジェクトのアニメ―ション
+	cocos2d::Action *mAction;
 
 	int mTouchTime;
 
@@ -42,6 +44,7 @@ public:
 
 	//void setTouchEvent(void (*func)());
 	void setTouchEvent(cocos2d::CallFunc *func);
+	void setAction(cocos2d::Action *act);
 	void addCanUseItem(std::string itemName);
 
 	int getState();
@@ -52,6 +55,8 @@ public:
 	Cursor::CursorID getCursor();
 	bool getCanUse();
 	std::vector<std::string> getCanUseItemList();
+
+	void runObjectAction();
 
 	CREATE_FUNC(ObjectN);
 };

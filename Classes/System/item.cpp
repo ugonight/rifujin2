@@ -131,7 +131,7 @@ void Item::getItem(std::string s, Point p) {
 	item = Sprite::create(mItemList[s]->getImage());
 	item->setPosition(p);
 	item->runAction(Sequence::create(JumpBy::create(0.5f, Vec2(0, 0), 200, 1),RemoveSelf::create(),NULL));
-	addChild(item, 1);
+	addChild(item, 3);
 
 	//パーティクル
 	// Cocos2d-x v3.x
@@ -188,6 +188,7 @@ void Item::deleteItem(std::string s) {
 }
 
 std::string Item::getSelectedItem() { return mSelectedItem; }
+bool Item::getGetItem(std::string itemName) { return mItemList[itemName]->getGetFlag(); }
 
 bool Item::touchEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 	bool validity = false;	//タッチイベントが有効になるか
