@@ -14,6 +14,7 @@ protected:
 	std::map<std::string, ObjectN*> mObjectList;
 	std::string mFieldName;
 	void addObject(ObjectN* obj,std::string objName, int ZOder, bool addChild);
+	std::vector<std::pair<cocos2d::EventListener*, cocos2d::Node*>> mEventListenerList;
 
 	//void pauseEventListener();
 	//void resumeEventListener();
@@ -36,6 +37,8 @@ public:
 
 	void pauseEventListener();
 	void resumeEventListener();
+	void resetEventListener();
+	void addOriginalEventListener(cocos2d::EventListener* listener,cocos2d::Node* node);	// 3.16‘Î‰ž
 
 	cocos2d::ValueMap saveField();
 	void loadField(cocos2d::ValueMap map);

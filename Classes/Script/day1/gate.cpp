@@ -152,7 +152,8 @@ namespace day1 {
 		listener->setSwallowTouches(true);
 		listener->onTouchBegan = [this](Touch *touch, Event *event) { return true; };
 		listener->onTouchEnded = [this](Touch *touch, Event *event) { getChildByName("kokkuri")->runAction(Sequence::create(FadeOut::create(1.0f), RemoveSelf::create(), NULL)); };
-		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, layer);
+		//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, layer);
+		addOriginalEventListener(listener, layer);
 
 		// Cocos2d-x v3.x
 		auto size = Director::getInstance()->getVisibleSize();
@@ -491,7 +492,8 @@ namespace day1 {
 				}
 				return false;
 			};
-			this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, number);
+			//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, number);
+			addOriginalEventListener(listener, number);
 			//addObject(number, name.str(), 2, true);
 			addChild(number, 2, name.str());
 		}

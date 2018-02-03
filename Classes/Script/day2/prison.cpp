@@ -361,7 +361,8 @@ namespace day2 {
 					}
 					return false;
 				};
-				this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, number);
+				//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, number);
+				addOriginalEventListener(listener, number);
 				//addObject(number, name.str(), 2, true);
 				addChild(number, 2, name.str());
 			}

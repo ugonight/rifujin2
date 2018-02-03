@@ -69,6 +69,18 @@ namespace day2 {
 		light->setAction(RepeatForever::create(Sequence::create(FadeOut::create(3.0f), FadeIn::create(3.0f), NULL)));
 		addObject(light, "light", 2, true);
 
+		auto door = ObjectN::create();
+		door->setArea(Rect(755, 80, 75, 380));
+		door->setCursor(Cursor::ENTER);
+		door->setMsg("カギがかかっている");
+		addObject(door, "locked", 1, true);
+
+		door = ObjectN::create();
+		door->setArea(Rect(310, 50, 190, 250));
+		door->setCursor(Cursor::INFO);
+		door->setMsg("バンダナを置いては行けない");
+		addObject(door, "exit", 1, true);
+
 		auto flag = ObjectN::create();
 		addObject(flag, "flag", 0, false);
 	}
@@ -126,7 +138,7 @@ namespace day2 {
 				novel->addSentence(0, "", "違法に作られた薬物。ドラゴン族を狩るために、秘密裏に作られたと考えられている。");
 				novel->addSentence(0, "", "血液中に入ると身体が痺れて動けなくなる。この状態から回復するには解毒薬が必要。");
 				novel->addSentence(0, "", "以下に解毒薬の作り方を示す。");
-				novel->addSentence(0, "", "・水　４DL\n・血清　２～３滴\n・トカゲのしっぽ　一本\n・ヒルの体液　適量");
+				novel->addSentence(0, "", "・水　４０ｍL\n・血清　２～３滴\n・トカゲのしっぽ　一本\n・ヒルの体液　適量");
 				novel->addSentence(0, "", "これらの材料を混ぜ合わせれば完成。対象者に注射すれば、すぐに効果が出る。");
 				novel->setFontColor(0, Color3B::BLUE);
 				novel->addSentence(0, "継", "なるほど…早速作ってみよう");
@@ -166,7 +178,7 @@ namespace day2 {
 				novel->addSentence(0, "", "【ドラゴン族】");
 				novel->addSentence(0, "", "昔の魔界王国では、かつてドラゴン族は他の種族と共存していました。当時は、ドラゴン族は王国一の温厚な種族として知られていました。");
 				novel->addSentence(0, "", "しかし、ある日ドラゴン族が一団となって国家反逆を企てたとして、ドラゴン族が大量に虐殺される事件が起こりました。");
-				novel->addSentence(0, "", "逃亡した者も裏の組織に捕らえられ、人体実験に使われたり角をもぎ取られて売り飛ばされたりして、個体数は激減しました。");
+				novel->addSentence(0, "", "逃亡した者も密猟者に捕らえられ、人体実験に使われたり角をもぎ取られて売り飛ばされたりして、個体数は激減しました。");
 				novel->addSentence(0, "", "王国守政権になってからは、生き残ったドラゴン族は保護され、少数ではありますが、また国民として暮らしていくことができるようになりました。");
 				novel->setFontColor(0, Color3B::BLUE);
 				novel->addSentence(0, "継", "…僕もこんな歴史を受け止めて、父さんの遺志を継いでいかないといけないな。");

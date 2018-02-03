@@ -150,3 +150,12 @@ void ObjectN::update(float delta) {
 void ObjectN::runObjectAction() {
 	runAction(mAction);
 }
+
+void ObjectN::resumeEventListener() {
+	if (mArea.size.width > 0 || mArea.size.height > 0) {
+		auto listener = EventListenerTouchOneByOne::create();
+		listener->onTouchBegan = CC_CALLBACK_2(ObjectN::touchOn, this);
+		listener->onTouchEnded = CC_CALLBACK_2(ObjectN::touchOff, this);
+		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+	}
+}

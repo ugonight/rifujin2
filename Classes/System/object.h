@@ -28,6 +28,7 @@ class ObjectN : public cocos2d::Sprite {
 	bool touchOn(cocos2d::Touch* touch, cocos2d::Event* event);
 	void touchOff(cocos2d::Touch* touch, cocos2d::Event* event);
 
+
 public:
 	virtual ~ObjectN();
 
@@ -56,6 +57,7 @@ public:
 	bool getCanUse();
 	std::vector<std::string> getCanUseItemList();
 
+	void resumeEventListener();
 	void runObjectAction();
 
 	CREATE_FUNC(ObjectN);

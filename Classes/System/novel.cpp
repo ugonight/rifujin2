@@ -164,6 +164,7 @@ bool Novel::touchEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 	if (/*touch->getLocation().y < visibleSize.height / 2 && */
 		!mHideMsg &&
 		!mSwitch &&
+		mSentense[mBranch].size() > mNovelNum[mBranch] &&
 		mNovelNum[mBranch] > 0 /* フェードイン前に押されるのを防ぐ */) {
 		readTalk();
 		mTouchTime = 1;

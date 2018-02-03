@@ -282,6 +282,7 @@ void Control::showAI(std::string itemName) {
 	if (getChildByName("AboutItem")) removeChildByName("AboutItem");
 	auto ai = (SAboutItem*)mFieldList["AboutItem"];
 	ai->setAboutItem(itemName);
+	ai->resumeEventListener();
 	addChild(ai, 3, "AboutItem");
 }
 

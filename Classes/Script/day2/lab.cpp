@@ -55,6 +55,11 @@ namespace day2 {
 		}));
 		addObject(lab, "lab", 1, true);
 
+		auto door = ObjectN::create();
+		door->setArea(Rect(0, 90, 50, 320));
+		door->setCursor(Cursor::ENTER);
+		door->setMsg("カギがかかっている");
+		addObject(door, "locked", 1, true);
 	}
 
 	void Aisle2::changedField() {
@@ -126,7 +131,8 @@ namespace day2 {
 
 					return false;
 				};
-				this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, button);
+				//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, button);
+				addOriginalEventListener(listener, button);
 			}
 		}
 
@@ -314,12 +320,12 @@ namespace day2 {
 		auto tarea = ObjectN::create();
 		tarea->setArea(area[1]);
 		tarea->setCursor(Cursor::INFO);
-		tarea->setMsg("3DLのカップだ");
+		tarea->setMsg("30mLのカップだ");
 		addObject(tarea, "tarea_3", 1, true);
 		tarea = ObjectN::create();
 		tarea->setArea(area[2]);
 		tarea->setCursor(Cursor::INFO);
-		tarea->setMsg("5DLのカップだ");
+		tarea->setMsg("50mLのカップだ");
 		addObject(tarea, "tarea_5", 1, true);
 		tarea = ObjectN::create();
 		tarea->setArea(area[3]);
@@ -415,7 +421,7 @@ namespace day2 {
 				auto novel = Novel::create();
 				novel->setFontColor(0, Color3B::BLUE);
 				novel->setCharaR(0, "chara/tuguru1.png");
-				novel->addSentence(0, "継", "これで４DL測れたね");
+				novel->addSentence(0, "継", "これで４０ｍL測れたね");
 				novel->addSentence(0, "継", "注射器の中に水を入れておこう");
 				novel->addEvent(0, CallFunc::create([this] {
 					Control::me->getField("AboutItem")->getObject("syringe_w")->setState(1);
@@ -428,7 +434,8 @@ namespace day2 {
 			}
 		};
 
-		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, layer);
+		//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, layer);
+		addOriginalEventListener(listener, layer);
 	}
 
 	void MWater::updateField() {
@@ -460,7 +467,7 @@ namespace day2 {
 			novel->setCharaR(0, "chara/tuguru1.png");
 			novel->addSentence(0, "継", "ここにあるカップで水が測れそうだね");
 			novel->addSentence(0, "継", "でも肝心の目盛りが掠れて見えないや…");
-			novel->addSentence(0, "継", "３DLと５DLのカップを使って４DLの水を測れるかな");
+			novel->addSentence(0, "継", "３０ｍLと５０ｍLのカップを使って４DLの水を測れるかな");
 			novel->setFontColor(0, Color3B::BLACK);
 			novel->addSentence(0, "", "水を「注ぐ側」から「注がれる側」へ矢印を引っ張って、水を移していこう。");
 			novel->addSentence(0, "", "蛇口を使うと水をカップに満杯にしたり、カップの水を全部捨てたりできるぞ。");
@@ -644,7 +651,8 @@ namespace day2 {
 					auto listener = EventListenerTouchOneByOne::create();
 					listener->setSwallowTouches(true);
 					listener->onTouchBegan = [](Touch* touch, Event* event) {return true; };
-					this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, black);
+					//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, black);
+					addOriginalEventListener(listener, black);
 					black->runAction(Sequence::create(FadeIn::create(1.0f), CallFunc::create(CC_CALLBACK_0(Torture::hide, this)), FadeOut::create(1.0f), NULL));
 					addChild(black, 5, "black_");
 				}));
@@ -917,6 +925,5 @@ namespace day2 {
 			mTouchPos = Point(-1, -1);
 		};
 		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, circle);
-
 	}
 }

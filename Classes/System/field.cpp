@@ -29,15 +29,16 @@ bool Field::init() {
 	initField();
 
 	//ƒJ[ƒ\ƒ‹•Ï‰»
-	auto listener = EventListenerTouchOneByOne::create();
-	listener->onTouchBegan = [this](Touch* touch, Event* event) {
-		changeCursor(touch);
-		return true;
-	};
-	listener->onTouchMoved = [this](Touch* touch, Event* event) {
-		changeCursor(touch);
-	};
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+	//auto listener = EventListenerTouchOneByOne::create();
+	//listener->onTouchBegan = [this](Touch* touch, Event* event) {
+	//	changeCursor(touch);
+	//	return true;
+	//};
+	//listener->onTouchMoved = [this](Touch* touch, Event* event) {
+	//	changeCursor(touch);
+	//};
+	//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+	resetEventListener();
 
 
 #ifdef _DEBUG 
@@ -105,7 +106,8 @@ void Field::updateField() {
 void Field::addObject(ObjectN* obj, std::string s, int z, bool addchild){
 	mObjectList[s] = obj;
 	obj->retain();	
-	obj->setZOrder(z);
+	//obj->setZOrder(z);
+	obj->setLocalZOrder(z);
 	if (addchild) this->addChild(obj, z, s);
 }
 
@@ -170,7 +172,35 @@ void Field::resumeEventListener() {
 	//}
 	for (auto it : mObjectList) {
 		it.second->getEventDispatcher()->setEnabled(true);
+		it.second->resumeEventListener();	
 	}
+	resetEventListener();
+
+	for (auto listener : mEventListenerList) {
+		if (listener.first->getReferenceCount() <= 1) {
+			auto lis = listener.first->clone();	// ‚»‚Ì‚Ü‚Ü“o˜^‚·‚é‚Æ“®‚¢‚Ä‚­‚ê‚È‚¢‚Ì‚ÅƒNƒ[ƒ“‚ð“o˜^
+			this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(lis, listener.second);
+		}
+	}
+}
+
+void Field::resetEventListener(){
+	//ƒJ[ƒ\ƒ‹•Ï‰»
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->onTouchBegan = [this](Touch* touch, Event* event) {
+		changeCursor(touch);
+		return true;
+	};
+	listener->onTouchMoved = [this](Touch* touch, Event* event) {
+		changeCursor(touch);
+	};
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+}
+
+void Field::addOriginalEventListener(cocos2d::EventListener* listener, cocos2d::Node* node) {
+	listener->retain();
+	mEventListenerList.push_back(std::make_pair(listener, node));
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, node);
 }
 
 cocos2d::ValueMap Field::saveField() {
