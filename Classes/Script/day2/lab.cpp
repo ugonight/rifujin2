@@ -651,8 +651,7 @@ namespace day2 {
 					auto listener = EventListenerTouchOneByOne::create();
 					listener->setSwallowTouches(true);
 					listener->onTouchBegan = [](Touch* touch, Event* event) {return true; };
-					//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, black);
-					addOriginalEventListener(listener, black);
+					this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, black);
 					black->runAction(Sequence::create(FadeIn::create(1.0f), CallFunc::create(CC_CALLBACK_0(Torture::hide, this)), FadeOut::create(1.0f), NULL));
 					addChild(black, 5, "black_");
 				}));

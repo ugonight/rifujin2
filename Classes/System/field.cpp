@@ -16,6 +16,10 @@ Field::~Field() {
 	for (auto obj : mObjectList) {
 		CC_SAFE_RELEASE_NULL(obj.second);
 	}
+	for (auto lis : mEventListenerList) {
+		CC_SAFE_RELEASE_NULL(lis.first);
+		CC_SAFE_RELEASE_NULL(lis.second);
+	}
 }
 
 
@@ -174,6 +178,7 @@ void Field::resumeEventListener() {
 		it.second->getEventDispatcher()->setEnabled(true);
 		it.second->resumeEventListener();	
 	}
+
 	resetEventListener();
 
 	for (auto listener : mEventListenerList) {

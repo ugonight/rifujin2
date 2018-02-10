@@ -70,6 +70,7 @@ void Chapter::update(float delta) {
 			if (control) {
 				if (control->getEndFlag()) {
 					mFuncType = mFuncList[++mFuncNum]();
+					this->removeChild(control);
 				}
 			}
 		}
@@ -98,9 +99,12 @@ void Chapter::update(float delta) {
 		//	setVisibleWithTouch(save, false);
 		//}
 	}
+	updateChapter();
 }
 
 void Chapter::funcOtherEnd(){/*継承先で定義*/}
+
+void Chapter::updateChapter(){/*継承先で定義*/}
 
 void Chapter::save(cocos2d::Ref* pSender) {
 	std::function< void(int)> func = [this](int i) {

@@ -22,16 +22,23 @@ namespace day2 {
 		bandana->setArea(Rect(180, 130, 120, 260));
 		bandana->setCursor(Cursor::INFO);
 		bandana->setTouchEvent(CallFunc::create([this] {
-			auto novel = Novel::create();
-			novel->setCharaR(0, "chara/bandana1.png");
-			novel->setCharaL(0, "chara/tuguru1.png");
-			novel->setFontColor(0, Color3B::BLUE);
+			auto ai = Control::me->getField("AboutItem");
+			if (ai->getObject("syringe_w")->getState() == 1 && ai->getObject("syringe_b")->getState() == 1 && ai->getObject("syringe_h")->getState() == 1 && ai->getObject("syringe_r")->getState() == 1){
+				// クリア
+				this->runAction(Sequence::create(FadeOut::create(1.0f), CallFunc::create([this] {Control::me->setEndFlag(); }), NULL));
+			}
+			else {
+				auto novel = Novel::create();
+				novel->setCharaR(0, "chara/bandana1.png");
+				novel->setCharaL(0, "chara/tuguru1.png");
+				novel->setFontColor(0, Color3B::BLUE);
 
-			novel->addSentence(0, "バンダナ", "俺はここで休んでるから、薬を探してきてくれ");
-			novel->addSentence(0, "継", "わかった、なるべく急ぐよ");
+				novel->addSentence(0, "バンダナ", "俺はここで休んでるから、薬を探してきてくれ");
+				novel->addSentence(0, "継", "わかった、なるべく急ぐよ");
 
-			novel->setEndTask(0);
-			this->addChild(novel, 10, "novel");
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+			}
 		}));
 		//renji->addCanUseItem("clothes");
 		addObject(bandana, "bandana", 1, true);

@@ -22,7 +22,8 @@ protected:
 	int mFuncType;	// 0:ノベル 1:探索パート 3~:別途定義
 	Control* mControl;	//initでEscクラスを代入
 
-	virtual void funcOtherEnd();	//ノベルと探索以外の終了処理
+	virtual void funcOtherEnd();	// ノベルと探索以外の終了処理
+	virtual void updateChapter();	// 任意update処理
 
 	int mFuncNum, mChapterNum;
 	std::vector<std::function<int()>> mFuncList;

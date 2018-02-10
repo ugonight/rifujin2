@@ -38,7 +38,7 @@ public:
 	void pauseEventListener();
 	void resumeEventListener();
 	void resetEventListener();
-	void addOriginalEventListener(cocos2d::EventListener* listener,cocos2d::Node* node);	// 3.16‘Î‰ž
+	void addOriginalEventListener(cocos2d::EventListener* listener,cocos2d::Node* node);	// 3.16‘Î‰ž initField“à‚ÌEventListener‚ÉŽg‚¤
 
 	cocos2d::ValueMap saveField();
 	void loadField(cocos2d::ValueMap map);

@@ -31,7 +31,12 @@ namespace day2
 		static cocos2d::Scene* createScene();
 		void initChapter() override;
 
+		void updateChapter() override;
 		CREATE_FUNC(Day);
+
+	private:
+		int mCount, mAttack[100];
+		//cocos2d::SpriteBatchNode* mHandImage[3];
 	};
 
 	class AboutItem : public SAboutItem {

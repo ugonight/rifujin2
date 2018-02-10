@@ -172,6 +172,7 @@ bool Novel::touchEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 	else {
 		getChildByName("msgBox")->setVisible(true);
 		getChildByName("label")->setVisible(true);
+		getChildByName("name")->setVisible(true);
 		getChildByName("fast")->setVisible(true);
 		mHideMsg = false;
 	}
@@ -237,6 +238,7 @@ void Novel::update(float delta) {
 	if (mTouchTime > 60) {
 		getChildByName("msgBox")->setVisible(false);
 		getChildByName("label")->setVisible(false);
+		getChildByName("name")->setVisible(false);
 		getChildByName("fast")->setVisible(false);
 		mHideMsg = true;
 	}
