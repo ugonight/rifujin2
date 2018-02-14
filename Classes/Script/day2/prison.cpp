@@ -87,6 +87,11 @@ namespace day2 {
 					novel->setFontColor(0, Color3B::BLUE);
 					novel->addSentence(0, "継", "地下へ降りてみよう");
 					novel->setBg(0, "bg/black.png");
+					novel->addEvent(0, CallFunc::create([this] {
+						if (AudioEngine::getPlayingAudioCount()) {
+							AudioEngine::stopAll();
+						}
+					}));
 					novel->addSentence(0, "継", "狭いから這っていかないと…");
 					novel->addSentence(0, "継", "…んしょ…んしょと……");
 					novel->setFontColor(0, Color3B::BLACK);
@@ -196,6 +201,9 @@ namespace day2 {
 
 	void Prison::attackZombie() {
 		AudioEngine::play2d("BGM/fear.ogg");
+		setGetStill(5);
+
+
 		auto layer = Layer::create();
 		layer->setPosition(Vec2::ZERO);
 		this->addChild(layer, 6, "layer_z");
@@ -232,6 +240,7 @@ namespace day2 {
 						removeChildByName("black");
 						Control::me->changeField("aisle");
 						mObjectList["paper"]->setState(2);
+						AudioEngine::play2d("BGM/underground.ogg", true);
 					}));
 
 					novel->setEndTask(0);

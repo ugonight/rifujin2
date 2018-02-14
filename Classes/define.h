@@ -24,3 +24,10 @@ inline void setVisibleWithTouch(cocos2d::Node *node, bool visible) {
 		node->getEventDispatcher()->pauseEventListenersForTarget(node);
 	}
 }
+
+//userDefault“o˜^
+inline void setGetStill(int id) {
+	auto userDef = cocos2d::UserDefault::getInstance();
+	userDef->setBoolForKey(cocos2d::StringUtils::format("still%02d", id).c_str(), true);
+	userDef->flush();
+}

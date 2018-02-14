@@ -1,6 +1,7 @@
 #pragma  execution_character_set("utf-8")
 #include "Title.h"
 #include "Prologue.h"
+#include "extra.h"
 #include "System\record.h"
 #include "define.h"
 
@@ -52,6 +53,9 @@ bool Title::init()
 			auto record = Record::create();
 			addChild(record, 5, "record");
 		}
+		else if (Rect(275, 350, 285, 80).containsPoint(touch->getLocationInView())) {
+			Director::getInstance()->replaceScene(TransitionFade::create(1.0f, Extra::create(), Color3B::WHITE));
+		}
 		else if (Rect(620, 0, 234, 50).containsPoint(touch->getLocationInView())) {
 			auto explain = Sprite::create("explain_.png");
 			explain->setPosition(Director::getInstance()->getVisibleSize() / 2);
@@ -75,16 +79,18 @@ bool Title::init()
 			path << FileUtils::getInstance()->getWritablePath() << i + 1;
 			FileUtils::getInstance()->createDirectory(path.str());	//セーブフォルダ生成
 		}
+
 		userDef->setBoolForKey("first",true);
 		userDef->flush();
 	}
 
 	//BGM
-	AudioEngine::preload("BGM/curse_inst.ogg");	AudioEngine::play2d("BGM/curse_inst.ogg", true);
+	AudioEngine::preload("BGM/curse_inst.ogg");	if (AudioEngine::getPlayingAudioCount() == 0) AudioEngine::play2d("BGM/curse_inst.ogg", true);
 	AudioEngine::preload("BGM/days.ogg");
 	AudioEngine::preload("BGM/school.ogg");
 	AudioEngine::preload("BGM/mystery.ogg");
 	AudioEngine::preload("BGM/fear.ogg");
+	AudioEngine::preload("BGM/underground.ogg");
 
 	//SE
 	AudioEngine::preload("SE/po.ogg");

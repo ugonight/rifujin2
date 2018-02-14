@@ -74,6 +74,7 @@ bool Prologue::init()
 
 		novel->setFontColor(0, Color3B::BLACK);
 		novel->setBg(0, "bg/town.png");
+		novel->addEvent(0, CallFunc::create([this] {setGetStill(0); }));
 		novel->addSentence(0, "","ここは人間も獣人も妖精だって、種族分け隔てなく平和に暮らす国、魔界王国。");
 		novel->addSentence(0, "", "人々は幼い頃から基本的な魔法を学び、日常的に魔法を使って生活をしている。");
 		novel->addSentence(0, "", "特殊能力という生まれつき変わった魔法が使える人もそこそこ多い、豊かな国だ");
@@ -263,6 +264,7 @@ bool Prologue::init()
 			removeChildByName("bg");
 		}), NULL));
 		addChild(bg, 0, "bg");
+		setGetStill(1);
 	};
 
 	mFunc[6] = [this]() {			

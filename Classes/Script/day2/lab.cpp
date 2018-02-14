@@ -467,7 +467,7 @@ namespace day2 {
 			novel->setCharaR(0, "chara/tuguru1.png");
 			novel->addSentence(0, "継", "ここにあるカップで水が測れそうだね");
 			novel->addSentence(0, "継", "でも肝心の目盛りが掠れて見えないや…");
-			novel->addSentence(0, "継", "３０ｍLと５０ｍLのカップを使って４DLの水を測れるかな");
+			novel->addSentence(0, "継", "３０ｍLと５０ｍLのカップを使って４０ｍLの水を測れるかな");
 			novel->setFontColor(0, Color3B::BLACK);
 			novel->addSentence(0, "", "水を「注ぐ側」から「注がれる側」へ矢印を引っ張って、水を移していこう。");
 			novel->addSentence(0, "", "蛇口を使うと水をカップに満杯にしたり、カップの水を全部捨てたりできるぞ。");
@@ -495,6 +495,9 @@ namespace day2 {
 		// aisle2->setFieldChangeEvent("aisle2");
 		aisle2->setTouchEvent(CallFunc::create([this] {
 			if (mObjectList["flag"]->getState() == 0) {
+				AudioEngine::stopAll();
+				AudioEngine::play2d("SE/heart1.ogg", true);
+
 				auto novel = Novel::create();
 				novel->setFontColor(0, Color3B::BLACK);
 				novel->addSentence(0, "", "……コツコツ…");
@@ -615,6 +618,7 @@ namespace day2 {
 				novel->addSentence(0, "", "そして、僕はそれの上部を見上げる。");
 				novel->setFontColor(0, Color3B::BLUE);
 				novel->setBg(0, "chara/shojo.png");
+				novel->addEvent(0, CallFunc::create([this] {setGetStill(6); }));
 				novel->addSentence(0, "継", "ひえ…");
 				novel->addSentence(0, "継", "鉄の処女…ってやつか…近づかないようにしよう。");
 				novel->addSentence(0, "継", "別の場所に隠れるか…");
@@ -785,6 +789,7 @@ namespace day2 {
 				}
 			}
 
+			// BAD END2
 			if (mCount > 100) {
 				mCount = -1;
 				hide->getChildByName("hide2")->stopAllActions();
@@ -799,7 +804,8 @@ namespace day2 {
 				novel->setBg(0, "bg/black.png");
 				novel->addEvent(0, CallFunc::create([this] { getChildByName("hideLayer")->removeChildByName("hide2"); AudioEngine::stopAll(); }));
 				novel->addSentence(0, "", "ガチャリ…");
-				novel->setBg(0, "chara/bad3.png");
+				novel->setBg(0, "chara/bad2.png");
+				novel->addEvent(0, CallFunc::create([this] {setGetStill(7); }));
 				novel->addSentence(0, "？？？", "…ふふふ");
 				novel->addSentence(0, "？？？", "みーつけた");
 				novel->addSentence(0, "", "BAD　END2「かくれんぼ失敗」");
@@ -907,7 +913,9 @@ namespace day2 {
 			}));
 			novel->setFontColor(0, Color3B::BLUE);
 			novel->addSentence(0, "継", "うわぁ…ここであったことはあまり想像したくないな…");
-
+			novel->addEvent(0, CallFunc::create([this] {
+				AudioEngine::play2d("BGM/underground.ogg", true);
+			}));
 			novel->setEndTask(0);
 			addChild(novel, 10, "novel");
 		}));

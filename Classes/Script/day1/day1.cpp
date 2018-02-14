@@ -212,6 +212,7 @@ namespace day1 {
 			novel->setFontColor(1, Color3B::BLUE);
 			novel->setCharaL(1, "");
 			novel->setBg(1, "chara/scene6.png");
+			novel->addEvent(0, CallFunc::create([this] {setGetStill(4); }));
 			novel->addSentence(1, "継", "バンダナ…？");
 			novel->addSentence(1, "継", "おい…しっかりしろ…！");
 			novel->addSentence(1, "継", "どうしよう…怪我をしている…");

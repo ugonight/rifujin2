@@ -375,6 +375,7 @@ namespace day1 {
 				novel->setCharaR(0, "");
 				novel->setCharaC(0, "");
 				novel->setBg(0, "chara/scene4.png");
+				novel->addEvent(0, CallFunc::create([this] {setGetStill(2); }));
 				novel->setFontColor(0, Color3B::BLUE);
 				novel->addSentence(0, "継", "うわあ！UFOが絵の中から出て来たよ！");
 				novel->setFontColor(0, Color3B::RED);

@@ -96,7 +96,9 @@ namespace day2 {
 			novel->addSentence(0, "継", "ごめんなさい……僕がしっかりしてなかったから…僕のせいで……ごめんなさい…ごめんなさい…");
 			novel->addSentence(0, "継", "僕のせいで、バンダナまで居なくなったら…僕は…僕は……");
 			novel->addEvent(0, CallFunc::create([this] {
-				if (AudioEngine::getPlayingAudioCount())AudioEngine::stopAll();
+				if (AudioEngine::getPlayingAudioCount()) { 
+					AudioEngine::stopAll(); 
+				}
 			}));
 			novel->setCharaR(0, "chara/bandana1.png");
 			novel->setCharaL(0, "chara/tuguru1.png");
@@ -113,6 +115,9 @@ namespace day2 {
 			novel->addSentence(0, "継", "見たところ、ここは何かの施設の牢屋に見えるね。僕たちを襲った奴の本拠地なら、解毒剤もあるかもしれない。僕、探してくるよ");
 			novel->addSentence(0, "バンダナ", "おお、なるほどな。お前の方は何ともないのか？");
 			novel->addSentence(0, "継", "うん、僕は眠らされただけみたいだから、いくらでも動けるよ。");
+			novel->addEvent(0, CallFunc::create([this] {
+				AudioEngine::play2d("BGM/underground.ogg",true);
+			}));
 			novel->addSentence(0, "バンダナ", "そうか、いつも通りの冷静さを取り戻したな。");
 			novel->addSentence(0, "バンダナ", "お前は、全然できないヤツなんかじゃないんだ。その力で、俺を救ってくれ。");
 			novel->addSentence(0, "継", "やってみるよ、バンダナ。");
@@ -130,7 +135,7 @@ namespace day2 {
 
 		mFuncList.push_back([this]() {
 			mSituation = "地下の迷宮で（探索）";
-			//if (!AudioEngine::getPlayingAudioCount())AudioEngine::play2d("BGM/school.ogg", true);
+			if (!AudioEngine::getPlayingAudioCount())AudioEngine::play2d("BGM/underground.ogg", true);
 			removeChildByName("cursor");
 
 			auto control = (day2::Esc*)day2::Esc::createControl();
@@ -166,6 +171,7 @@ namespace day2 {
 
 		mFuncList.push_back([this]() {
 			mSituation = "影と対峙して（ノベル）";
+			AudioEngine::stopAll();
 
 			auto novel = Novel::create();
 
@@ -244,6 +250,7 @@ namespace day2 {
 
 			auto novel = Novel::create();
 			novel->setBg(0, "chara/stand_bow.png");
+			novel->addEvent(0, CallFunc::create([this] {setGetStill(8); }));
 			novel->setFontColor(0, Color3B::RED);
 			novel->addSentence(0, "？？？", "どうやらここまでみたいね");
 			novel->setFontColor(0, Color3B::BLUE);
@@ -375,6 +382,8 @@ namespace day2 {
 
 			auto origin = Director::getInstance()->getVisibleOrigin();
 			auto visibleSize = Director::getInstance()->getVisibleSize();
+			
+			setGetStill(9);
 
 			auto bg = Sprite::create("chara/remon_fallen.png");
 			bg->setPosition(Director::getInstance()->getVisibleSize() / 2);

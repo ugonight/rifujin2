@@ -288,6 +288,7 @@ namespace day1 {
 			novel->setCharaL(0, "");
 			novel->addEvent(0, CallFunc::create([this] {AudioEngine::stopAll(); }));
 			novel->setBg(0, "chara/scene5.png");
+			novel->addEvent(0, CallFunc::create([this] {setGetStill(3); }));
 			novel->addSentence(0, "継", "これは…");
 			novel->addSentence(0, "バンダナ", "げ…俺の名前を書きなぐったノートと、俺の写真の山…よく撮れてるなぁ");
 			novel->setFontColor(0, Color3B::RED);
