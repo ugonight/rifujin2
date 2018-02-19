@@ -27,7 +27,7 @@ namespace day1 {
 		this->addChild(cursor, 1, "cursor");
 
 		//BGM
-		AudioEngine::pauseAll();
+		AudioEngine::stopAll();
 
 		mFuncNum = 0;
 		mChapterNum = 1;
@@ -50,6 +50,7 @@ namespace day1 {
 
 		mFuncList.push_back([this]() {
 			mSituation = "学校に着いて（ノベル）";
+			setGetMusic(2);
 			AudioEngine::play2d("BGM/school.ogg", true);
 
 			auto novel = Novel::create();
@@ -208,11 +209,12 @@ namespace day1 {
 			novel->addSentence(1, "", "壁の隅の暗がりに目を凝らしてみると、そこにいたのは…");
 			novel->addEvent(1, CallFunc::create([this] {
 				AudioEngine::play2d("BGM/fear.ogg", true);
+				setGetMusic(4);
 			}));
 			novel->setFontColor(1, Color3B::BLUE);
 			novel->setCharaL(1, "");
 			novel->setBg(1, "chara/scene6.png");
-			novel->addEvent(0, CallFunc::create([this] {setGetStill(4); }));
+			novel->addEvent(1, CallFunc::create([this] {setGetStill(4); }));
 			novel->addSentence(1, "継", "バンダナ…？");
 			novel->addSentence(1, "継", "おい…しっかりしろ…！");
 			novel->addSentence(1, "継", "どうしよう…怪我をしている…");

@@ -4,10 +4,9 @@
 #include "define.h"
 #include "System/novel.h"
 
-#include "SimpleAudioEngine.h"
-
+#include "audio/include/AudioEngine.h"
+using namespace cocos2d::experimental;
 USING_NS_CC;
-using namespace CocosDenshion;
 
 Extra::Extra() :ratio(1.0 / 4.0) {
 
@@ -43,7 +42,17 @@ bool Extra::init() {
 	mStillList.push_back("chara/bad2.png");
 	mStillList.push_back("chara/stand_bow.png");
 	mStillList.push_back("chara/remon_fallen.png");
+	mStillList.push_back("bg/book.png");
+	mStillList.push_back("chara/dragon_soul.png");
 
+	// BGM一覧
+	mMusicList.push_back(std::make_pair("paralyzed rose (inst short ver.)", "BGM/curse_inst.ogg"));
+	mMusicList.push_back(std::make_pair("days", "BGM/days.ogg"));
+	mMusicList.push_back(std::make_pair("school", "BGM/school.ogg"));
+	mMusicList.push_back(std::make_pair("mystery", "BGM/mystery.ogg"));
+	mMusicList.push_back(std::make_pair("fear", "BGM/fear.ogg"));
+	mMusicList.push_back(std::make_pair("underground", "BGM/underground.ogg"));
+	mMusicList.push_back(std::make_pair("folklore", "BGM/folklore.ogg"));
 
 	return true;
 }
@@ -365,10 +374,11 @@ void Extra::character(){
 void Extra::music(){
 	Size display = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	auto userDef = cocos2d::UserDefault::getInstance();
 	auto layer = getChildByName("layer");
 
-	auto label = Label::createWithTTF("戻る", FONT_NAME, 50);
-	label->setPosition(Vec2(origin.x + display.width / 2, origin.y + display.height / 7));
+	auto label = Label::createWithTTF("戻る", FONT_NAME, 30);
+	label->setPosition(Vec2(origin.x + display.width / 2, origin.y + display.height / (mMusicList.size() + 2)));
 	label->setTextColor(Color4B::WHITE);
 	label->enableOutline(Color4B::BLACK, 2);
 	layer->addChild(label, 3, "back");
@@ -386,108 +396,57 @@ void Extra::music(){
 	};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, label);
 
-	label = Label::createWithTTF("いのちのいろ", FONT_NAME, 50);
-	label->setPosition(Vec2(origin.x + display.width / 2, origin.y + display.height * 2 / 7));
-	label->setTextColor(Color4B::WHITE);
-	label->enableOutline(Color4B::BLACK, 2);
-	layer->addChild(label, 3, "color");
-	listener = EventListenerTouchOneByOne::create();
-	listener->onTouchBegan = [this](Touch* touch, Event* event) {
-		auto target = (Label*)event->getCurrentTarget();
-		Rect targetBox = target->getBoundingBox();
-		Point touchPoint = Vec2(touch->getLocation().x, touch->getLocation().y);
-		if (targetBox.containsPoint(touchPoint))
-		{
-			SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
-			SimpleAudioEngine::getInstance()->playBackgroundMusic("BGM/color.ogg", true);
-			return true;
-		}
-		return false;
-	};
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, label);
+	int id = 0;
+	bool get;
+	for (auto music : mMusicList) {
+		get = (userDef->getBoolForKey(StringUtils::format("music%02d", id).c_str(), false));
+		std::string name = get ? music.first : "？？？？";
+		label = Label::createWithTTF(name, FONT_NAME, 30);
+		label->setPosition(Vec2(origin.x + display.width / 2, origin.y + display.height * (mMusicList.size() + 2 - id - 1) / (mMusicList.size() + 2)));
+		label->setTextColor(Color4B::WHITE);
+		label->enableOutline(Color4B::BLACK, 2);
+		layer->addChild(label, 3, StringUtils::format("music%02d", id));
+		listener = EventListenerTouchOneByOne::create();
+		listener->onTouchBegan = [this,get,music](Touch* touch, Event* event) {
+			auto target = (Label*)event->getCurrentTarget();
+			Rect targetBox = target->getBoundingBox();
+			Point touchPoint = Vec2(touch->getLocation().x, touch->getLocation().y);
+			if (targetBox.containsPoint(touchPoint))
+			{
+				if (get) {
+					AudioEngine::stopAll();
+					AudioEngine::play2d(music.second, true);
+				}
 
-	label = Label::createWithTTF("misery", FONT_NAME, 50);
-	label->setPosition(Vec2(origin.x + display.width / 2, origin.y + display.height * 3 / 7));
-	label->setTextColor(Color4B::WHITE);
-	label->enableOutline(Color4B::BLACK, 2);
-	layer->addChild(label, 3, "misery");
-	listener = EventListenerTouchOneByOne::create();
-	listener->onTouchBegan = [this](Touch* touch, Event* event) {
-		auto target = (Label*)event->getCurrentTarget();
-		Rect targetBox = target->getBoundingBox();
-		Point touchPoint = Vec2(touch->getLocation().x, touch->getLocation().y);
-		if (targetBox.containsPoint(touchPoint))
-		{
-			SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
-			SimpleAudioEngine::getInstance()->playBackgroundMusic("BGM/misery.ogg", true);
-			return true;
-		}
-		return false;
-	};
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, label);
+				return true;
+			}
+			return false;
+		};
+		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, label);
+		id++;
+	}
 
-	label = Label::createWithTTF("dream", FONT_NAME, 50);
-	label->setPosition(Vec2(origin.x + display.width / 2, origin.y + display.height * 4 / 7));
-	label->setTextColor(Color4B::WHITE);
-	label->enableOutline(Color4B::BLACK, 2);
-	layer->addChild(label, 3, "dream");
-	listener = EventListenerTouchOneByOne::create();
-	listener->onTouchBegan = [this](Touch* touch, Event* event) {
-		auto target = (Label*)event->getCurrentTarget();
-		Rect targetBox = target->getBoundingBox();
-		Point touchPoint = Vec2(touch->getLocation().x, touch->getLocation().y);
-		if (targetBox.containsPoint(touchPoint))
-		{
-			SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
-			SimpleAudioEngine::getInstance()->playBackgroundMusic("BGM/dream.ogg", true);
 
-			return true;
-		}
-		return false;
-	};
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, label);
+	//label = Label::createWithTTF("precious smile (inst short ver.)", FONT_NAME, 50);
+	//label->setPosition(Vec2(origin.x + display.width / 2, origin.y + display.height * 6 / 7));
+	//label->setTextColor(Color4B::WHITE);
+	//label->enableOutline(Color4B::BLACK, 2);
+	//layer->addChild(label, 3, "title");
+	//listener = EventListenerTouchOneByOne::create();
+	//listener->onTouchBegan = [this](Touch* touch, Event* event) {
+	//	auto target = (Label*)event->getCurrentTarget();
+	//	Rect targetBox = target->getBoundingBox();
+	//	Point touchPoint = Vec2(touch->getLocation().x, touch->getLocation().y);
+	//	if (targetBox.containsPoint(touchPoint))
+	//	{
+	//		//SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
+	//		//SimpleAudioEngine::getInstance()->playBackgroundMusic("BGM/title.ogg", true);
 
-	label = Label::createWithTTF("days", FONT_NAME, 50);
-	label->setPosition(Vec2(origin.x + display.width / 2, origin.y + display.height * 5 / 7));
-	label->setTextColor(Color4B::WHITE);
-	label->enableOutline(Color4B::BLACK, 2);
-	layer->addChild(label, 3, "days");
-	listener = EventListenerTouchOneByOne::create();
-	listener->onTouchBegan = [this](Touch* touch, Event* event) {
-		auto target = (Label*)event->getCurrentTarget();
-		Rect targetBox = target->getBoundingBox();
-		Point touchPoint = Vec2(touch->getLocation().x, touch->getLocation().y);
-		if (targetBox.containsPoint(touchPoint))
-		{
-			SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
-			SimpleAudioEngine::getInstance()->playBackgroundMusic("BGM/days.ogg", true);
-
-			return true;
-		}
-		return false;
-	};
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, label);
-
-	label = Label::createWithTTF("precious smile (inst short ver.)", FONT_NAME, 50);
-	label->setPosition(Vec2(origin.x + display.width / 2, origin.y + display.height * 6 / 7));
-	label->setTextColor(Color4B::WHITE);
-	label->enableOutline(Color4B::BLACK, 2);
-	layer->addChild(label, 3, "title");
-	listener = EventListenerTouchOneByOne::create();
-	listener->onTouchBegan = [this](Touch* touch, Event* event) {
-		auto target = (Label*)event->getCurrentTarget();
-		Rect targetBox = target->getBoundingBox();
-		Point touchPoint = Vec2(touch->getLocation().x, touch->getLocation().y);
-		if (targetBox.containsPoint(touchPoint))
-		{
-			SimpleAudioEngine::getInstance()->stopBackgroundMusic(true);
-			SimpleAudioEngine::getInstance()->playBackgroundMusic("BGM/title.ogg", true);
-
-			return true;
-		}
-		return false;
-	};
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, label);
+	//		return true;
+	//	}
+	//	return false;
+	//};
+	//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, label);
 
 }
 
@@ -567,7 +526,7 @@ void Extra::still(){
 	};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, arrow);
 	arrow = Sprite::create("record_next.png");
-	arrow->setFlipX(true);
+	arrow->setFlippedX(true);
 	arrow->setPosition(Vec2(40, 250));
 	layer->addChild(arrow, 1, "pre");
 	listener = EventListenerTouchOneByOne::create();

@@ -3,6 +3,7 @@
 #include "System/cursor.h"
 #include "Sequence/Title.h"
 #include "Script\day2\fieldDef.h"
+#include "Script\day3\fieldDef.h"
 
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
@@ -26,7 +27,7 @@ namespace day2 {
 		this->addChild(cursor, 1, "cursor");
 
 		//BGM
-		AudioEngine::pauseAll();
+		AudioEngine::stopAll();
 
 		mFuncNum = 0;
 		mChapterNum = 2;
@@ -117,6 +118,7 @@ namespace day2 {
 			novel->addSentence(0, "継", "うん、僕は眠らされただけみたいだから、いくらでも動けるよ。");
 			novel->addEvent(0, CallFunc::create([this] {
 				AudioEngine::play2d("BGM/underground.ogg",true);
+				setGetMusic(5);
 			}));
 			novel->addSentence(0, "バンダナ", "そうか、いつも通りの冷静さを取り戻したな。");
 			novel->addSentence(0, "バンダナ", "お前は、全然できないヤツなんかじゃないんだ。その力で、俺を救ってくれ。");
@@ -399,7 +401,7 @@ namespace day2 {
 			label->setColor(Color3B::WHITE);
 			label->setOpacity(0.0f);
 			label->runAction(Sequence::create(DelayTime::create(5.0f),FadeIn::create(1.0f), DelayTime::create(2.0f), FadeOut::create(1.0f), CallFunc::create([this] {
-				//Director::getInstance()->replaceScene(TransitionFade::create(1.0f, day2::Day::createScene(), Color3B::WHITE));
+				Director::getInstance()->replaceScene(TransitionFade::create(1.0f, day3::Day::createScene(), Color3B::WHITE));
 			}), NULL));
 			this->addChild(label, 3, "label");
 
@@ -443,7 +445,7 @@ namespace day2 {
 							mAttack[num]++;
 							event->getCurrentTarget()->runAction(Sequence::create(MoveBy::create(0.05, Vec2(10, 0)), MoveBy::create(0.05f, Vec2(-20, 0)), MoveBy::create(0.05f, Vec2(10, 0)), NULL));
 							AudioEngine::play2d("SE/tm2_hit004.ogg");
-							if (mAttack[num] == 5) {
+							if (mAttack[num] == 3) {
 								event->getCurrentTarget()->runAction(Sequence::createWithTwoActions(FadeOut::create(1.0f), RemoveSelf::create()));
 								mAttack[num] = -1;
 							}

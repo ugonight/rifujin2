@@ -78,7 +78,23 @@ namespace day2 {
 		door = ObjectN::create();
 		door->setArea(Rect(310, 50, 190, 250));
 		door->setCursor(Cursor::INFO);
-		door->setMsg("バンダナを置いては行けない");
+		door->setTouchEvent(CallFunc::create([this] {
+			if (mObjectList["exit"]->getState() == 0) {
+				auto novel = Novel::create();
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->setCharaR(0, "chara/tuguru1.png");
+				novel->addSentence(0, "継", "ここを登ると地上に出られそうだ");
+				novel->addSentence(0, "継", "バンダナの傷が治ったら一緒に出よう");
+				novel->addEvent(0, CallFunc::create([this] {
+					mObjectList["exit"]->setMsg("バンダナを置いては行けない");
+					mObjectList["exit"]->setState(1);
+				}));
+
+				novel->setEndTask(0);
+				addChild(novel, 10, "novel");
+			}
+		}));
+		//door->setMsg("バンダナを置いては行けない");
 		addObject(door, "exit", 1, true);
 
 		auto flag = ObjectN::create();

@@ -31,3 +31,10 @@ inline void setGetStill(int id) {
 	userDef->setBoolForKey(cocos2d::StringUtils::format("still%02d", id).c_str(), true);
 	userDef->flush();
 }
+
+//userDefault“o˜^
+inline void setGetMusic(int id) {
+	auto userDef = cocos2d::UserDefault::getInstance();
+	userDef->setBoolForKey(cocos2d::StringUtils::format("music%02d", id).c_str(), true);
+	userDef->flush();
+}

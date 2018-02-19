@@ -85,12 +85,14 @@ bool Title::init()
 	}
 
 	//BGM
+	setGetMusic(0);
 	AudioEngine::preload("BGM/curse_inst.ogg");	if (AudioEngine::getPlayingAudioCount() == 0) AudioEngine::play2d("BGM/curse_inst.ogg", true);
 	AudioEngine::preload("BGM/days.ogg");
 	AudioEngine::preload("BGM/school.ogg");
 	AudioEngine::preload("BGM/mystery.ogg");
 	AudioEngine::preload("BGM/fear.ogg");
 	AudioEngine::preload("BGM/underground.ogg");
+	AudioEngine::preload("BGM/folklore.ogg");
 
 	//SE
 	AudioEngine::preload("SE/po.ogg");

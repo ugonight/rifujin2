@@ -129,7 +129,7 @@ void AppDelegate::applicationDidEnterBackground() {
 #endif
 
 	UserDefault *userDef = UserDefault::getInstance();
-	userDef->setIntegerForKey("totalTime", (int)time(NULL) - userDef->getIntegerForKey("startTime"));
+	userDef->setIntegerForKey("totalTime", userDef->getIntegerForKey("totalTime") + ((int)time(NULL) - userDef->getIntegerForKey("startTime")));
 	userDef->flush();
 }
 

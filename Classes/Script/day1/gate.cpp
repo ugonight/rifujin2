@@ -309,7 +309,7 @@ namespace day1 {
 			novel->setCharaL(0, "chara/tuguru1.png");
 			novel->setFontColor(0, Color3B::BLUE);
 			novel->addSentence(0, "継", "！");
-			novel->addEvent(0, CallFunc::create([this] {AudioEngine::play2d("BGM/mystery.ogg", true); }));
+			novel->addEvent(0, CallFunc::create([this] {AudioEngine::play2d("BGM/mystery.ogg", true); setGetMusic(3);}));
 			novel->addSentence(0, "継", "それは違うと思うよ");
 			novel->addSentence(0, "リアス", "ど、どうしてですか");
 			novel->addSentence(0, "継", "確か…僕たちが写真を宇沢さんに見せた時…");

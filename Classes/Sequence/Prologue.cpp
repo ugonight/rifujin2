@@ -35,7 +35,7 @@ bool Prologue::init()
 	this->addChild(cursor, 1, "cursor");
 
 	//BGM
-	AudioEngine::pauseAll();
+	AudioEngine::stopAll();
 
 	//バックログを初期化
 	auto path = FileUtils::getInstance()->getWritablePath();
@@ -68,6 +68,7 @@ bool Prologue::init()
 
 
 	mFunc[1] = [this]() {
+		setGetMusic(1);
 		AudioEngine::play2d("BGM/days.ogg", true);
 
 		auto novel = Novel::create();

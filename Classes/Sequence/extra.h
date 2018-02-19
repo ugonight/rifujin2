@@ -7,6 +7,8 @@ class Extra : public cocos2d::Scene {
 
 private:
 	std::vector<std::string> mStillList;
+	std::vector<std::pair<std::string, std::string>> mMusicList; // 曲名・ファイル名
+
 	int mPage;
 	const double ratio;
 

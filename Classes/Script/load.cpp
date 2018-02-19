@@ -4,6 +4,7 @@
 //‘S‚Ä‚Ìchapter‚ÌfieldDef‚ðinclude
 #include "day1\fieldDef.h"
 #include "day2\fieldDef.h"
+#include "day3\fieldDef.h"
 
 #pragma execution_character_set("utf-8")
 
@@ -31,6 +32,9 @@ void Record::load() {
 			break;
 		case 2:
 			chapter = day2::Day::create();
+			break;
+		case 3:
+			chapter = day3::Day::create();
 			break;
 		default:
 
