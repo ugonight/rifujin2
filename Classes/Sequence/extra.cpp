@@ -44,6 +44,13 @@ bool Extra::init() {
 	mStillList.push_back("chara/remon_fallen.png");
 	mStillList.push_back("bg/book.png");
 	mStillList.push_back("chara/dragon_soul.png");
+	mStillList.push_back("chara/tsubasa.png");
+	mStillList.push_back("chara/memory1.png");
+	mStillList.push_back("chara/memory2.png");
+	mStillList.push_back("chara/memory3.png");
+	mStillList.push_back("chara/memory4.png");
+
+
 
 	// BGM一覧
 	mMusicList.push_back(std::make_pair("paralyzed rose (inst short ver.)", "BGM/curse_inst.ogg"));

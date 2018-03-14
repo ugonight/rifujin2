@@ -70,7 +70,7 @@ void Chapter::update(float delta) {
 			if (control) {
 				if (control->getEndFlag()) {
 					mFuncType = mFuncList[++mFuncNum]();
-					this->removeChild(control);
+					//this->removeChild(control); RemoveSelfしてるからここでしなくていい
 				}
 			}
 		}

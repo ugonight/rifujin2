@@ -72,12 +72,12 @@ bool AppDelegate::applicationDidFinishLaunching() {
         director->setOpenGLView(glview);
     }
 
-#ifdef _DEBUG || (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+//#ifdef _DEBUG || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
     // turn on display FPS
     director->setDisplayStats(true);
-#else
-	director->setDisplayStats(false);
-#endif
+//#else
+//	director->setDisplayStats(false);
+//#endif
 
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0f / 50);

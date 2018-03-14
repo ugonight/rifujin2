@@ -7,8 +7,8 @@
 USING_NS_CC;
 
 ObjectN::~ObjectN() {
-	CC_SAFE_RELEASE_NULL(mTouchEvent);
-	CC_SAFE_RELEASE_NULL(mAction);
+	//CC_SAFE_RELEASE_NULL(mTouchEvent);
+	//CC_SAFE_RELEASE_NULL(mAction);
 }
 
 bool ObjectN::init(){
@@ -51,7 +51,8 @@ void ObjectN::setArea(cocos2d::Rect rect) {
 
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = CC_CALLBACK_2(ObjectN::touchOn, this); /*[&](Touch* touch, Event* event) {return true; };*/
-	//listener->onTouchMoved = CC_CALLBACK_2(ObjectN::checkOn, this);
+	// listener->setSwallowTouches(true); 
+//listener->onTouchMoved = CC_CALLBACK_2(ObjectN::checkOn, this);
 	listener->onTouchEnded = CC_CALLBACK_2(ObjectN::touchOff, this);/* [=](Touch* touch, Event* event) {};*/
 	//this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);

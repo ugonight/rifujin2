@@ -53,6 +53,13 @@ private:
 		void update(Novel* parent);
 	};
 
+	struct PTask : public Task {
+		cocos2d::FiniteTimeAction* func;
+		// イベント実行（文章を止める）
+		void update(Novel* parent);
+		~PTask();
+	};
+
 	int mNovelNum[MAX_BRANCH], mNovelSetNum[MAX_BRANCH], mCount, mCharNum, mBranch;
 	int mTouchTime; bool mHideMsg, mFast;
 	int mImageNum[4]; //Bg,CharaC,CharaL,CharaR
@@ -76,6 +83,9 @@ private:
 	void end();
 	bool endCheck();
 	void setDelayAnime();
+	void pauseDelayAnime();
+	void resumeDelayAnime();
+
 
 public:
 	virtual ~Novel();
@@ -106,6 +116,9 @@ public:
 
 	//イベントタスク追加
 	void addEvent(int branch, cocos2d::CallFunc* func);
+
+	//ポーズイベントタスク追加（画像を動かしたりするときはNovelのものは使わない）
+	void addPauseEvent(int branch, cocos2d::FiniteTimeAction* func);
 
 	//選択肢モード追加
 	void addSwitchEvent(int branch, int br1, std::string st1 = "", int br2 = -1, std::string st2 = "", int br3 = -1, std::string st3 = "", int br4 = -1, std::string st4 = "");

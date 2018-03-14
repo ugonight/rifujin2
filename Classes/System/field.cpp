@@ -14,11 +14,11 @@ Field::Field() :mFieldName("") {
 
 Field::~Field() {
 	for (auto obj : mObjectList) {
-		CC_SAFE_RELEASE_NULL(obj.second);
+		//CC_SAFE_RELEASE_NULL(obj.second);
 	}
 	for (auto lis : mEventListenerList) {
-		CC_SAFE_RELEASE_NULL(lis.first);
-		CC_SAFE_RELEASE_NULL(lis.second);
+		//CC_SAFE_RELEASE_NULL(lis.first);
+		//CC_SAFE_RELEASE_NULL(lis.second);
 	}
 }
 

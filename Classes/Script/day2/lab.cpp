@@ -585,10 +585,11 @@ namespace day2 {
 		bg->setPosition(visibleSize / 2);
 		addChild(bg, 0, "bg");
 
-		bg = Sprite::create("bg/black.png");
-		bg->setPosition(visibleSize / 2);
-		bg->setOpacity(200.f);
-		addChild(bg, 5, "black");
+		auto bl = ObjectN::create();
+		bl->setTexture("bg/black.png");
+		bl->setPosition(visibleSize / 2);
+		bl->setOpacity(200.f);
+		addObject(bl, "black", 5, true);
 
 		auto aisle3 = ObjectN::create();
 		aisle3->setArea(Rect(550, 430, 120, 50));

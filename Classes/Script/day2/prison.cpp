@@ -290,6 +290,11 @@ namespace day2 {
 					number->setTexture("num2.png");
 					number->setTextureRect(Rect((i + j * 3) * (w / 8), 0, w / 8, h));
 				}
+			/*	else {
+					number->setColor(Color3B::RED);
+					number->setTextureRect(Rect(0, 0, w / 8, w / 8));
+					number->setOpacity(100.0f);
+				}*/
 				number->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
 				number->setPosition(205 + (w / 8) * i, visibleSize.height - h * j - 100);
 				//number->setState(1);
@@ -318,7 +323,8 @@ namespace day2 {
 							mNumber[pos[0]][pos[1]] = 9;
 							mNumber[posq[0]][posq[1]] = id;
 							num->runAction(MoveTo::create(0.1, q->getPosition()));
-							q->runAction(MoveTo::create(0.1, num->getPosition()));
+							//q->runAction(MoveTo::create(0.1, num->getPosition()));
+							q->setPosition(num->getPosition());
 							//this->runAction(Sequence::create(CallFunc::create([this] {mCanMove = false; }), DelayTime::create(0.1), CallFunc::create([this] {mCanMove = true; }), NULL));
 						}
 						//光らせる
@@ -338,10 +344,12 @@ namespace day2 {
 						for (int l = 0; l < 8; l++) {
 							if (mNumber[match[l][0][0]][match[l][0][1]] + mNumber[match[l][1][0]][match[l][1][1]] + mNumber[match[l][2][0]][match[l][2][1]] == 15) {
 								mMatch[l] = true;
-								auto start = ((Sprite*)getChildByName(StringUtils::format("num%d", numBack[match[l][0][0]][match[l][0][1]])));
-								auto end = ((Sprite*)getChildByName(StringUtils::format("num%d", numBack[match[l][2][0]][match[l][2][1]])));
-								int x0 = start->getPositionX(), y0 = start->getPositionY();
-								int x1 = end->getPositionX(), y1 = end->getPositionY();
+								//auto start = ((Sprite*)getChildByName(StringUtils::format("num%d", numBack[match[l][0][0]][match[l][0][1]])));
+								//auto end = ((Sprite*)getChildByName(StringUtils::format("num%d", numBack[match[l][2][0]][match[l][2][1]])));
+								//int x0 = start->getPositionX(), y0 = start->getPositionY();
+								//int x1 = end->getPositionX(), y1 = end->getPositionY();
+								int x0 = 205 + (w / 8) * match[l][0][1], y0 = 480 - h * match[l][0][0] - 100;
+								int x1 = 205 + (w / 8) * match[l][2][1], y1 = 480 - h * match[l][2][0] - 100;
 								while (abs(x0 - x1) > 5 || abs(y0 - y1) > 5) {
 									auto light = Sprite::createWithTexture(batchNode->getTexture());
 									light->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
@@ -353,10 +361,10 @@ namespace day2 {
 									light->setOpacity(0.0f);
 									light->runAction(RepeatForever::create(Sequence::create(DelayTime::create(1.0f), FadeIn::create(1.0f), FadeOut::create(1.f), NULL)));
 									getChildByName("l_layer")->addChild(light, 5);
-									if (x0 < x1) x0 += 2;
-									if (x0 > x1) x0 -= 2;
-									if (y0 < y1) y0 += 2;
-									if (y0 > y1) y0 -= 2;
+									if (x0 < x1) x0 += 4;
+									if (x0 > x1) x0 -= 4;
+									if (y0 < y1) y0 += 4;
+									if (y0 > y1) y0 -= 4;
 								}
 							}
 						}

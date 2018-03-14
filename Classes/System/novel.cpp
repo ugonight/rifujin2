@@ -445,6 +445,37 @@ Novel::FTask::~FTask() {
 	CC_SAFE_RELEASE_NULL(func);
 }
 
+void Novel::PTask::update(Novel* parent) {
+	auto func = ((PTask*)parent->mTask[parent->mBranch][parent->mTaskNum[parent->mBranch]].get())->func;
+	parent->setCascadeOpacityEnabled(true);
+	parent->mHideMsg = true;
+	parent->pauseDelayAnime();
+
+	parent->runAction(Sequence::create(FadeOut::create(0.5f), 
+		CallFunc::create([this, parent]() {
+
+		auto fake = Layer::create();
+		auto listener = EventListenerTouchOneByOne::create();
+		listener->onTouchBegan = [this](Touch* touch, Event* event) {
+			return true;
+		};
+		listener->setSwallowTouches(true);
+		parent->getParent()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, fake);
+
+		parent->getParent()->addChild(fake, parent->getLocalZOrder() + 1, "fakeLayer");
+	}),
+		func, 
+		CallFunc::create([this, parent]() {
+		parent->mHideMsg = false;
+		parent->resumeDelayAnime();
+		parent->getParent()->removeChildByName("fakeLayer");
+	}),
+		FadeIn::create(0.5), NULL));;
+}
+Novel::PTask::~PTask() {
+	CC_SAFE_RELEASE_NULL(func);
+}
+
 void Novel::STask::update(Novel* parent) {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -460,10 +491,11 @@ void Novel::STask::update(Novel* parent) {
 		int branchTo = tsk->branchTo[0];
 		auto fake = Layer::create();
 		fake->setPosition(visibleSize / 2);
-		fake->setSwallowsTouches(true);
+		//fake->setSwallowsTouches(true);
 		parent->addChild(fake, 10, "fakeLayer");
 
 		auto listener = EventListenerTouchOneByOne::create();
+		listener->setSwallowTouches(true);
 		listener->onTouchBegan = [this](Touch* touch, Event* event) {
 			return true;
 		};
@@ -580,6 +612,14 @@ void Novel::addEvent(int branch, cocos2d::CallFunc* func) {
 	mTask[branch].push_back((std::shared_ptr<Task>)tsk);
 }
 
+void Novel::addPauseEvent(int branch, cocos2d::FiniteTimeAction* func) {
+	func->retain();
+	auto tsk = new PTask();
+	tsk->num = mNovelSetNum[branch];
+	tsk->func = func;
+	mTask[branch].push_back((std::shared_ptr<Task>)tsk);
+}
+
 void Novel::addSwitchEvent(int branch, int br1, std::string st1, int br2, std::string st2, int br3, std::string st3, int br4, std::string st4) {
 	auto tsk = new STask();
 	tsk->num = mNovelSetNum[branch];
@@ -632,6 +672,26 @@ void Novel::setDelayAnime() {
 					CallFunc::create([this]() {	if (mCharNum % 4 == 0) AudioEngine::play2d("SE/po.ogg"); }),	//全角の最初で鳴らす
 					NULL
 				));
+		}
+	}
+}
+
+void Novel::pauseDelayAnime() {
+	auto label1 = (Label*)getChildByName("label");
+	for (int i = 0; i < label1->getStringLength() + label1->getStringNumLines(); i++) {
+		auto AChar = label1->getLetter(i);
+		if (nullptr != AChar) {
+			AChar->pause();
+		}
+	}
+}
+
+void Novel::resumeDelayAnime() {
+	auto label1 = (Label*)getChildByName("label");
+	for (int i = 0; i < label1->getStringLength() + label1->getStringNumLines(); i++) {
+		auto AChar = label1->getLetter(i);
+		if (nullptr != AChar) {
+			AChar->resume();
 		}
 	}
 }

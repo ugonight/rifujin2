@@ -77,9 +77,20 @@ namespace day3 {
 			novel->addSentence(0, "王族の女", "あたしが頼んだら危険な火山の洞窟に宝石を探しにいってくれてね、マグマに焼かれて死んだのさ。最初から利用されていただけとも知らないでさ。");
 			novel->setFontColor(0, Color3B::BLACK);
 			novel->addSentence(0, "", "高らかに笑う王族の女を見て、ドラゴン族の女は生まれて初めて心からの怒りを感じました。");
-			novel->setBg(0, "chara/dragon_soul.png");
+			novel->setBg(0, "");
+			novel->addPauseEvent(0, Sequence::createWithTwoActions(
+				CallFunc::create([this] {
+				auto spr = Sprite::create("chara/dragon_soul.png");
+				spr->setPosition(Director::getInstance()->getVisibleSize() / 2);
+				spr->setOpacity(0.0f);
+				spr->runAction(Sequence::create(DelayTime::create(1.0f), FadeIn::create(0.25f), FadeOut::create(0.25f), FadeIn::create(0.25f), FadeOut::create(0.25f), FadeIn::create(0.25f), FadeOut::create(0.25f), DelayTime::create(0.5f), RemoveSelf::create(), NULL));
+				addChild(spr, 0, "bg");
+			}),
+				DelayTime::create(3.0f)
+			));
 			novel->addEvent(0, CallFunc::create([this] {setGetStill(11); }));
 			novel->addSentence(0, "", "その時、ドラゴン族の女の中を何かが駆け巡ります。");
+			novel->setBg(0, "chara/dragon_soul.png");
 			novel->addSentence(0, "", "一族が代々封印してきた龍の魂が");
 			novel->addSentence(0, "", "気が付いたら王族の女は黒焦げになっていました。");
 			novel->addSentence(0, "", "ドラゴン族の女はすぐさま捕らえられ、断頭台に乗せられました。");
@@ -101,7 +112,7 @@ namespace day3 {
 			auto novel = Novel::create();
 
 			novel->setFontColor(0, Color3B::BLACK);
-			novel->addSentence(0, "", "継達がさらわれる少し前の教室にて");
+			novel->addSentence(0, "", "継達がさらわれる少し後の教室にて");
 			novel->addEvent(0, CallFunc::create([this] {
 				AudioEngine::play2d("BGM/school.ogg", true);
 			}));

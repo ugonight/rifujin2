@@ -18,6 +18,7 @@ namespace day3
 	CREATE_FIELD(Corridor)};
 	CREATE_FIELD(ClassRoom)};
 	CREATE_FIELD(ArtRoom)};
+	CREATE_FIELD(Backyard) private: void updateField(); };
 
 	class Day : public Chapter
 	{

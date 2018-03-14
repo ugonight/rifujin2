@@ -19,7 +19,7 @@ namespace day2 {
 			novel->addSentence(0, "継", "メモの暗号の意味は、タテ・ヨコ・ナナメ全ての和が一緒になればいいということだね");
 			novel->addSentence(0, "継", "要するに、毛布の下のパズルはスライドパズルで魔方陣を解けばいいんだ");
 			novel->addSentence(0, "継", "各ラインの数字の和は１５、真ん中の数字は５になると思うよ");
-			novel->addSentence(0, "継", "例えば\n６　１　８\n７　５　３\n２　９　４\nができそうだね");
+			novel->addSentence(0, "継", "例えば \n ６　１　８ \n ７　５　３ \n ２　９　４ \n ができそうだね");
 
 		}
 		else if (getObjState("aisle3","flag") < 2 ) {

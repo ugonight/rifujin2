@@ -19,7 +19,8 @@ Control* Control::me;
 
 Control::~Control() {
 	for (auto field : mFieldList) {
-		CC_SAFE_RELEASE_NULL(field.second);
+		//どうがんばっても「reference count should be greater than 0」が出るし放置でいいんじゃねえの（笑）
+		//CC_SAFE_RELEASE_NULL(field.second);
 	}
 }
 
