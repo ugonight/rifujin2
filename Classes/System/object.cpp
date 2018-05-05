@@ -129,6 +129,16 @@ void ObjectN::setMsg(std::string s) { mMsg = s; };
 void ObjectN::setTouchEvent(cocos2d::CallFunc *func) { CC_SAFE_RELEASE_NULL(mTouchEvent); mTouchEvent = func; mTouchEvent->retain(); }
 void ObjectN::setAction(cocos2d::Action *act) { CC_SAFE_RELEASE_NULL(mAction); mAction = act; mAction->retain(); }
 void ObjectN::addCanUseItem(std::string itemName) { mCanUseItemList.push_back(itemName); }
+void ObjectN::removeCanUseItem(std::string itemName) {
+	int i = 0;
+	for (auto item : mCanUseItemList) {
+		if (item == itemName) {
+			mCanUseItemList.erase(mCanUseItemList.begin() + i);
+			break;
+		}
+		i++;
+	}
+}
 
 int ObjectN::getState() { return mState; }
 std::string ObjectN::getMsg() { return mMsg; }

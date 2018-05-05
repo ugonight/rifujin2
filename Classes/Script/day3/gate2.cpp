@@ -20,7 +20,7 @@ namespace day3 {
 		auto renji = ObjectN::create();
 		renji->setTexture("renji.png");
 		renji->setArea(Rect(50, 110, 120, 370));
-		renji->setCursor(Cursor::INFO);
+		renji->setCursor(Cursor::NEW);
 		renji->setTouchEvent(CallFunc::create([this] {
 			if (mObjectList["renji"]->getState() == 0) {
 				auto novel = Novel::create();
@@ -55,6 +55,7 @@ namespace day3 {
 				novel->addSentence(0, "寿甘", "ほう…まだ二人とも構内にいる可能性が高いのか…");
 				novel->addSentence(0, "寿甘", "うーん…どこにいるのよ…");
 				mObjectList["renji"]->setState(1);
+				mObjectList["renji"]->setCursor(Cursor::INFO);
 
 				novel->setEndTask(0);
 				this->addChild(novel, 10, "novel");
@@ -77,12 +78,37 @@ namespace day3 {
 		cenotaph->setArea(Rect(700, 100, 100, 180));
 		cenotaph->setCursor(Cursor::INFO);
 		cenotaph->setMsg("初代学長の慰霊碑がある");
+		cenotaph->addCanUseItem("memories");
+		cenotaph->setTouchEvent(CallFunc::create([this] {
+			if (ItemMgr::sharedItem()->getSelectedItem() == "memories" && mObjectList["cenotaph"]->getState() == 0) {
+				auto novel = Novel::create();
+
+				novel->setFontColor(0, Color3B::RED);
+				novel->setCharaL(0, "chara/suama1.png");
+				novel->addSentence(0, "寿甘", "何とかして二人に連絡が取れないかしら…");
+				novel->addSentence(0, "寿甘", "…そうだ！");
+				novel->setFontColor(0, Color3B::BLACK);
+				novel->addSentence(0, "", "私は初代学長の霊を呼び出した");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "寿甘", "すみません！友達が危険なんです…！さっき一緒にいた二人なんですけど…");
+				novel->addSentence(0, "寿甘", "二人にこの写真の映像が届くように「風のうわさ」を流してくれませんか？きっと役に立つと思うんです…！");
+				novel->addSentence(0, "寿甘", "…やっていただけるのですか！？ありがとうございます！");
+				novel->addSentence(0, "寿甘", "つぐるんなら、きっとこの写真から何かわかってくれるはず…");
+				novel->addSentence(0, "寿甘", "どうか無事でいて…");
+
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+
+				mObjectList["cenotaph"]->setState(1);
+				mObjectList["cenotaph"]->removeCanUseItem("memories");
+			}
+		}));
 		addObject(cenotaph, "cenotaph", 3, true);
 
 		auto crow = ObjectN::create();
 		crow->setTexture("crow.png");
 		crow->setArea(Rect(530, 50, 150, 90));
-		crow->setCursor(Cursor::INFO);
+		crow->setCursor(Cursor::NEW);
 		crow->setTouchEvent(CallFunc::create([this] {
 			if (mObjectList["crow"]->getState() == 0) {
 				auto novel = Novel::create();
@@ -106,6 +132,7 @@ namespace day3 {
 				novel->addSentence(0, "寿甘", "こんな時、あの子がいれば…");
 
 				mObjectList["crow"]->setState(1);
+				mObjectList["crow"]->setCursor(Cursor::INFO);
 				mObjectList["crow"]->setMsg("カラスのクロがいる");
 
 				novel->setEndTask(0);
@@ -140,6 +167,9 @@ namespace day3 {
 				novel->setCharaL(0, "chara/suama1.png");
 				novel->addSentence(0, "寿甘", "助けて！！翼くん！！！");
 				novel->setFontColor(0, Color3B::BLACK);
+				novel->addEvent(0, CallFunc::create([this] {
+					AudioEngine::play2d("SE/toshi.ogg");
+				}));
 				novel->addSentence(0, "", "ピューーーーーー！");
 				novel->setCharaL(0, "");
 				novel->setBg(0, "chara/tsubasa.png");
@@ -153,7 +183,7 @@ namespace day3 {
 				novel->addSentence(0, "寿甘", "やったー！");
 				novel->addEvent(0, CallFunc::create([this]() {
 					ItemMgr::sharedItem()->getItem("hatpin", Point(85, 480 - 145));
-					ItemMgr::sharedItem()->deleteItem("whistle");
+					//ItemMgr::sharedItem()->deleteItem("whistle");
 					Control::me->showMsg("簪を手に入れた");
 				}));
 				novel->addSentence(0, "寿甘", "ありがとー翼くんー！！");
@@ -229,7 +259,7 @@ namespace day3 {
 			getObjState("classroom", "usawa") == 1 &&
 			getObjState("artroom", "maria") == 1 &&
 			getObjState("corridor", "remon") == 1) &&
-			(getObjState("gate", "crow") == 2) && 
+			//(getObjState("gate", "crow") == 2) && 
 			(mObjectList["backyard"]->getState() == 0)){
 			AudioEngine::stopAll();
 			AudioEngine::play2d("SE/heart1.ogg", true);
@@ -270,7 +300,7 @@ namespace day3 {
 		addObject(entrance, "entrance", 2, true);
 
 		auto blood = ObjectN::create();
-		blood->setArea(Rect(50, 260, 120, 150));
+		blood->setArea(Rect(50, 260, 80, 150));
 		blood->setCursor(Cursor::NEW);
 		blood->setTouchEvent(CallFunc::create([this] {
 			if (mObjectList["blood"]->getState() == 0) {
@@ -320,6 +350,11 @@ namespace day3 {
 				novel->addSentence(0, "寿甘", "ええ");
 				novel->addPauseEvent(0, Sequence::createWithTwoActions(
 					CallFunc::create([this] {
+					auto back = Sprite::create("bg/black.png");
+					back->setPosition(Director::getInstance()->getVisibleSize() / 2);
+					back->runAction(Sequence::create(FadeIn::create(0.5f), DelayTime::create(5.0f), FadeOut::create(0.5f), RemoveSelf::create(), NULL));
+					addChild(back, 0, "back");
+
 					for (int i = 0; i < 4; i++) {
 						if (i != 2) {
 							auto spr = Sprite::create(StringUtils::format("chara/memory%d.png", i + 1));
@@ -383,6 +418,35 @@ namespace day3 {
 		}));
 		addObject(nail, "nail", 2, true);
 
+		auto letter = ObjectN::create();
+		letter->setArea(Rect(140, 320, 40, 35));
+		letter->setCursor(Cursor::NEW);
+		letter->setTouchEvent(CallFunc::create([this] {
+			if (mObjectList["letter"]->getState() == 0) {
+				auto novel = Novel::create();
+
+				novel->setFontColor(0, Color3B::RED);
+				novel->setCharaL(0, "chara/suama1.png");
+				novel->setCharaR(0, "chara/usawa1.png");
+
+				novel->addSentence(0, "宇沢", "血痕のそばに紙切れが落ちてますね");
+				novel->addSentence(0, "寿甘", "赤い文字で何か書いてあるわね…");
+				novel->setFontColor(0, Color3B(200,0,0));
+				novel->addSentence(0, "", "放課後、校舎裏でお待ちしております。");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "宇沢", "おそらく、この手紙で呼び出されたんでしょうね。");
+				novel->addSentence(0, "寿甘", "この文字…どこかで見たような…");
+
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+
+				mObjectList["letter"]->setState(1);
+				mObjectList["letter"]->setCursor(Cursor::INFO);
+				mObjectList["letter"]->setMsg("手紙が落ちている");
+			}
+		}));
+		addObject(letter, "letter", 2, true);
+
 		auto flag = ObjectN::create();
 		addObject(flag, "flag", 0, false);
 	}
@@ -412,6 +476,7 @@ namespace day3 {
 			novel->addSentence(0, "宇沢", "調査ならご一緒しますよ？");
 			novel->addSentence(0, "寿甘", "…確かにそうね");
 			novel->addSentence(0, "寿甘", "じゃあ、この辺りに手掛かりがないか調査するわよ！");
+			novel->addEvent(0, CallFunc::create([this] {AudioEngine::play2d("BGM/folklore.ogg", true);; }));
 
 			novel->setEndTask(0);
 			this->addChild(novel, 10, "novel");
@@ -424,6 +489,7 @@ namespace day3 {
 		if (mObjectList["blood"]->getState() == 1 &&
 			mObjectList["nail"]->getState() == 1 &&
 			mObjectList["lily"]->getState() == 1 &&
+			mObjectList["letter"]->getState() == 1 &&
 			mObjectList["flag"]->getState() == 1) {
 
 			if (!getChildByName("novel")) {
@@ -433,6 +499,7 @@ namespace day3 {
 				novel->setCharaL(0, "chara/suama1.png");
 				novel->setCharaR(0, "chara/usawa1.png");
 
+				novel->addEvent(0, CallFunc::create([this] {AudioEngine::stopAll(); }));
 				novel->addSentence(0, "寿甘", "一通り調べられたみたいね");
 				novel->addSentence(0, "寿甘", "よし、早く二人を探しに行かなきゃ…！");
 				novel->addSentence(0, "宇沢", "ちょっと待ってください");
@@ -451,6 +518,7 @@ namespace day3 {
 				mObjectList["flag"]->setState(2);
 				mObjectList["entrance"]->setFieldChangeEvent("entrance");
 				mObjectList["entrance"]->setMsg("");
+				Control::me->getField("classroom")->getObject("usawa")->setCursor(Cursor::NEW);
 			}
 		}
 	}

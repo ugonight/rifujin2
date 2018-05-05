@@ -47,6 +47,7 @@ public:
 	void setTouchEvent(cocos2d::CallFunc *func);
 	void setAction(cocos2d::Action *act);
 	void addCanUseItem(std::string itemName);
+	void removeCanUseItem(std::string itemName);
 
 	int getState();
 	std::string getMsg();
