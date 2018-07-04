@@ -53,13 +53,35 @@ namespace day3 {
 			novel->addSentence(0, "寿甘", "二人が何か手掛かりを残していってるかも");
 			novel->addSentence(0, "寿甘", "教室の机を調べてみよう");
 		}
-		else if (getObjState("gate", "cenotaph") == 0) {
+		else if (getObjState("gate", "cenotaph") == 0 && getObjState("backyard", "flag") == 2) {
 			novel->setFontColor(0, Color3B::RED);
 			novel->setCharaL(0, "chara/suama1.png");
 			novel->addSentence(0, "寿甘", "なんとかして二人に集めた証拠について伝えられないかな…");
 			novel->addSentence(0, "寿甘", "幽霊の力を借りればいけるかも…！校門の慰霊碑のところに行ってみよう");
 		}
+		else if (getObjState("backyard", "flag") == 2 && getObjState("classroom", "usawa") == 2) {
+			novel->setFontColor(0, Color3B::RED);
+			novel->setCharaL(0, "chara/suama1.png");
+			novel->addSentence(0, "寿甘", "早速裏庭に行ってみよう");
+			novel->addSentence(0, "寿甘", "足跡を辿れば何かわかるかも");
+		}
+		else if (getObjState("forest", "flag") == 1) {
+			novel->setFontColor(0, Color3B::RED);
+			novel->setCharaL(0, "chara/suama1.png");
+			novel->addSentence(0, "寿甘", "早くあいつから逃げなきゃ…！");
+			novel->addSentence(0, "寿甘", "そう言えば、方向みたいなものが書かれているメモを見つけたような…");
+			novel->addSentence(0, "寿甘", "一か八かでその道で行ってみるっきゃない…！");
+		}
+		else if (getObjState("forest", "flag") == 2) {
+			novel->setFontColor(0, Color3B::RED);
+			novel->setCharaL(0, "chara/celine1.png");
+			novel->addSentence(0, "セリーヌ", "忘れてしまわれましたか？まあ、普通は忘れますよね。");
+			novel->addSentence(0, "セリーヌ", "5回までは間違えても大丈夫ですので、運試しでやってみてもよろしいかと存じます。");
+			novel->addSentence(0, "セリーヌ", "セーブ地点まで戻るか、エンド回収するかはお任せしますわ。");
+
+		}
 		else {
+			novel->setFontColor(0, Color3B::RED);
 			novel->setCharaL(0, "chara/suama1.png");
 			novel->addSentence(0, "寿甘", "まだ調べていないところがありそうね…");
 		}

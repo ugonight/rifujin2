@@ -119,21 +119,26 @@ namespace day3 {
 			else if (mObjectList["usawa"]->getState() == 1) {
 				if (getObjState("backyard","flag") == 2) {
 					// 裏庭探索後
-					if ((getObjState("gate", "crow") == 2) &&
-						mObjectList["memo"]->getState() == 1 &&
-						getObjState("gate","cenotaph") == 1) {
+					if ((getObjState("gate", "crow") == 2) /*&&
+						mObjectList["memo"]->getState() == 1 &&		// ED条件に組み込むのでここは任意
+						getObjState("gate","cenotaph") == 1*/) {
 						// 謎解きモード
 						auto novel = Novel::create();
 
 						novel->setFontColor(0, Color3B::RED);
 						novel->setCharaL(0, "chara/suama1.png");
 						novel->setCharaR(0, "chara/usawa1.png");
+						novel->addSwitchEvent(0, 10, "はい", 11, "いいえ");
 						novel->addSentence(0, "宇沢", "準備はできました？");
-						novel->addSentence(0, "寿甘", "うん、ばっちり");
 
-						AudioEngine::stopAll();
+						novel->addSwitchEvent(10, 0);
+						novel->addSentence(10, "寿甘", "うん、ばっちり");
+
+						novel->addSentence(11, "寿甘", "うーん…もうちょっと調査してみるわ");
+
+						
 						int n;
-						novel->addEvent(0, CallFunc::create([this] { AudioEngine::play2d("BGM/mystery.ogg", true); }));
+						novel->addEvent(0, CallFunc::create([this] {AudioEngine::stopAll(); AudioEngine::play2d("BGM/mystery.ogg", true); }));
 						novel->addSentence(0, "宇沢", "それでは、まずは今回の事件を振り返ってみましょう。");
 						novel->addSentence(0, "寿甘", "私が、体育の授業を終えて着替えて教室へ戻ってきたら、待ち合わせしていたはずの二人が居なかった。");
 						novel->addSentence(0, "寿甘", "体育の時は二人とも見かけたし、教室で待ってるよう念を押したから、私たちが着替えている間になにかあったのかも。");
@@ -312,6 +317,8 @@ namespace day3 {
 							ItemMgr::sharedItem()->deleteItem("whistle");
 							mObjectList["usawa"]->setState(2);
 							mObjectList["usawa"]->setCursor(Cursor::INFO);
+
+							Control::me->getField("backyard")->addChild(Control::me->getField("backyard")->getObject("forest"), 1, "forest");
 						}));
 						novel->addSentence(0, "宇沢", "と、鳥を呼び出すのですか…私にできるでしょうか…");
 						novel->addSentence(0, "宇沢", "とりあえず任せてください！そちらもお気をつけて");

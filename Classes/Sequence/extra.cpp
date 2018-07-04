@@ -49,7 +49,7 @@ bool Extra::init() {
 	mStillList.push_back("chara/memory2.png");
 	mStillList.push_back("chara/memory3.png");
 	mStillList.push_back("chara/memory4.png");
-
+	mStillList.push_back("chara/scene8.png");
 
 
 	// BGM一覧

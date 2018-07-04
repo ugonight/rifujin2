@@ -88,7 +88,7 @@ void Cursor::setCursorNum(CursorID i) {
 	//	sprite1 = (Sprite *)this->getChildByTag(mCursorNum);
 	//	sprite1->runAction(FadeOut::create(0.1f)); 
 	//}
-	if (i == NOVEL) i = NOMAL;	//ノベルアイコンは封印
+	//if (i == NOVEL) i = NOMAL;	//ノベルアイコンは封印
 
 	if (i != mCursorNum) {
 

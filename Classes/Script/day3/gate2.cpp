@@ -1,5 +1,6 @@
 ﻿#pragma  execution_character_set("utf-8")
 #include "Script\day3\fieldDef.h"
+#include "Sequence\Title.h"
 
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
@@ -447,6 +448,57 @@ namespace day3 {
 		}));
 		addObject(letter, "letter", 2, true);
 
+		auto forest = ObjectN::create();
+		forest->setArea(Rect(250, 160, 160, 130));
+		forest->setCursor(Cursor::NEW);
+		forest->setTouchEvent(CallFunc::create([this] {
+			auto novel = Novel::create();
+
+			novel->setFontColor(0, Color3B::RED);
+			novel->setCharaL(0, "chara/suama1.png");
+
+			novel->addSentence(0, "寿甘", "この足跡を追っていくわよ");
+			novel->addSentence(0, "寿甘", "…");
+			novel->addSentence(0, "寿甘", "どうやら足跡は、学校の裏にある森に続いてるみたいね");
+			novel->addSentence(0, "寿甘", "草に紛れて足跡が途切れ途切れになってるわ…");
+			novel->addSentence(0, "寿甘", "どうしよう…これじゃ、足跡が追えないわ……");
+
+			novel->addEvent(0, CallFunc::create([this] {
+				AudioEngine::stopAll();
+				setGetStill(17);
+			}));
+			novel->setCharaL(0, "");
+			novel->setBg(0, "chara/scene8.png");
+			novel->addSentence(0, "リアス","…ねぇ");
+			novel->addSentence(0, "寿甘", "！？");
+
+			novel->setBg(0, "");
+			novel->setCharaL(0, "chara/suama1.png");
+			novel->setCharaR(0, "chara/rias1.png");
+
+			novel->addEvent(0, CallFunc::create([this] {
+				AudioEngine::play2d("BGM/fear.ogg",true);
+			}));
+			novel->addSentence(0, "寿甘", "あんたは…！");
+			novel->addSentence(0, "リアス", "…それ……");
+			novel->addSentence(0, "リアス", "返して……私の…………返して！！");
+			novel->addSentence(0, "寿甘", "？……あんたこそ！つぐるんたちを返しなさいよ…！！！！");
+			novel->addSentence(0, "リアス", "あなたが……バンダナ様まで……！！！");
+			novel->addSentence(0, "寿甘", "はぁ…？？あんたが何かしたんでしょ……？？");
+			novel->addSentence(0, "リアス", "返して…返して…！返して……！！！");
+			novel->addSentence(0, "リアス", "返して返して返して返して返して返して返して返して返して返して返して返して返して返して返せぇぇぇぇぇぇええええええ！！！！！");
+			novel->addSentence(0, "寿甘", "きゃっ");
+			novel->addSentence(0, "寿甘", "(な、なんかヤバイ……？逃げよう！)");
+			novel->addSentence(0, "リアス", "ドコ行くの？？待って…待てぇぇぇぇぇぇええええええ！！！！");
+			novel->addEvent(0, CallFunc::create([this] {
+				mObjectList["flag"]->setState(3);
+			}));
+
+			novel->setEndTask(0);
+			this->addChild(novel, 10, "novel");
+		}));
+		addObject(forest, "forest", 1, false);
+
 		auto flag = ObjectN::create();
 		addObject(flag, "flag", 0, false);
 	}
@@ -519,6 +571,238 @@ namespace day3 {
 				mObjectList["entrance"]->setFieldChangeEvent("entrance");
 				mObjectList["entrance"]->setMsg("");
 				Control::me->getField("classroom")->getObject("usawa")->setCursor(Cursor::NEW);
+			}
+		}
+		else if (mObjectList["flag"]->getState() == 3) {
+			Control::me->changeField("forest");
+			mObjectList["flag"]->setState(4);
+		}
+	}
+
+	void Forest::initField() {
+		Size visibleSize = Director::getInstance()->getVisibleSize();
+		Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+		mFieldName = "校舎裏の森";
+
+		auto bg = Sprite::create("forest_run.png");
+		bg->setPosition(visibleSize / 2);
+		addChild(bg, 0, "bg");
+
+		auto left = ObjectN::create();
+		left->setArea(Rect(0, 50, 270, 430));
+		left->setCursor(Cursor::LEFT);
+		left->setTouchEvent(CallFunc::create([this] { move(0); }));
+		addObject(left, "left", 1, true);
+
+		auto right = ObjectN::create();
+		right->setArea(Rect(580, 50, 270, 430));
+		right->setCursor(Cursor::RIGHT);
+		right->setTouchEvent(CallFunc::create([this] { move(1); }));
+		addObject(right, "right", 1, true);
+
+		auto fore = ObjectN::create();
+		fore->setArea(Rect(275, 50, 300, 430));
+		fore->setCursor(Cursor::FORWARD);
+		fore->setTouchEvent(CallFunc::create([this] { move(2); }));
+		addObject(fore, "fore", 1, true);
+
+		mCount = 0;
+		mLife = 3;
+
+		auto flag = ObjectN::create();
+		addObject(flag, "flag", 0, false);
+	}
+
+	void Forest::changedField() {
+		if (mObjectList["flag"]->getState() == 0) {
+			auto novel = Novel::create();
+
+			novel->setFontColor(0, Color3B::RED);
+			novel->setCharaL(0, "chara/suama1.png");
+			novel->addSentence(0, "寿甘", "勢いで森の中に逃げ込んでしまったけれど、どうやって逃げればいいのよ…！！");
+			novel->addSentence(0, "寿甘", "何か手がかりになるものはなかったかしら…？");
+
+			novel->setEndTask(0);
+			this->addChild(novel, 10, "novel");
+
+			mObjectList["flag"]->setState(1);
+		}
+	}
+
+	void Forest::move(int direc) {
+		getChildByName("bg")->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5), FadeIn::create(0.5)));
+		AudioEngine::play2d("SE/footsteps.ogg");
+
+		int correct[8] = { 1,0,2,1,1,2,0,2 };
+
+		if (correct[mCount] == direc) {
+			mCount++;
+
+			if (mCount == 8) {
+				if (mObjectList["flag"]->getState() == 1) {
+					auto novel = Novel::create();
+					novel->setFontColor(0, Color3B::RED);
+					novel->setCharaL(0, "chara/suama1.png");
+					novel->setBg(0, "bg/black.png");
+
+					novel->addSentence(0, "寿甘", "はぁ…はぁ……");
+					novel->addSentence(0, "寿甘", "…行き止まり……");
+					novel->addSentence(0, "寿甘", "もう…逃げられない……");
+					novel->setCharaL(0, "");
+					novel->setBg(0, "chara/scene8.png");
+					novel->addSentence(0, "リアス", "…ひひひ…ひひひひひ………");
+					novel->addSentence(0, "リアス", "やっと…追いついた……");
+					novel->addSentence(0, "寿甘", "っ…");
+					novel->setBg(0, "bg/black.png");
+					novel->addEvent(0, CallFunc::create([this] { getChildByName("bg")->runAction(FadeOut::create(0.5)); }));
+
+					novel->setFontColor(0, Color3B::BLACK);
+					novel->addSentence(0, "", "リアスの指が私の首元にかかる");
+					novel->addSentence(0, "", "私は、ぎゅっと目を閉じた…");
+					novel->addEvent(0, CallFunc::create([this] {AudioEngine::stopAll(); }));
+
+					novel->addPauseEvent(0, DelayTime::create(2.0f));
+
+					// セリーヌパート
+
+					novel->addSentence(0, "", "そのしばらく後…");
+					novel->setFontColor(0, Color3B::RED);
+					novel->setCharaL(0, "chara/celine1.png");
+					novel->addEvent(0, CallFunc::create([this] {
+						AudioEngine::play2d("BGM/folklore.ogg", true);
+						ItemMgr::sharedItem()->deleteItem("paper");
+						ItemMgr::sharedItem()->deleteItem("chisel");
+						ItemMgr::sharedItem()->deleteItem("hatpin");
+						ItemMgr::sharedItem()->deleteItem("memories");
+						mObjectList["flag"]->setState(2);
+						mLife = 5;
+						mCount = 0;
+					}));
+					novel->addSentence(0, "セリーヌ", "…");
+					novel->addSentence(0, "セリーヌ", "（学校まで継様をお迎えに来たのですが、どこにも見当たらなかったので）");
+					novel->addSentence(0, "セリーヌ", "（近くにいた方に尋ねてみたところ、どうやら、何かの事件に巻き込まれた可能性が高いようです。）");
+					novel->setBg(0, "backyard.png");
+					novel->addSentence(0, "セリーヌ", "ここが、その事件現場のようですね。");
+					novel->addSentence(0, "セリーヌ", "足跡も途中で途切れてしまっているようです。");
+					novel->addEvent(0, CallFunc::create([this] {getChildByName("bg")->runAction(FadeIn::create(0.5)); }));
+					novel->setBg(0, "");
+					novel->addSentence(0, "セリーヌ", "…");
+					novel->addSentence(0, "セリーヌ", "ふむ…");
+					novel->addSentence(0, "セリーヌ", "ここでの痕跡はしっかり残ってるみたいですね");
+					novel->addSentence(0, "セリーヌ", "どこに…って、それは…");
+					novel->addSentence(0, "セリーヌ", "”目の前のあなた”の頭の中ですわ");
+					novel->addSentence(0, "セリーヌ", "うふふ…これも心理魔法の一環です");
+					novel->addSentence(0, "セリーヌ", "あまりこう言うことをすると怒られてしまうのですが…緊急事態なので致し方ありませんね。");
+					novel->addSentence(0, "セリーヌ", "それでは、よろしくお願いします。");
+					novel->setEndTask(0);
+					this->addChild(novel, 10, "novel");
+				}
+				else if (mObjectList["flag"]->getState() == 2) {
+					// セリーヌパートクリア
+
+					auto novel = Novel::create();
+
+					novel->setFontColor(0, Color3B::RED);
+					novel->setCharaL(0, "chara/celine1.png");
+					novel->setBg(0, "bg/black.png");
+
+					novel->addSentence(0, "セリーヌ", "どうやらここまでみたいですね。");
+					novel->addEvent(0, CallFunc::create([this] {getChildByName("bg")->runAction(FadeOut::create(0.5)); }));
+					novel->addSentence(0, "セリーヌ", "周りには…誰もいないようです。");
+					novel->addSentence(0, "セリーヌ", "…");
+					novel->addSentence(0, "セリーヌ", "おや…ここは……");
+					novel->addSentence(0, "セリーヌ", "…！");
+					novel->addSentence(0, "セリーヌ", "直ちに応援を呼びに行きましょう。");
+					novel->addSentence(0, "セリーヌ", "継様達の命が危ないかもしれません。");
+
+					novel->addEvent(0, CallFunc::create([this] {
+						// クリア
+						AudioEngine::stopAll();
+						auto userDef = UserDefault::getInstance();
+						userDef->setBoolForKey("celine", true);
+						userDef->setBoolForKey("sendEvd", getObjState("gate", "cenotaph"));
+						userDef->flush();
+						this->runAction(Sequence::create(FadeOut::create(1.0f), CallFunc::create([this] {Control::me->setEndFlag(); }), NULL));
+					}));
+					novel->setEndTask(0);
+					this->addChild(novel, 10, "novel");
+				}
+			}
+		}
+		else {
+			if (mLife == 0) {
+				if (mObjectList["flag"]->getState() == 1) {
+
+					// BAD END
+					auto novel = Novel::create();
+
+					novel->setFontColor(0, Color3B::RED);
+					novel->setBg(0, "bg/white.png");
+					novel->addSentence(0, "寿甘", "やった！開けた場所に出てこれたみたいね…！");
+					novel->addSentence(0, "寿甘", "これでなんとかあいつを撒くことが…");
+					novel->addSentence(0, "寿甘", "…って、きゃぁぁぁぁあああああ！！！！！！！");
+					novel->setFontColor(0, Color3B::BLACK);
+					novel->setBg(0, "bg/black.png");
+					novel->addSentence(0, "", "ズルズルズルズル………");
+					novel->addSentence(0, "", "BAD　END3「転落」");
+					novel->addEvent(0, CallFunc::create([this] {
+						AudioEngine::stopAll();
+						Director::getInstance()->replaceScene(TransitionFade::create(1.0f, Title::createScene(), Color3B::WHITE));
+					}));
+					novel->setEndTask(0);
+					this->addChild(novel, 10, "novel");
+				
+				}if (mObjectList["flag"]->getState() == 2) {
+					auto novel = Novel::create();
+
+					novel->setFontColor(0, Color3B::RED);
+					novel->setCharaL(0, "chara/celine1.png");
+					novel->addSentence(0, "セリーヌ", "道に迷ってしまいました。");
+					novel->addSentence(0, "セリーヌ", "仕方ないですね、他を当たって探してみましょう。");
+					novel->addSentence(0, "セリーヌ", "皆様、ご無事だといいのですが…");
+
+					novel->addEvent(0, CallFunc::create([this] {
+						// クリア
+						AudioEngine::stopAll();
+						auto userDef = UserDefault::getInstance();
+						userDef->setBoolForKey("celine", false);
+						userDef->setBoolForKey("sendEvd", getObjState("gate", "cenotaph"));
+						userDef->flush();
+						this->runAction(Sequence::create(FadeOut::create(1.0f), CallFunc::create([this] {Control::me->setEndFlag(); }), NULL));
+					}));
+					novel->setEndTask(0);
+					this->addChild(novel, 10, "novel");
+				}
+			}
+			else {
+				mLife--;
+
+				if (mObjectList["flag"]->getState() == 1) {
+					auto novel = Novel::create();
+
+					novel->setFontColor(0, Color3B::RED);
+					novel->addSentence(0, "寿甘", "こっちじゃないっぽいわ…");
+					novel->addSentence(0, "寿甘", "戻らなきゃ…！");
+					novel->addEvent(0, CallFunc::create([this] {
+						getChildByName("bg")->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5), FadeIn::create(0.5)));
+						AudioEngine::play2d("SE/footsteps.ogg");
+					}));
+					novel->setEndTask(0);
+					this->addChild(novel, 10, "novel");
+				}if (mObjectList["flag"]->getState() == 2) {
+					auto novel = Novel::create();
+
+					novel->setFontColor(0, Color3B::RED);
+					novel->addSentence(0, "セリーヌ", "どうやら間違いのようですね。");
+					novel->addSentence(0, "セリーヌ", "もと来た道へ、戻りましょう。");
+					novel->addEvent(0, CallFunc::create([this] {
+						getChildByName("bg")->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5), FadeIn::create(0.5)));
+						AudioEngine::play2d("SE/footsteps.ogg");
+					}));
+					novel->setEndTask(0);
+					this->addChild(novel, 10, "novel");
+				}
 			}
 		}
 	}

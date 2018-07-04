@@ -179,12 +179,14 @@ void Item::getItem(std::string s, Point p) {
 }
 
 void Item::deleteItem(std::string s) {
-	auto possession = getChildByName("possession");
-	possession->removeChild(possession->getChildByName(s));
-	mSelectedItem = "";
-	auto item = (Sprite*)getChildByName("selectItem");
-	item->setTextureRect(Rect(0, 0, 0, 0));
-	mItemList[s]->setGetFlag(0);
+	if (mItemList[s]->getGetFlag()) {
+		auto possession = getChildByName("possession");
+		possession->removeChild(possession->getChildByName(s));
+		mSelectedItem = "";
+		auto item = (Sprite*)getChildByName("selectItem");
+		item->setTextureRect(Rect(0, 0, 0, 0));
+		mItemList[s]->setGetFlag(0);
+	}
 }
 
 std::string Item::getSelectedItem() { return mSelectedItem; }

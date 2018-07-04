@@ -18,6 +18,7 @@ namespace day3 {
 		mFieldList["classroom"] = ClassRoom::create();
 		mFieldList["artroom"] = ArtRoom::create();
 		mFieldList["backyard"] = Backyard::create();
+		mFieldList["forest"] = Forest::create();
 
 		mFieldList["AboutItem"] = AboutItem::create();
 
