@@ -2,6 +2,7 @@
 #include "Title.h"
 #include "Prologue.h"
 #include "extra.h"
+#include "Option.h"
 #include "System\record.h"
 #include "define.h"
 
@@ -66,6 +67,9 @@ bool Title::init()
 			this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener2, explain);
 			addChild(explain, 5, "explain");
 		}
+		else if (Rect(0, 0, 100, 50).containsPoint(touch->getLocationInView())) {
+			Director::getInstance()->replaceScene(TransitionFade::create(1.0f, Option::create(), Color3B::WHITE));
+		}
 		return true;
 	};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
@@ -86,7 +90,7 @@ bool Title::init()
 
 	//BGM
 	setGetMusic(0);
-	AudioEngine::preload("BGM/curse_inst.ogg");	if (AudioEngine::getPlayingAudioCount() == 0) AudioEngine::play2d("BGM/curse_inst.ogg", true);
+	AudioEngine::preload("BGM/curse_inst.ogg");	if (AudioEngine::getPlayingAudioCount() == 0) playSoundBS("BGM/curse_inst.ogg", true);
 	AudioEngine::preload("BGM/days.ogg");
 	AudioEngine::preload("BGM/school.ogg");
 	AudioEngine::preload("BGM/mystery.ogg");

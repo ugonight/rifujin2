@@ -38,7 +38,7 @@ namespace day2 {
 		//シナリオ
 		mFuncList.push_back([this]() {
 			mSituation = "怪奇";
-			AudioEngine::play2d("SE/chapter.ogg");
+			playSoundBS("SE/chapter.ogg");
 			auto bg = Sprite::create("bg/chapter2.png");
 			bg->setPosition(Director::getInstance()->getVisibleSize() / 2);
 			bg->setOpacity(0.0f);
@@ -53,7 +53,7 @@ namespace day2 {
 
 		mFuncList.push_back([this]() {
 			mSituation = "暗闇の中で（ノベル）";
-			//AudioEngine::play2d("BGM/school.ogg", true);
+			//playSoundBS("BGM/school.ogg", true);
 
 			auto novel = Novel::create();
 
@@ -83,7 +83,7 @@ namespace day2 {
 				bg->runAction(FadeIn::create(5.0f));
 				addChild(bg, 1, "bg1");
 
-				AudioEngine::play2d("BGM/fear.ogg", true);
+				playSoundBS("BGM/fear.ogg", true);
 			}));
 			novel->setFontColor(0, Color3B::BLUE);
 			novel->addSentence(0, "継", "バンダナ…！！！");
@@ -117,7 +117,7 @@ namespace day2 {
 			novel->addSentence(0, "バンダナ", "おお、なるほどな。お前の方は何ともないのか？");
 			novel->addSentence(0, "継", "うん、僕は眠らされただけみたいだから、いくらでも動けるよ。");
 			novel->addEvent(0, CallFunc::create([this] {
-				AudioEngine::play2d("BGM/underground.ogg",true);
+				playSoundBS("BGM/underground.ogg",true);
 				setGetMusic(5);
 			}));
 			novel->addSentence(0, "バンダナ", "そうか、いつも通りの冷静さを取り戻したな。");
@@ -137,7 +137,7 @@ namespace day2 {
 
 		mFuncList.push_back([this]() {
 			mSituation = "地下の迷宮で（探索）";
-			if (!AudioEngine::getPlayingAudioCount())AudioEngine::play2d("BGM/underground.ogg", true);
+			if (!AudioEngine::getPlayingAudioCount())playSoundBS("BGM/underground.ogg", true);
 			removeChildByName("cursor");
 
 			auto control = (day2::Esc*)day2::Esc::createControl();
@@ -148,7 +148,7 @@ namespace day2 {
 
 		mFuncList.push_back([this]() {
 			mSituation = "解毒薬を作って（ノベル）";
-			//AudioEngine::play2d("BGM/school.ogg", true);
+			//playSoundBS("BGM/school.ogg", true);
 
 			auto novel = Novel::create();
 
@@ -188,7 +188,7 @@ namespace day2 {
 			novel->setFontColor(0, Color3B::BLUE);
 			novel->addSentence(0, "バンダナ", "！！…誰だ！！");
 			novel->addEvent(0, CallFunc::create([this] {
-				AudioEngine::play2d("BGM/fear.ogg", true);
+				playSoundBS("BGM/fear.ogg", true);
 			}));
 			novel->setFontColor(0, Color3B::RED);
 			novel->addSentence(0, "？？？", "…ふふふ、まさか抜け穴があったなんてね…");
@@ -220,7 +220,7 @@ namespace day2 {
 
 		mFuncList.push_back([this]() {
 			mSituation = "無数の手が伸びて（ミニゲーム）";
-			if (AudioEngine::getPlayingAudioCount() == 0) AudioEngine::play2d("BGM/fear.ogg", true);
+			if (AudioEngine::getPlayingAudioCount() == 0) playSoundBS("BGM/fear.ogg", true);
 
 			auto layer = Layer::create();
 			layer->setCascadeOpacityEnabled(true);
@@ -248,7 +248,7 @@ namespace day2 {
 
 		mFuncList.push_back([this]() {
 			mSituation = "数多の手に囚われて（ノベル）";
-			if (AudioEngine::getPlayingAudioCount() == 0) AudioEngine::play2d("BGM/fear.ogg", true);
+			if (AudioEngine::getPlayingAudioCount() == 0) playSoundBS("BGM/fear.ogg", true);
 
 			auto novel = Novel::create();
 			novel->setBg(0, "chara/stand_bow.png");
@@ -307,7 +307,7 @@ namespace day2 {
 
 		mFuncList.push_back([this]() {
 			mSituation = "一難去って…（ノベル）";
-			AudioEngine::play2d("BGM/fear.ogg", true);
+			playSoundBS("BGM/fear.ogg", true);
 
 			auto novel = Novel::create();
 
@@ -444,7 +444,7 @@ namespace day2 {
 						{
 							mAttack[num]++;
 							event->getCurrentTarget()->runAction(Sequence::create(MoveBy::create(0.05, Vec2(10, 0)), MoveBy::create(0.05f, Vec2(-20, 0)), MoveBy::create(0.05f, Vec2(10, 0)), NULL));
-							AudioEngine::play2d("SE/tm2_hit004.ogg");
+							playSoundBS("SE/tm2_hit004.ogg");
 							if (mAttack[num] == 3) {
 								event->getCurrentTarget()->runAction(Sequence::createWithTwoActions(FadeOut::create(1.0f), RemoveSelf::create()));
 								mAttack[num] = -1;

@@ -69,7 +69,7 @@ bool Prologue::init()
 
 	mFunc[1] = [this]() {
 		setGetMusic(1);
-		AudioEngine::play2d("BGM/days.ogg", true);
+		playSoundBS("BGM/days.ogg", true);
 
 		auto novel = Novel::create();
 

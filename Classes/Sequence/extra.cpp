@@ -422,7 +422,7 @@ void Extra::music(){
 			{
 				if (get) {
 					AudioEngine::stopAll();
-					AudioEngine::play2d(music.second, true);
+					playSoundBS(music.second, true);
 				}
 
 				return true;

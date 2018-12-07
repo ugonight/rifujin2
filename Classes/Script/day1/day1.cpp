@@ -35,7 +35,7 @@ namespace day1 {
 		//シナリオ
 		mFuncList.push_back([this]() {
 			mSituation = "狂愛";
-			AudioEngine::play2d("SE/chapter.ogg");
+			playSoundBS("SE/chapter.ogg");
 			auto bg = Sprite::create("bg/chapter1.png");
 			bg->setPosition(Director::getInstance()->getVisibleSize() / 2);
 			bg->setOpacity(0.0f);
@@ -51,7 +51,7 @@ namespace day1 {
 		mFuncList.push_back([this]() {
 			mSituation = "学校に着いて（ノベル）";
 			setGetMusic(2);
-			AudioEngine::play2d("BGM/school.ogg", true);
+			playSoundBS("BGM/school.ogg", true);
 
 			auto novel = Novel::create();
 
@@ -98,7 +98,7 @@ namespace day1 {
 
 		mFuncList.push_back([this]() {
 			mSituation = "学校に着いて（探索）";
-			if (!AudioEngine::getPlayingAudioCount())AudioEngine::play2d("BGM/school.ogg", true);
+			if (!AudioEngine::getPlayingAudioCount())playSoundBS("BGM/school.ogg", true);
 			removeChildByName("cursor");
 
 			auto control = (day1::Esc*)day1::Esc::createControl();
@@ -109,8 +109,8 @@ namespace day1 {
 		});
 		mFuncList.push_back([this]() {
 			mSituation = "朝の騒動の後で（ノベル）";
-			if (!AudioEngine::getPlayingAudioCount())AudioEngine::play2d("BGM/school.ogg", true);
-			//AudioEngine::play2d("BGM/school.ogg", true);
+			if (!AudioEngine::getPlayingAudioCount())playSoundBS("BGM/school.ogg", true);
+			//playSoundBS("BGM/school.ogg", true);
 
 			auto novel = Novel::create();
 
@@ -145,7 +145,7 @@ namespace day1 {
 		mFuncList.push_back([this]() {
 			mSituation = "放課後にて（ノベル）";
 			//AudioEngine::stopAll();
-			if (!AudioEngine::getPlayingAudioCount())AudioEngine::play2d("BGM/school.ogg", true);
+			if (!AudioEngine::getPlayingAudioCount())playSoundBS("BGM/school.ogg", true);
 
 			auto novel = Novel::create();
 
@@ -208,7 +208,7 @@ namespace day1 {
 			novel->addSentence(1, "", "裏庭に回り込んだ僕はすぐに異様な空気を感じた");
 			novel->addSentence(1, "", "壁の隅の暗がりに目を凝らしてみると、そこにいたのは…");
 			novel->addEvent(1, CallFunc::create([this] {
-				AudioEngine::play2d("BGM/fear.ogg", true);
+				playSoundBS("BGM/fear.ogg", true);
 				setGetMusic(4);
 			}));
 			novel->setFontColor(1, Color3B::BLUE);

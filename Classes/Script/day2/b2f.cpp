@@ -34,7 +34,7 @@ namespace day2 {
 				mObjectList["hiru"]->runAction(Sequence::createWithTwoActions(FadeOut::create(2.0f), RemoveSelf::create()));
 				ItemMgr::sharedItem()->deleteItem("solt");
 				mObjectList["hiru"]->setState(1);
-				AudioEngine::play2d("SE/hiru.ogg");
+				playSoundBS("SE/hiru.ogg");
 				mObjectList["flag"]->setState(1);
 				addChild(mObjectList["library"], 1, "library");
 

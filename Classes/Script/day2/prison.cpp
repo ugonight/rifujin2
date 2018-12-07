@@ -200,7 +200,7 @@ namespace day2 {
 	}
 
 	void Prison::attackZombie() {
-		AudioEngine::play2d("BGM/fear.ogg");
+		playSoundBS("BGM/fear.ogg");
 		setGetStill(5);
 
 
@@ -216,7 +216,7 @@ namespace day2 {
 			mHit++;
 			if (mHit % 5 == 0) {
 				event->getCurrentTarget()->runAction(Sequence::create(MoveBy::create(0.1, Vec2(50, 0)), MoveBy::create(0.1, Vec2(-100, 0)), MoveBy::create(0.1, Vec2(50, 0)), NULL));
-				AudioEngine::play2d("SE/tm2_hit004.ogg");
+				playSoundBS("SE/tm2_hit004.ogg");
 			}
 			if (mHit == 100) {
 				getChildByName("layer_z")->setCascadeOpacityEnabled(true);
@@ -240,7 +240,7 @@ namespace day2 {
 						removeChildByName("black");
 						Control::me->changeField("aisle");
 						mObjectList["paper"]->setState(2);
-						AudioEngine::play2d("BGM/underground.ogg", true);
+						playSoundBS("BGM/underground.ogg", true);
 					}));
 
 					novel->setEndTask(0);

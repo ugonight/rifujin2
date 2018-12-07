@@ -48,6 +48,9 @@ public:
 	virtual void updateField();		// ’Ç‰Á‚Å‰½‚©‚µ‚½‚¢‚Æ‚«—puodate
 	
 	CREATE_FUNC(Field);
+
+private:
+	void initPointHint();
 };
 
 

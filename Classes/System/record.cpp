@@ -33,7 +33,7 @@ bool Record::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	AudioEngine::play2d("SE/record_on.ogg");
+	playSoundBS("SE/record_on.ogg");
 
 	//枠
 	auto bg = Sprite::create("record.png");	//x25y25w550h350d70
@@ -67,7 +67,7 @@ bool Record::init()
 		else {
 			this->runAction(Sequence::create(EaseSineIn::create(MoveBy::create(0.2, Vec3(0, visibleSize.height, 0)))
 				,RemoveSelf::create(),NULL));
-			AudioEngine::play2d("SE/record_off.ogg");
+			playSoundBS("SE/record_off.ogg");
 			mSelectNum = 0;
 		}
 		return true;

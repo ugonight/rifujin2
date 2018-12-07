@@ -5,6 +5,7 @@
 #include "item.h"
 #include "control.h"
 #include "novel.h"
+#include "cursor.h"
 
 USING_NS_CC;
 
@@ -56,6 +57,11 @@ bool Field::init() {
 		this->addChild(square, 9);
 	}
 #endif
+
+	// タッチポイントのヒントを表示するレイヤー
+	auto layer = Layer::create();
+	layer->setPosition(Vec2::ZERO);
+	addChild(layer, 9, "pointHintLayer");
 
 	return true;
 }
@@ -152,6 +158,9 @@ void Field::FadeIn() {
 		}
 	}), CallFunc::create(CC_CALLBACK_0(Field::changedField, this)), NULL));
 	
+	// ポイントヒントの表示
+	if (UserDefault::getInstance()->getBoolForKey("pHint",true))
+		initPointHint();
 }
 
 void Field::changedField() {
@@ -262,6 +271,62 @@ void Field::loadField(cocos2d::ValueMap data) {
 			for (auto name : obj.second->getCanUseItemList())  if (name == itemName) exist = 1;	//すでに追加されていたら無視
 			if (!exist) obj.second->addCanUseItem(itemName);
 			i++;
+		}
+	}
+}
+
+
+void Field::initPointHint() {
+	auto layer = getChildByName("pointHintLayer");
+	layer->removeAllChildren();
+	float delay = 0.0;
+	int num = 0;
+	for (auto obj : mObjectList) if (this->getChildByName(obj.first)) num++;
+
+	// タッチポイントの表示
+	for (auto obj : mObjectList) {
+		if (this->getChildByName(obj.first)) {
+			auto ripple = Sprite::create();
+			switch (obj.second->getCursor())
+			{
+			case Cursor::NOMAL:
+				return;
+			case Cursor::NEW:
+				ripple->setTexture("pointHint_r.png");
+				break;
+			case Cursor::INFO:
+				ripple->setTexture("pointHint_b.png");
+				break;
+			case Cursor::BACK:
+			case Cursor::RIGHT:
+			case Cursor::LEFT:
+			case Cursor::CANUSE:
+			case Cursor::FORWARD:
+			case Cursor::ENTER:
+				ripple->setTexture("pointHint_g.png");
+				break;
+			case Cursor::NOVEL:
+				return;
+			default:
+				return;
+			}
+			ripple->setPosition(obj.second->getArea().getMidX(), Director::getInstance()->getVisibleSize().height - obj.second->getArea().getMidY());
+			ripple->setOpacity(0.0f);
+			ripple->setBlendFunc(BlendFunc{ GL_SRC_ALPHA, GL_ONE });
+			layer->addChild(ripple, 1, obj.first);
+			// アニメーション
+			ripple->runAction(Sequence::create(
+				DelayTime::create(delay),
+				Spawn::createWithTwoActions(FadeIn::create(0.5f), EaseSineInOut::create(ScaleBy::create(0.5f,2.0f))),
+				FadeOut::create(0.5f),
+				DelayTime::create(5.0f),
+				CallFunc::create([this, delay,num]() {
+					if (delay == 0.1f * (num-1)) initPointHint();
+				}),	// 再帰でループ兼更新対応
+				NULL
+			));
+
+			delay += 0.1;
 		}
 	}
 }

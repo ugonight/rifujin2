@@ -103,12 +103,12 @@ namespace day2 {
 							if (target->getOpacity() == 0.0f) {
 								mOnOff[i][j] = 0;
 								target->runAction(FadeIn::create(0.1f));
-								AudioEngine::play2d("SE/click.ogg");
+								playSoundBS("SE/click.ogg");
 							}
 							else if (target->getOpacity() == 255.0f) {
 								mOnOff[i][j] = 1;
 								target->runAction(FadeOut::create(0.1f));
-								AudioEngine::play2d("SE/click.ogg");
+								playSoundBS("SE/click.ogg");
 							}
 
 							// 判定
@@ -496,7 +496,7 @@ namespace day2 {
 		aisle2->setTouchEvent(CallFunc::create([this] {
 			if (mObjectList["flag"]->getState() == 0) {
 				AudioEngine::stopAll();
-				AudioEngine::play2d("SE/heart1.ogg", true);
+				playSoundBS("SE/heart1.ogg", true);
 
 				auto novel = Novel::create();
 				novel->setFontColor(0, Color3B::BLACK);
@@ -776,7 +776,7 @@ namespace day2 {
 				((Label*)hide->getChildByName("label"))->setTextColor(Color4B::WHITE);
 				if (mSE == 2) {
 					AudioEngine::stopAll();
-					AudioEngine::play2d("SE/heart1.ogg", true);
+					playSoundBS("SE/heart1.ogg", true);
 					mSE = 1;
 				}
 			}
@@ -785,7 +785,7 @@ namespace day2 {
 				((Label*)hide->getChildByName("label"))->setTextColor(Color4B::RED);
 				if (mSE == 1) {
 					AudioEngine::stopAll();
-					AudioEngine::play2d("SE/heart2.ogg", true);
+					playSoundBS("SE/heart2.ogg", true);
 					mSE = 2;
 				}
 			}
@@ -900,7 +900,7 @@ namespace day2 {
 				mObjectList["aisle3"]->setMsg("");
 				mObjectList["shojo"]->setCursor(Cursor::INFO);
 				mObjectList["coffin"]->setCursor(Cursor::INFO);
-				AudioEngine::play2d("SE/click.ogg");
+				playSoundBS("SE/click.ogg");
 
 				auto aisle3 = Control::me->getField("aisle3");
 				aisle3->getObject("flag")->setState(2);
@@ -915,7 +915,7 @@ namespace day2 {
 			novel->setFontColor(0, Color3B::BLUE);
 			novel->addSentence(0, "継", "うわぁ…ここであったことはあまり想像したくないな…");
 			novel->addEvent(0, CallFunc::create([this] {
-				AudioEngine::play2d("BGM/underground.ogg", true);
+				playSoundBS("BGM/underground.ogg", true);
 			}));
 			novel->setEndTask(0);
 			addChild(novel, 10, "novel");

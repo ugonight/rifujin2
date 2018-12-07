@@ -238,7 +238,7 @@ void Control::setCursor(Cursor::CursorID num) {
 	auto cursor = (Cursor*)this->getChildByName("cursor");
 	if (num != cursor->getCursorNum()) { 
 		cursor->setCursorNum(num); 
-		if (num != Cursor::NOMAL && num != Cursor::NOVEL) AudioEngine::play2d("SE/picon.ogg");
+		if (num != Cursor::NOMAL && num != Cursor::NOVEL) playSoundBS("SE/picon.ogg");
 	}
 }
 
@@ -252,10 +252,10 @@ void Control::changeField(std::string s) {
 	// SE
 	auto cursorNum = ((Cursor*)this->getChildByName("cursor"))->getCursorNum();
 	if (cursorNum == Cursor::LEFT || cursorNum == Cursor::RIGHT || cursorNum == Cursor::BACK || cursorNum == Cursor::FORWARD){
-		AudioEngine::play2d("SE/footsteps.ogg");
+		playSoundBS("SE/footsteps.ogg");
 	}
 	else if (cursorNum == Cursor::ENTER) {
-		AudioEngine::play2d("SE/door.ogg");
+		playSoundBS("SE/door.ogg");
 	}
 
 	// フィールド名表示

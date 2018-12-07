@@ -138,7 +138,7 @@ namespace day3 {
 
 						
 						int n;
-						novel->addEvent(0, CallFunc::create([this] {AudioEngine::stopAll(); AudioEngine::play2d("BGM/mystery.ogg", true); }));
+						novel->addEvent(0, CallFunc::create([this] {AudioEngine::stopAll(); playSoundBS("BGM/mystery.ogg", true); }));
 						novel->addSentence(0, "宇沢", "それでは、まずは今回の事件を振り返ってみましょう。");
 						novel->addSentence(0, "寿甘", "私が、体育の授業を終えて着替えて教室へ戻ってきたら、待ち合わせしていたはずの二人が居なかった。");
 						novel->addSentence(0, "寿甘", "体育の時は二人とも見かけたし、教室で待ってるよう念を押したから、私たちが着替えている間になにかあったのかも。");
@@ -252,7 +252,7 @@ namespace day3 {
 							listener->setSwallowTouches(true);
 							listener->onTouchBegan = [this](Touch* touch, Event* event) {
 								if (Rect(570, 270, 40, 50).containsPoint(touch->getLocationInView())) {
-									AudioEngine::play2d("SE/choice.ogg");
+									playSoundBS("SE/choice.ogg");
 									getChildByName("layer_c")->runAction(Sequence::createWithTwoActions(FadeOut::create(0.2), RemoveSelf::create()));
 								}
 								return true;
@@ -307,7 +307,7 @@ namespace day3 {
 						novel->addSentence(0, "寿甘", "なるほど！");
 						novel->addSentence(0, "寿甘", "っていうか、最初からそうしておいた方がよかった気もしなくもないわね…");
 
-						novel->addEvent(0, CallFunc::create([this] { AudioEngine::stopAll(); AudioEngine::play2d("BGM/school.ogg", true); }));
+						novel->addEvent(0, CallFunc::create([this] { AudioEngine::stopAll(); playSoundBS("BGM/school.ogg", true); }));
 						novel->addSentence(0, "寿甘", "ま、そうと決まればまた校舎裏に行くわよ！");
 						novel->addSentence(0, "宇沢", "いや、ここは手分けしていきましょう。");
 						novel->addSentence(0, "宇沢", "私は「人形遣い」の生徒について調査しています、寿甘さんは校舎裏へ向かってください。");

@@ -562,7 +562,7 @@ void Novel::STask::update(Novel* parent) {
 					label->setString(parent->mSentense[parent->mBranch][parent->mNovelNum[parent->mBranch]]);
 					nlabel->setString(parent->mName[parent->mBranch][parent->mNovelNum[parent->mBranch]]);
 					parent->setDelayAnime();
-					AudioEngine::play2d("SE/choice.ogg");
+					playSoundBS("SE/choice.ogg");
 
 					return true;
 				}
@@ -669,7 +669,7 @@ void Novel::setDelayAnime() {
 				Sequence::create(
 					DelayTime::create(0.05f*i),
 					FadeIn::create(0.05f),
-					CallFunc::create([this]() {	if (mCharNum % 4 == 0) AudioEngine::play2d("SE/po.ogg"); }),	//全角の最初で鳴らす
+					CallFunc::create([this]() {	if (mCharNum % 4 == 0) playSoundBS("SE/po.ogg"); }),	//全角の最初で鳴らす
 					NULL
 				));
 		}

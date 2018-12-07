@@ -35,7 +35,7 @@ namespace day3 {
 		//シナリオ
 		mFuncList.push_back([this]() {
 			mSituation = "逃走";
-			AudioEngine::play2d("SE/chapter.ogg");
+			playSoundBS("SE/chapter.ogg");
 			auto bg = Sprite::create("bg/chapter3.png");
 			bg->setPosition(Director::getInstance()->getVisibleSize() / 2);
 			bg->setOpacity(0.0f);
@@ -50,7 +50,7 @@ namespace day3 {
 
 		mFuncList.push_back([this]() {
 			mSituation = "とある昔話で（ノベル）";
-			AudioEngine::play2d("BGM/folklore.ogg", true);
+			playSoundBS("BGM/folklore.ogg", true);
 			setGetMusic(6);
 
 			auto novel = Novel::create();
@@ -114,7 +114,7 @@ namespace day3 {
 			novel->setFontColor(0, Color3B::BLACK);
 			novel->addSentence(0, "", "継達がさらわれる少し後の教室にて");
 			novel->addEvent(0, CallFunc::create([this] {
-				AudioEngine::play2d("BGM/school.ogg", true);
+				playSoundBS("BGM/school.ogg", true);
 			}));
 			novel->setBg(0, "obj/classroom.png");
 			novel->setCharaL(0, "chara/suama1.png");
@@ -136,7 +136,7 @@ namespace day3 {
 
 		mFuncList.push_back([this]() {
 			mSituation = "二人を探して（探索）";
-			if (!AudioEngine::getPlayingAudioCount())AudioEngine::play2d("BGM/school.ogg", true);
+			if (!AudioEngine::getPlayingAudioCount())playSoundBS("BGM/school.ogg", true);
 			removeChildByName("cursor");
 
 			auto control = (day3::Esc*)day3::Esc::createControl();

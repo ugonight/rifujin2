@@ -4,6 +4,7 @@
 
 #include "control.h"
 #include "object.h"
+#include "define.h"
 
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
@@ -175,7 +176,7 @@ void Item::getItem(std::string s, Point p) {
 	addChild(m_emitter, 10);
 
 	//SE
-	AudioEngine::play2d("SE/get.ogg");
+	playSoundBS("SE/get.ogg");
 }
 
 void Item::deleteItem(std::string s) {
@@ -291,7 +292,7 @@ void Item::showAboutItem() {
 	addChild(aboutItem, 2, "AboutItem");
 
 	//SE
-	AudioEngine::play2d("SE/set.ogg");
+	playSoundBS("SE/set.ogg");
 }
 
 void Item::saveItem(cocos2d::ValueMap* map) {	

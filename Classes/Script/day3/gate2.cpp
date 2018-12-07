@@ -169,7 +169,7 @@ namespace day3 {
 				novel->addSentence(0, "寿甘", "助けて！！翼くん！！！");
 				novel->setFontColor(0, Color3B::BLACK);
 				novel->addEvent(0, CallFunc::create([this] {
-					AudioEngine::play2d("SE/toshi.ogg");
+					playSoundBS("SE/toshi.ogg");
 				}));
 				novel->addSentence(0, "", "ピューーーーーー！");
 				novel->setCharaL(0, "");
@@ -263,7 +263,7 @@ namespace day3 {
 			//(getObjState("gate", "crow") == 2) && 
 			(mObjectList["backyard"]->getState() == 0)){
 			AudioEngine::stopAll();
-			AudioEngine::play2d("SE/heart1.ogg", true);
+			playSoundBS("SE/heart1.ogg", true);
 
 			auto novel = Novel::create();
 
@@ -477,7 +477,7 @@ namespace day3 {
 			novel->setCharaR(0, "chara/rias1.png");
 
 			novel->addEvent(0, CallFunc::create([this] {
-				AudioEngine::play2d("BGM/fear.ogg",true);
+				playSoundBS("BGM/fear.ogg",true);
 			}));
 			novel->addSentence(0, "寿甘", "あんたは…！");
 			novel->addSentence(0, "リアス", "…それ……");
@@ -528,7 +528,7 @@ namespace day3 {
 			novel->addSentence(0, "宇沢", "調査ならご一緒しますよ？");
 			novel->addSentence(0, "寿甘", "…確かにそうね");
 			novel->addSentence(0, "寿甘", "じゃあ、この辺りに手掛かりがないか調査するわよ！");
-			novel->addEvent(0, CallFunc::create([this] {AudioEngine::play2d("BGM/folklore.ogg", true);; }));
+			novel->addEvent(0, CallFunc::create([this] {playSoundBS("BGM/folklore.ogg", true);; }));
 
 			novel->setEndTask(0);
 			this->addChild(novel, 10, "novel");
@@ -559,7 +559,7 @@ namespace day3 {
 				novel->addSentence(0, "宇沢", "一旦、対策を練っておくのがよろしいかと思いますねぇ");
 				novel->addSentence(0, "宇沢", "闇雲に探すよりは、現場の状況から二人の行き先を推理した方が早く見つかるかもしれませんよ？");
 				novel->addSentence(0, "寿甘", "…うーん、まあそうね");
-				novel->addEvent(0, CallFunc::create([this] {AudioEngine::play2d("BGM/school.ogg", true); }));
+				novel->addEvent(0, CallFunc::create([this] {playSoundBS("BGM/school.ogg", true); }));
 				novel->addSentence(0, "宇沢", "では、そうしましょう！");
 				novel->addSentence(0, "宇沢", "手分けして学校の人に聞き込みをした後で、教室で落ち合いましょう！");
 				novel->addSentence(0, "寿甘", "うん、じゃあまた後で。");
@@ -632,7 +632,7 @@ namespace day3 {
 
 	void Forest::move(int direc) {
 		getChildByName("bg")->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5), FadeIn::create(0.5)));
-		AudioEngine::play2d("SE/footsteps.ogg");
+		playSoundBS("SE/footsteps.ogg");
 
 		int correct[8] = { 1,0,2,1,1,2,0,2 };
 
@@ -670,7 +670,7 @@ namespace day3 {
 					novel->setFontColor(0, Color3B::RED);
 					novel->setCharaL(0, "chara/celine1.png");
 					novel->addEvent(0, CallFunc::create([this] {
-						AudioEngine::play2d("BGM/folklore.ogg", true);
+						playSoundBS("BGM/folklore.ogg", true);
 						ItemMgr::sharedItem()->deleteItem("paper");
 						ItemMgr::sharedItem()->deleteItem("chisel");
 						ItemMgr::sharedItem()->deleteItem("hatpin");
@@ -786,7 +786,7 @@ namespace day3 {
 					novel->addSentence(0, "寿甘", "戻らなきゃ…！");
 					novel->addEvent(0, CallFunc::create([this] {
 						getChildByName("bg")->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5), FadeIn::create(0.5)));
-						AudioEngine::play2d("SE/footsteps.ogg");
+						playSoundBS("SE/footsteps.ogg");
 					}));
 					novel->setEndTask(0);
 					this->addChild(novel, 10, "novel");
@@ -798,7 +798,7 @@ namespace day3 {
 					novel->addSentence(0, "セリーヌ", "もと来た道へ、戻りましょう。");
 					novel->addEvent(0, CallFunc::create([this] {
 						getChildByName("bg")->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5), FadeIn::create(0.5)));
-						AudioEngine::play2d("SE/footsteps.ogg");
+						playSoundBS("SE/footsteps.ogg");
 					}));
 					novel->setEndTask(0);
 					this->addChild(novel, 10, "novel");

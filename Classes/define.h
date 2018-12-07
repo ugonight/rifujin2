@@ -38,3 +38,22 @@ inline void setGetMusic(int id) {
 	userDef->setBoolForKey(cocos2d::StringUtils::format("music%02d", id).c_str(), true);
 	userDef->flush();
 }
+
+// BGMESEÄ¶
+#include "audio/include/AudioEngine.h"
+inline int playSoundBS(std::string filename, bool loop = false) {
+	auto userDef = cocos2d::UserDefault::getInstance();
+	float volume;
+
+	if (filename.find("BGM") != std::string::npos) {
+		volume = userDef->getFloatForKey("volumeBGM", 1.0f);
+	}
+	else {
+		volume = userDef->getFloatForKey("volumeSE", 1.0f);
+	}
+	
+	if (volume != 0.0)
+		return cocos2d::experimental::AudioEngine::play2d(filename.c_str(), loop, volume);
+
+	return -1;
+}
