@@ -2,12 +2,15 @@
 
 #include "novel.h"
 #include "define.h"
+#include "chapter.h"
 
 #include "ui/CocosGUI.h"
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
 
 USING_NS_CC;
+
+int Novel::mSerialNum[] = { 0 };
 
 Novel::~Novel() {
 	for (int i = 0; i < MAX_BRANCH; i++) {
@@ -45,6 +48,7 @@ bool Novel::init() {
 		mSentense[i].push_back("");
 		mName[i].push_back("");
 		mTaskNum[i] = 0;
+		mDefSerialNum[i] = mSerialNum[i];
 	}
 
 
@@ -138,6 +142,8 @@ bool Novel::init() {
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, fast);
 
 
+	readAlready();
+
 	return true;
 }
 
@@ -190,7 +196,11 @@ void Novel::readTalk() {
 			if (mName[mBranch][mNovelNum[mBranch]] != "")log += mName[mBranch][mNovelNum[mBranch]] + " : ";
 			log += mSentense[mBranch][mNovelNum[mBranch]];
 			mLog.push_back(Value(log));
+			
+			// 既読にする
+			mAlreadyMap[StringUtils::format("%d-%d", mBranch, mDefSerialNum[mBranch] + mNovelNum[mBranch])] = true;
 		}
+
 		if (mSentense[mBranch].size() - 1 > mNovelNum[mBranch]) {	//文リストの最後でなければ
 																	//次の分をセット
 			mNovelNum[mBranch]++;
@@ -214,6 +224,8 @@ void Novel::readTalk() {
 			auto file = path + "speak.plist";
 			FileUtils::getInstance()->writeValueVectorToFile(mLog, file);
 
+			// 既読情報を保存
+			writeAlready();
 		}
 	}
 	else {
@@ -242,12 +254,19 @@ void Novel::update(float delta) {
 		getChildByName("fast")->setVisible(false);
 		mHideMsg = true;
 	}
+
+	
+	auto key = StringUtils::format("%d-%d", mBranch, mDefSerialNum[mBranch] + mNovelNum[mBranch]);
+	auto alreadySkip = UserDefault::getInstance()->getBoolForKey("alreadySkip", true);
+
 	if (mFast) {
 		if (/*touch->getLocation().y < visibleSize.height / 2 && */
 			!mHideMsg &&
 			!mSwitch &&
 			mSentense[mBranch].size() - 1 > mNovelNum[mBranch] &&
-			mNovelNum[mBranch] > 0 /* フェードイン前に押されるのを防ぐ */) {
+			mNovelNum[mBranch] > 0 && /* フェードイン前に押されるのを防ぐ */
+			(!alreadySkip || (mAlreadyMap.count(key) && mAlreadyMap[key].asBool()))	// 既読確認
+			) {
 			readTalk();
 		}
 	}
@@ -263,6 +282,7 @@ int Novel::addSentence(int branch, std::string name, std::string s) {
 	mSentense[branch].push_back(s);
 	mName[branch].push_back(name);
 	mNovelSetNum[branch]++;
+	mSerialNum[branch]++;
 	return mNovelSetNum[branch] - 1;
 }
 
@@ -791,4 +811,22 @@ void Novel::setLogOnly() {
 	}
 
 	mLogOnly = true;
+}
+
+void Novel::writeAlready() {
+	auto path = FileUtils::getInstance()->getWritablePath();
+	int chap = (Chapter::sharedChapter()) ? Chapter::sharedChapter()->getChapterNum() : 0;	//プロローグは0
+
+	FileUtils::getInstance()->writeValueMapToFile(mAlreadyMap, path + StringUtils::format("already%02d.plist", chap));
+}
+
+void Novel::readAlready() {
+	auto path = FileUtils::getInstance()->getWritablePath();
+	int chap = (Chapter::sharedChapter()) ? Chapter::sharedChapter()->getChapterNum() : 0;	//プロローグは0
+
+	mAlreadyMap = FileUtils::getInstance()->getValueMapFromFile(path + StringUtils::format("already%02d.plist",chap));
+}
+
+void Novel::initSerialNum() {
+	for (int i = 0; i < MAX_BRANCH; i++) mSerialNum[i] = 0;
 }

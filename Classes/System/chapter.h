@@ -15,6 +15,9 @@ public:
 
 	void playFirst();	//最初の場面を実行
 	void load(int saveNum);
+	int getChapterNum();
+
+	static Chapter* sharedChapter();
 	
 	CREATE_FUNC(Chapter);
 

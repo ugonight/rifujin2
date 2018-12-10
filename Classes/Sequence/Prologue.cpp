@@ -73,6 +73,8 @@ bool Prologue::init()
 
 		auto novel = Novel::create();
 
+		novel->initSerialNum();	// 連番の初期化
+
 		novel->setFontColor(0, Color3B::BLACK);
 		novel->setBg(0, "bg/town.png");
 		novel->addEvent(0, CallFunc::create([this] {setGetStill(0); }));

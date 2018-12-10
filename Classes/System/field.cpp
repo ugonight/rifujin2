@@ -281,11 +281,17 @@ void Field::initPointHint() {
 	layer->removeAllChildren();
 	float delay = 0.0;
 	int num = 0;
-	for (auto obj : mObjectList) if (this->getChildByName(obj.first)) num++;
+	// フィールドにセットされているobjectの数を取得
+	for (auto obj : mObjectList) if (this->getChildByName(obj.first)) if (obj.second->getArea().getMinX() != obj.second->getArea().getMaxX()) num++;
+	// 上のレイヤーにさらにレイヤーがあったら表示しない
+	for (auto child : this->getChildren()) if (child->getLocalZOrder() > layer->getLocalZOrder()) return;
 
 	// タッチポイントの表示
 	for (auto obj : mObjectList) {
 		if (this->getChildByName(obj.first)) {
+			// タッチエリアがないのは除外
+			if (obj.second->getArea().getMinX() == obj.second->getArea().getMaxX())continue;
+
 			auto ripple = Sprite::create();
 			switch (obj.second->getCursor())
 			{

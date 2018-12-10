@@ -92,8 +92,8 @@ bool Option::init() {
 
 	// ポイントヒント切り替え
 	auto str = userDef->getBoolForKey("pHint", true) ? "on" : "off";
-	label = Label::createWithTTF(StringUtils::format("ポイントヒント : %s", str), FONT_NAME, 40);
-	label->setPosition(Vec2(origin.x + display.width / 2, origin.y + display.height / 5 * 2));
+	label = Label::createWithTTF(StringUtils::format("ポイントヒント : %s", str), FONT_NAME, 30);
+	label->setPosition(Vec2(origin.x + display.width / 4, origin.y + display.height / 5 * 2));
 	label->setTextColor(Color4B::WHITE);
 	label->enableOutline(Color4B::BLACK, 2);
 	addChild(label, 3, "label_PH");
@@ -109,6 +109,32 @@ bool Option::init() {
 			userDef->flush();
 			auto str = userDef->getBoolForKey("pHint", true) ? "on" : "off";
 			((Label*)target)->setString(StringUtils::format("ポイントヒント : %s", str));
+			return true;
+		}
+		return false;
+	};
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, label);
+
+
+	// スキップ切り替え
+	str = userDef->getBoolForKey("alreadySkip", true) ? "既読のみ" : "すべて";
+	label = Label::createWithTTF(StringUtils::format("スキップ : %s", str), FONT_NAME, 30);
+	label->setPosition(Vec2(origin.x + display.width / 4 * 3, origin.y + display.height / 5 * 2));
+	label->setTextColor(Color4B::WHITE);
+	label->enableOutline(Color4B::BLACK, 2);
+	addChild(label, 3, "label_skip");
+	listener = EventListenerTouchOneByOne::create();
+	listener->onTouchBegan = [this](Touch* touch, Event* event) {
+		auto target = (Label*)event->getCurrentTarget();
+		Rect targetBox = target->getBoundingBox();
+		Point touchPoint = Vec2(touch->getLocation().x, touch->getLocation().y);
+		if (targetBox.containsPoint(touchPoint))
+		{
+			auto userDef = UserDefault::getInstance();
+			userDef->setBoolForKey("alreadySkip", !userDef->getBoolForKey("alreadySkip", true));
+			userDef->flush();
+			auto str = userDef->getBoolForKey("alreadySkip", true) ? "既読のみ" : "すべて";
+			((Label*)target)->setString(StringUtils::format("スキップ : %s", str));
 			return true;
 		}
 		return false;
@@ -139,7 +165,7 @@ bool Option::init() {
 			addChild(layer, 5, "resetLayer");
 			auto listener = EventListenerTouchOneByOne::create();
 			listener->setSwallowTouches(true);
-			listener->onTouchBegan = [this](Touch* touch, Event* event) {return true; };
+			listener->onTouchBegan = [this](Touch* touch, Event* event) { return true; };
 			this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, layer);
 
 			auto sprite = Sprite::create("bg/black.png");
@@ -147,7 +173,7 @@ bool Option::init() {
 			sprite->setOpacity(255.0 * 0.8);
 			layer->addChild(sprite, 0, "bg");
 
-			auto label = Label::createWithTTF("全セーブデータ・実績データ・設定データを削除します。\nよろしいですか？", FONT_NAME, 30);
+			auto label = Label::createWithTTF("全セーブデータ・実績データを削除します。\nよろしいですか？", FONT_NAME, 30);
 			label->setPosition(Vec2(origin.x + display.width / 2, origin.y + display.height / 3 * 2));
 			label->setTextColor(Color4B::WHITE);
 			layer->addChild(label, 3, "msg");
@@ -160,6 +186,9 @@ bool Option::init() {
 			listener->onTouchBegan = [this](Touch* touch, Event* event) {
 				if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
 					auto msg = (Label*)getChildByName("resetLayer")->getChildByName("msg");
+					auto yes = (Label*)getChildByName("resetLayer")->getChildByName("yes");
+					auto no = (Label*)getChildByName("resetLayer")->getChildByName("no");
+
 					switch (mReset)
 					{
 					case 0:
@@ -169,21 +198,43 @@ bool Option::init() {
 						msg->setString("後悔しませんね？");
 						break;
 					case 2:
-						msg->setString("データを削除します");
+						yes->setString("いいえ");
+						no->setString("はい");
+						msg->setString("後悔しますか？");
 						break;
 					case 3: {
-						auto path = UserDefault::getInstance()->getXMLFilePath();
-						FileUtils::getInstance()->removeFile(path);
-						FileUtils::getInstance()->removeDirectory(FileUtils::getInstance()->getWritablePath());
-						//						Director::getInstance()->end();
-						//
-						//#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-						//						exit(0);
-						//#endif
-						removeChildByName("resetLayer");
+						// 実績削除
+						auto userDef = UserDefault::getInstance();
+						int i;
+						for (i = 0; i < 30; i++) {
+							userDef->deleteValueForKey(StringUtils::format("still%02d", i).c_str());
+						}
+						i = 0;
+						while (userDef->getBoolForKey(StringUtils::format("music%02d", i).c_str())) {
+							userDef->deleteValueForKey(StringUtils::format("music%02d", i).c_str());
+							i++;
+						}
+						
+
+						// セーブデータ削除
+						auto path = FileUtils::getInstance()->getWritablePath();
+						cocos2d::log("%s", path.c_str());
+						cocos2d::log("%d", FileUtils::getInstance()->removeDirectory(path));
+						cocos2d::log("%d", FileUtils::getInstance()->createDirectory(path));
+						userDef->setBoolForKey("first", false);
+						userDef->flush();
+						
+						yes->setString("はい");
+						no->setString("");
+						msg->setString("データを初期化しました。\nアプリを再起動してください。");
+
+						// removeChildByName("resetLayer");
 
 						break;
 					}
+					case 4:
+						Director::getInstance()->end();
+						break;
 					default:
 						break;
 					}
@@ -290,21 +341,23 @@ void Option::slideEnd(Touch* touch, Event* event) {
 
 bool Option::lineBegan(cocos2d::Touch* touch, cocos2d::Event* event) {
 	auto userDef = UserDefault::getInstance();
-	auto target = (Label*)event->getCurrentTarget();
+	auto target = event->getCurrentTarget();
 	Rect targetBox = target->getBoundingBox();
 	Point touchPoint = Vec2(touch->getLocation().x, touch->getLocation().y);
-	auto volume = (event->getCurrentTarget()->getPositionX() - target->getBoundingBox().getMinX()) / target->getContentSize().width;
+	float volume;// = (event->getCurrentTarget()->getPositionX() - target->getBoundingBox().getMinX()) / target->getContentSize().width;
 
 
 	if (targetBox.containsPoint(touchPoint))
 	{
 		if (target->getName() == "line_BGM") {
 			getChildByName("nob_BGM")->setPositionX(touch->getLocation().x);
+			volume = (getChildByName("nob_BGM")->getPositionX() - target->getBoundingBox().getMinX()) / target->getContentSize().width;
 			userDef->setFloatForKey("volumeBGM", volume);
 			AudioEngine::setVolume(mBGM, volume);
 		}
 		else {
 			getChildByName("nob_SE")->setPositionX(touch->getLocation().x);
+			volume = (getChildByName("nob_SE")->getPositionX() - target->getBoundingBox().getMinX()) / target->getContentSize().width;
 			userDef->setFloatForKey("volumeSE", volume);
 			playSoundBS("SE/set.ogg");
 		}

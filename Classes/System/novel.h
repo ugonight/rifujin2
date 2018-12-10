@@ -73,6 +73,9 @@ private:
 	int mTaskNum[MAX_BRANCH];
 	cocos2d::ValueVector mLog;
 	int mLogScrollX, mLogScrollY;
+	static int mSerialNum[MAX_BRANCH];	// チャプターごとの全体で連番になってる文番号
+	int mDefSerialNum[MAX_BRANCH];	// Novel生成時の連番
+	cocos2d::ValueMap mAlreadyMap;
 
 	void func();
 	bool touchEvent(cocos2d::Touch* touch, cocos2d::Event* event);
@@ -86,6 +89,8 @@ private:
 	void pauseDelayAnime();
 	void resumeDelayAnime();
 
+	void writeAlready();
+	void readAlready();
 
 public:
 	virtual ~Novel();
@@ -129,5 +134,9 @@ public:
 	//ログだけ表示するモード
 	void setLogOnly();
 
+	// 連番を初期化（チャプター開始時）
+	void initSerialNum();
+
 	CREATE_FUNC(Novel);
 };
+

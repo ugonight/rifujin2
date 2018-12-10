@@ -13,6 +13,12 @@
 using namespace cocos2d::experimental;
 USING_NS_CC;
 
+static Chapter* instanceOfChapter;
+
+Chapter* Chapter::sharedChapter() {
+	return instanceOfChapter;
+}
+
 Chapter::Chapter() : mFuncNum(0), mChapterNum(0), mSituation("") {};
 
 //Scene* Chapter::createScene()
@@ -38,6 +44,7 @@ bool Chapter::init()
 	initChapter();
 
 	//mFuncType = mFuncList[mFuncNum]();
+	instanceOfChapter = this;
 
 	//セーブ
 	auto save = MenuItemImage::create(
@@ -50,6 +57,11 @@ bool Chapter::init()
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 5, "save");
 	//setVisibleWithTouch(menu, mFuncType == 0);
+
+
+	// ノベル連番初期化
+	auto novel = Novel::create();
+	novel->initSerialNum();
 
 	return true;
 }
@@ -167,5 +179,8 @@ void Chapter::load(int i) {
 
 	}
 
+}
 
+int Chapter::getChapterNum(){
+	return mChapterNum;
 }

@@ -3,7 +3,7 @@
 #include "System/cursor.h"
 #include "Sequence/Title.h"
 #include "Script\day3\fieldDef.h"
-//#include "Script\day4\fieldDef.h"
+#include "Script\day4\fieldDef.h"
 
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
@@ -160,7 +160,7 @@ namespace day3 {
 			label->setColor(Color3B::WHITE);
 			label->setOpacity(0.0f);
 			label->runAction(Sequence::create(FadeIn::create(1.0f), DelayTime::create(2.0f), FadeOut::create(1.0f), CallFunc::create([this] {
-				//Director::getInstance()->replaceScene(TransitionFade::create(1.0f, day4::Day::createScene(), Color3B::WHITE));
+				Director::getInstance()->replaceScene(TransitionFade::create(1.0f, day4::Day::createScene(), Color3B::WHITE));
 			}), NULL));
 			this->addChild(label, 3, "label");
 
