@@ -319,6 +319,7 @@ namespace day3 {
 							mObjectList["usawa"]->setCursor(Cursor::INFO);
 
 							Control::me->getField("backyard")->addChild(Control::me->getField("backyard")->getObject("forest"), 1, "forest");
+							Control::me->getField("backyard")->getObject("forest")->setCursor(Cursor::NEW);
 						}));
 						novel->addSentence(0, "宇沢", "と、鳥を呼び出すのですか…私にできるでしょうか…");
 						novel->addSentence(0, "宇沢", "とりあえず任せてください！そちらもお気をつけて");

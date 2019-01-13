@@ -225,10 +225,10 @@ void Record::updateInfo() {
 		resetStr(str);
 		str << "time_" << i + 1;
 		label = (Label*)getChildByName(str.str());
-		if (data["totalTime"].asInt() > 0) {
+		if (data["totalTime"].asDouble() > 0) {
 			resetStr(str);
-			int time = data["totalTime"].asInt();
-			str << "プレイ時間 : " << StringUtils::format("%02d", time / (60 * 60)) << "h" << StringUtils::format("%02d", time / 60) << "m" << StringUtils::format("%02d", time % 60) << "s";
+			double time = data["totalTime"].asDouble();
+			str << "プレイ時間 : " << StringUtils::format("%02d", (int)time / (60 * 60)) << "h" << StringUtils::format("%02d", (int)time / 60) << "m" << StringUtils::format("%02d", (int)time % 60) << "s";
 			label->setString(str.str());
 		}
 		else {

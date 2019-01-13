@@ -51,6 +51,7 @@ namespace day4 {
 		mFuncList.push_back([this]() {
 			mSituation = "闇で出会って（ノベル）";
 			AudioEngine::stopAll();
+			playSoundBS("BGM/underground.ogg", true);
 
 			auto novel = Novel::create();
 

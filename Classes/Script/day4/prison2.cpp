@@ -1,5 +1,6 @@
 ﻿#pragma  execution_character_set("utf-8")
 #include "Script\day4\fieldDef.h"
+#include "ghost.h"
 
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
@@ -59,18 +60,95 @@ namespace day4 {
 		auto remon = ObjectN::create();
 		remon->setArea(Rect(95, 200, 100, 170));
 		remon->setTexture("aisle_remon.png");
-		remon->setCursor(Cursor::INFO);
+		remon->setCursor(Cursor::NEW);
 		remon->setTouchEvent(CallFunc::create([this]() {
-			auto novel = Novel::create();
-			novel->setCharaR(0, "chara/remon1.png");
-			novel->setCharaL(0, "chara/tuguru1.png");
-			novel->setFontColor(0, Color3B::RED);
-			novel->addSentence(0, "檸檬", "早く牢のカギを持ってきてちょうだいね");
+			if (mObjectList["remon"]->getState() == 0) {
+				auto novel = Novel::create();
+				novel->setCharaR(0, "chara/remon1.png");
+				novel->setCharaL(0, "chara/tuguru1.png");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "檸檬", "継さん、ちょっといいかしら？");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継", "ん？なにかな？");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "檸檬", "そばにこんな紙切れが落ちていたの");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継", "おお、どれどれ…");
+				novel->addSentence(0, "継", "「業務日誌　○○番　××ページ」…これはここの従業員か誰かが残したメモかな？");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "檸檬", "さあ？そうかもしれないわね。");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継", "ありがとう、きっとヒントになると思うよ。");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "檸檬", "そう、頑張ってね。");
+				mObjectList["remon"]->setState(1);
+				mObjectList["remon"]->setCursor(Cursor::INFO);
+				Control::me->getField("library")->getObject("book3")->setCursor(Cursor::NEW);
 
-			novel->setEndTask(0);
-			this->addChild(novel, 10, "novel");
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+			}
+			else if (mObjectList["remon"]->getState() == 1) {
+				auto novel = Novel::create();
+				novel->setCharaR(0, "chara/remon1.png");
+				novel->setCharaL(0, "chara/tuguru1.png");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "檸檬", "早く牢のカギを持ってきてちょうだい");
+
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+			}
+			else if (mObjectList["remon"]->getState() == 2) {
+				// クロユリの花びらを拾う
+			}
 		}));
 		addObject(remon, "remon", 2, true);
+
+		// 牢屋の扉
+		auto door = ObjectN::create();
+		door->setArea(Rect(225, 155, 55, 205));
+		door->setCursor(Cursor::INFO);
+		door->setMsg("牢の扉だ、カギがかかっている。");
+		door->setTouchEvent(CallFunc::create([this]() {
+			if (ItemMgr::sharedItem()->getSelectedItem() == "key") {
+				// 檸檬救出。回収不可能にする
+				deleteGhost();
+
+				ItemMgr::sharedItem()->deleteItem("key");
+				mObjectList["remon"]->setState(2);
+				removeChildByName("door");
+
+				auto novel = Novel::create();
+				novel->setFontColor(0, Color3B::BLACK);
+				novel->addSentence(0, "", "ガチャ");
+				novel->setCharaL(0, "chara/tuguru1.png");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継", "よし、カギが開いたぞ！");
+				novel->setFontColor(0, Color3B::RED);
+				novel->setCharaR(0, "chara/remon1.png");
+				novel->addSentence(0, "檸檬", "ふぅ、これでここから出られるわ…ありがとね。");
+				novel->addEvent(0, CallFunc::create([this]() {mObjectList["remon"]->runAction(FadeOut::create(0.5f)); }));
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継", "どういたしまして。水無月さんはここに来る前はどうしてたの？");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "檸檬", "どうもこうも、学校を出ようとしたら後ろから誰かが何かを嗅がせてきて、それで意識を失って…って感じよ");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継", "なるほど、僕も同じような感じだよ…バンダナはひどい傷を負わされてしまったんだ。");
+				novel->setFontColor(0, Color3B::RED);
+				novel->addSentence(0, "檸檬", "あら、大丈夫なの？");
+				novel->setCharaC(0, "chara/bandana1.png");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "バンダナ", "ああ、さっき継に治してもらってすっかり動けるようになった。");
+				novel->addSentence(0, "バンダナ", "それより、とっとと出口を探そうぜ。あっちの地上に出るはしごは今使えなくなっちまってんだ。");
+				novel->addSentence(0, "継", "そうだね、他に道があるとすれば…ここの奥にある扉かな。");
+				novel->addSentence(0, "継", "まずは、あそこを開ける方法を探そう。");
+
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+			}
+		}));
+		addObject(door, "door", 2, true);
+
 
 		auto b2f = ObjectN::create();
 		b2f->setArea(Rect(100, 430, 320, 50));

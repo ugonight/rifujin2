@@ -54,8 +54,8 @@ void Record::load() {
 
 		//Šî€ŽžŠÔ‚Ì‰Šú‰»
 		UserDefault *userDef = UserDefault::getInstance();
-		userDef->setIntegerForKey("startTime", (int)time(NULL));
-		userDef->setIntegerForKey("totalTime", data["totalTime"].asInt());
+		userDef->setDoubleForKey("startTime", (double)time(NULL));
+		userDef->setDoubleForKey("totalTime", data["totalTime"].asDouble());
 		userDef->flush();
 	}
 

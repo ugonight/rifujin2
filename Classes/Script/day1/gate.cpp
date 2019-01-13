@@ -443,6 +443,8 @@ namespace day1 {
 			novel->addSentence(0, "継", "とりあえず宇沢さんに箱のことを伝えに行こう");
 			novel->addEvent(0, CallFunc::create([this] {
 				Control::me->getField("box")->getObject("flag")->setState(3);
+				Control::me->getField("classroom")->getObject("usawa")->setCursor(Cursor::NEW);
+
 				AudioEngine::stopAll();
 				playSoundBS("BGM/school.ogg", true);
 			}));

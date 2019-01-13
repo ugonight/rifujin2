@@ -91,8 +91,20 @@ bool Option::init() {
 
 
 	// ポイントヒント切り替え
-	auto str = userDef->getBoolForKey("pHint", true) ? "on" : "off";
-	label = Label::createWithTTF(StringUtils::format("ポイントヒント : %s", str), FONT_NAME, 30);
+	std::string str = "";
+	switch (userDef->getIntegerForKey("pHint", 1)) {
+	case 0:
+		str = "off";
+		break;
+	case 1:
+		str = "移動のみ";
+		break;
+	case 2:
+		str = "すべて";
+		break;
+	}
+
+	label = Label::createWithTTF(StringUtils::format("ポイントヒント : %s", str.c_str()), FONT_NAME, 30);
 	label->setPosition(Vec2(origin.x + display.width / 4, origin.y + display.height / 5 * 2));
 	label->setTextColor(Color4B::WHITE);
 	label->enableOutline(Color4B::BLACK, 2);
@@ -105,10 +117,25 @@ bool Option::init() {
 		if (targetBox.containsPoint(touchPoint))
 		{
 			auto userDef = UserDefault::getInstance();
-			userDef->setBoolForKey("pHint", !userDef->getBoolForKey("pHint", true));
+			int mode = userDef->getIntegerForKey("pHint", 1);
+			mode++;
+			mode %= 3;
+			userDef->setIntegerForKey("pHint", mode);
 			userDef->flush();
-			auto str = userDef->getBoolForKey("pHint", true) ? "on" : "off";
-			((Label*)target)->setString(StringUtils::format("ポイントヒント : %s", str));
+
+			std::string str;
+			switch (userDef->getIntegerForKey("pHint", 2)) {
+			case 0:
+				str = "off";
+				break;
+			case 1:
+				str = "移動のみ";
+				break;
+			case 2:
+				str = "すべて";
+				break;
+			}
+			((Label*)target)->setString(StringUtils::format("ポイントヒント : %s", str.c_str()));
 			return true;
 		}
 		return false;
@@ -118,7 +145,7 @@ bool Option::init() {
 
 	// スキップ切り替え
 	str = userDef->getBoolForKey("alreadySkip", true) ? "既読のみ" : "すべて";
-	label = Label::createWithTTF(StringUtils::format("スキップ : %s", str), FONT_NAME, 30);
+	label = Label::createWithTTF(StringUtils::format("スキップ : %s", str.c_str()), FONT_NAME, 30);
 	label->setPosition(Vec2(origin.x + display.width / 4 * 3, origin.y + display.height / 5 * 2));
 	label->setTextColor(Color4B::WHITE);
 	label->enableOutline(Color4B::BLACK, 2);
@@ -214,10 +241,18 @@ bool Option::init() {
 							userDef->deleteValueForKey(StringUtils::format("music%02d", i).c_str());
 							i++;
 						}
-						
 
-						// セーブデータ削除
+						// ログ削除
 						auto path = FileUtils::getInstance()->getWritablePath();
+						auto file = path + "speak.plist";
+						FileUtils::getInstance()->removeFile(file);
+						for (i = 0; i <= 4; i++) {
+							file = path + StringUtils::format("already%02d.plist", i);
+							FileUtils::getInstance()->removeFile(file);
+						}
+						
+						// セーブデータ削除
+						//auto path = FileUtils::getInstance()->getWritablePath();
 						cocos2d::log("%s", path.c_str());
 						cocos2d::log("%d", FileUtils::getInstance()->removeDirectory(path));
 						cocos2d::log("%d", FileUtils::getInstance()->createDirectory(path));

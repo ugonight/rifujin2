@@ -20,6 +20,8 @@ namespace day4 {
 		mFieldList["torture"] = Torture::create();
 		mFieldList["lab"] = Lab::create();
 		mFieldList["library"] = Library::create();
+		mFieldList["baking"] = Baking::create();
+		mFieldList["panel"] = Panel::create();
 
 		mFieldList["AboutItem"] = AboutItem::create();
 

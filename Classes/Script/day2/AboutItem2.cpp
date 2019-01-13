@@ -73,6 +73,7 @@ namespace day2 {
 					novel->addSentence(0, "継", "これで解毒薬の完成だ");
 					novel->addSentence(0, "継", "急いでバンダナの元へ向かおう");
 					mObjectList["syringe"]->setState(1);
+					Control::me->getField("prison")->getObject("bandana")->setCursor(Cursor::NEW);
 					novel->setEndTask(0);
 					addChild(novel, 10, "novel");
 				}

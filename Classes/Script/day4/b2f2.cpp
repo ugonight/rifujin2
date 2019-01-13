@@ -1,5 +1,6 @@
 ﻿#pragma  execution_character_set("utf-8")
 #include "Script\day4\fieldDef.h"
+#include "ghost.h"
 
 #include "audio/include/AudioEngine.h"
 using namespace cocos2d::experimental;
@@ -27,7 +28,32 @@ namespace day4 {
 		auto library = ObjectN::create();
 		library->setArea(Rect(90, 80, 110, 250));
 		library->setCursor(Cursor::ENTER);
-		library->setFieldChangeEvent("library");
+		// library->setFieldChangeEvent("library");
+		library->setTouchEvent(CallFunc::create([this]() {
+			if (ItemMgr::sharedItem()->getSelectedItem() == "key_broken") {
+				auto novel = Novel::create();
+				novel->setCharaL(0, "chara/tuguru1.png");
+				novel->setCharaR(0, "chara/bandana1.png");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継", "ヒルの体液はまだ残ってるかな…");
+				novel->addSentence(0, "バンダナ", "あのヌメヌメか？");
+				novel->addSentence(0, "継", "うん、もしかしたらノリの代わりになるかもしれないと思って。");
+				novel->addSentence(0, "バンダナ", "なるほどな");
+				novel->addSentence(0, "継", "ああ、まだ残ってたみたいだね。これをカギの切断面に塗って…");
+				novel->addEvent(0, CallFunc::create([this]() {
+					ItemMgr::sharedItem()->getItem("key", Vec2(mObjectList["library"]->getArea().getMidX(), mObjectList["library"]->getArea().getMidY()));
+					ItemMgr::sharedItem()->deleteItem("key_broken");
+				}));
+				novel->addSentence(0, "継", "ふー、ふー…これなら扉を開ける程度は、問題無く使えそうだね。");
+
+				novel->setEndTask(0);
+				addChild(novel, 10, "novel");
+			}
+			else {
+				Control::me->changeField("library");
+			}
+		}));
+		library->addCanUseItem("key_broken");
 		addObject(library, "library", 1, true);
 
 
@@ -54,6 +80,41 @@ namespace day4 {
 		ivy->setTexture("ivy.png");
 		ivy->setCursor(Cursor::INFO);
 		ivy->setMsg("石のツタが生い茂っている");
+		ivy->addCanUseItem("sulfate");
+		ivy->setTouchEvent(CallFunc::create([this]() {
+			if (ItemMgr::sharedItem()->getSelectedItem() == "sulfate" && mObjectList["ivy"]->getState() == 0) {
+				auto novel = Novel::create();
+				novel->setCharaL(0,"chara/tuguru1.png");
+				novel->setCharaR(0,"chara/bandana1.png");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継", "ここに硫酸をかけてみよう");
+				novel->addSentence(0, "バンダナ", "すると、どうなるんだ？");
+				novel->addSentence(0, "継", "上手くいけばこのツタを溶かすことができるかもしれない");
+				novel->addSentence(0, "バンダナ", "おお、早速やってみようぜ！");
+				novel->setFontColor(0, Color3B::BLACK);
+				novel->addSentence(0, "", "パシャ");
+				novel->addSentence(0, "", "……");
+				novel->addSentence(0, "", "…シューー…………");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "バンダナ", "すげえ！マジで石が溶けてきてるぜ！！");
+				novel->setFontColor(0, Color3B::BLACK);
+				novel->addSentence(0, "", "…シューー…………");
+				novel->addSentence(0, "", "……………");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継", "うーん、これが限界みたいだね…");
+				novel->addSentence(0, "バンダナ", "効果はいまいちってところか…");
+				novel->addEvent(0, CallFunc::create([this]() {
+					ItemMgr::sharedItem()->getItem("thorn",Vec2(mObjectList["ivy"]->getArea().getMidX(), mObjectList["ivy"]->getArea().getMidY()));
+					Control::me->showMsg("石のトゲを手に入れた");
+					ItemMgr::sharedItem()->deleteItem("sulfate");
+				}));
+				novel->addSentence(0, "継", "あ、トゲが一つ外れたみたいだ。何かに使えるかもしれないから持っていこう。");
+				novel->addSentence(0, "バンダナ", "おう、力仕事は俺に任せときな！");
+
+				novel->setEndTask(0);
+				addChild(novel, 10, "novel");
+			}
+		}));
 		addObject(ivy, "ivy", 1, true);
 
 
@@ -130,27 +191,48 @@ namespace day4 {
 			novel->setCharaR(0, "chara/tuguru1.png");
 			novel->addSentence(0, "継", "ここら辺にあるのは、ここに従事していた人達の業務日誌かな。");
 			novel->addSentence(0, "継", "手掛かりになりそうなものを読んでみよう");
-			novel->setFontColor(0, Color3B::BLACK);
-			//switch (cocos2d::random() % 3)
-			//{
-			//case 0:
-				novel->addSentence(0, "", "牢屋にいる囚人が、腹を空かせて牢屋に出没するトカゲを食べてしまっているところを見つけた。");
-				novel->addSentence(0, "", "研究結果に支障をきたす可能性がある。しっかり駆除しておかなければ。");
-			//	break;
-			//case 1:
-			//	novel->addSentence(0, "", "");
-			//	novel->addSentence(0, "", "");
-			//	break; 
-			//case 2:
-			//	break;
-			//default:
-			//	break;
-			//}
+			if (Control::me->getField("aisle")->getObject("remon")->getState() == 0) {
+				novel->addSentence(0, "継", "…沢山あってなかなか調べるのが大変だな…");
+			}
+			else {
+				switch (mObjectList["book3"]->getState())
+				{
+				case 0:
+					novel->addSentence(0, "継", "水無月さんからもらったメモの日誌のページを読んでみよう。");
+					novel->setFontColor(0, Color3B::BLACK);
+					novel->addSentence(0, "", "囚人の牢屋に餌を持ってきたところ、扉を開けた瞬間に襲い掛かってきて牢のカギを飲み込まれてしまった。");
+					novel->addSentence(0, "", "逃げられてしまうと思い、棍棒を振り下ろそうとしたが、既にカギを喉に詰まらせて死んでしまっていた。");
+					novel->addSentence(0, "", "記念に剥製室に飾っておこう。カギは複製してもらうか…");
+					mObjectList["book3"]->setState(1);
+					if (Control::me->getField("baking")->getObject("skeleton")->getState() == 0)
+						Control::me->getField("baking")->getObject("skeleton")->setState(1);
+					break;
+				case 1:
+					novel->addSentence(0, "継", "さっきの日誌の続きがあるみたいだ、読んでみよう。");
+					novel->setFontColor(0, Color3B::BLACK);
+					novel->addSentence(0, "", "剥製室のケースを開けるための方法をメモしておこう");
+					novel->addSentence(0, "", "ケースに付いているパネルにこんな図形を入力すればいいらしい");
+					novel->addSentence(0, "", "一筆書きで入れなきゃいけないらしいが…なんとかなるだろう");
+					if (!ItemMgr::sharedItem()->getGetItem("memo2")) {
+						novel->setFontColor(0, Color3B::BLUE);
+						novel->addSentence(0, "継", "ん？このページにメモが挟まってるみたいだ。");
+						novel->addEvent(0, CallFunc::create([this]() {ItemMgr::sharedItem()->getItem("memo2", Director::getInstance()->getVisibleSize() / 2); }));
+						novel->addSentence(0, "継", "なにかヒントになるかもしれない、持っていこう。");
+					}
+					mObjectList["book3"]->setCursor(Cursor::INFO);
+					mObjectList["book3"]->setState(0);
+					break;
+				default:
+					break;
+				}
+			}
 
 			novel->setEndTask(0);
 			addChild(novel, 10, "novel");
 		}));
 		addObject(book, "book3", 1, true);
+
+		addObject(createGhost(420, 250, "library"), "ghost", 1, false);
 	}
 
 	void Library::changedField() {

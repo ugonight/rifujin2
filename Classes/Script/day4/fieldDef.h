@@ -21,6 +21,15 @@ namespace day4
 	CREATE_FIELD(Torture)};
 	CREATE_FIELD(Lab)};
 	CREATE_FIELD(Library)};
+	CREATE_FIELD(Baking)};
+	CREATE_FIELD(Panel) 
+		private:
+		bool mAdjacency[4*5][4*5]; // 隣接行列
+		int pre[2];	// 前の点
+	    void touchNode(cocos2d::Touch* touch, cocos2d::Event* event);
+		void drawLine();
+	};
+
 
 	class Day : public Chapter
 	{

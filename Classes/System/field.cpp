@@ -156,10 +156,12 @@ void Field::FadeIn() {
 				obj.second->runObjectAction();
 			}
 		}
+
 	}), CallFunc::create(CC_CALLBACK_0(Field::changedField, this)), NULL));
-	
+
+
 	// ポイントヒントの表示
-	if (UserDefault::getInstance()->getBoolForKey("pHint",true))
+	if (UserDefault::getInstance()->getIntegerForKey("pHint", 1))
 		initPointHint();
 }
 
@@ -298,10 +300,12 @@ void Field::initPointHint() {
 			case Cursor::NOMAL:
 				return;
 			case Cursor::NEW:
-				ripple->setTexture("pointHint_r.png");
+				if (UserDefault::getInstance()->getIntegerForKey("pHint", 1) == 2)
+					ripple->setTexture("pointHint_r.png");
 				break;
 			case Cursor::INFO:
-				ripple->setTexture("pointHint_b.png");
+				if (UserDefault::getInstance()->getIntegerForKey("pHint", 1) == 2)
+					ripple->setTexture("pointHint_b.png");
 				break;
 			case Cursor::BACK:
 			case Cursor::RIGHT:

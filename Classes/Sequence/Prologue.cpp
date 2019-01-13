@@ -44,8 +44,8 @@ bool Prologue::init()
 
 	//基準時間の初期化
 	UserDefault *userDef = UserDefault::getInstance();
-	userDef->setIntegerForKey("startTime", (int)time(NULL));
-	userDef->setIntegerForKey("totalTime", 0);
+	userDef->setDoubleForKey("startTime", (double)time(NULL));
+	userDef->setDoubleForKey("totalTime", 0);
 	userDef->flush();
 
 	mFuncNum = 1;
