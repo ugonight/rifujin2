@@ -276,6 +276,9 @@ namespace day1 {
 			}), NULL));
 			this->addChild(label, 3, "label");
 
+			// チャプター終了フラグを立てる。
+			UserDefault::getInstance()->setBoolForKey("chap1end",true);
+
 			return 10;
 		});
 	}

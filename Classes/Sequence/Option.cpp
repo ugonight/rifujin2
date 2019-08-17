@@ -34,7 +34,7 @@ bool Option::init() {
 	//layer->setPosition(Vec2::ZERO);
 	//addChild(layer, 1, "layer");
 
-	
+
 	auto userDef = UserDefault::getInstance();
 
 
@@ -144,7 +144,7 @@ bool Option::init() {
 
 
 	// スキップ切り替え
-	str = userDef->getBoolForKey("alreadySkip", true) ? "既読のみ" : "すべて";
+	str = userDef->getBoolForKey("alreadySkip", false) ? "既読のみ" : "すべて";
 	label = Label::createWithTTF(StringUtils::format("スキップ : %s", str.c_str()), FONT_NAME, 30);
 	label->setPosition(Vec2(origin.x + display.width / 4 * 3, origin.y + display.height / 5 * 2));
 	label->setTextColor(Color4B::WHITE);
@@ -250,15 +250,18 @@ bool Option::init() {
 							file = path + StringUtils::format("already%02d.plist", i);
 							FileUtils::getInstance()->removeFile(file);
 						}
-						
+
 						// セーブデータ削除
 						//auto path = FileUtils::getInstance()->getWritablePath();
 						cocos2d::log("%s", path.c_str());
 						cocos2d::log("%d", FileUtils::getInstance()->removeDirectory(path));
 						cocos2d::log("%d", FileUtils::getInstance()->createDirectory(path));
 						userDef->setBoolForKey("first", false);
+						for (i = 1; i <= 4; i++) {
+							userDef->setBoolForKey(StringUtils::format("chap%dend", i).c_str(), false);
+						}
 						userDef->flush();
-						
+
 						yes->setString("はい");
 						no->setString("");
 						msg->setString("データを初期化しました。\nアプリを再起動してください。");
@@ -341,12 +344,13 @@ bool Option::slideBegan(Touch* touch, Event* event) {
 }
 void Option::slideMove(Touch* touch, Event* event) {
 	event->getCurrentTarget()->setPositionX(touch->getLocation().x);
-	
+
 	auto line = getChildByName("line_BGM");
 
 	if (event->getCurrentTarget()->getPositionX() < line->getBoundingBox().getMinX()) {
 		event->getCurrentTarget()->setPositionX(line->getBoundingBox().getMinX());
-	}else if (event->getCurrentTarget()->getPositionX() > line->getBoundingBox().getMaxX()) {
+	}
+	else if (event->getCurrentTarget()->getPositionX() > line->getBoundingBox().getMaxX()) {
 		event->getCurrentTarget()->setPositionX(line->getBoundingBox().getMaxX());
 	}
 
@@ -358,7 +362,7 @@ void Option::slideMove(Touch* touch, Event* event) {
 
 void Option::slideEnd(Touch* touch, Event* event) {
 	auto userDef = UserDefault::getInstance();
-	auto name =	event->getCurrentTarget()->getName();
+	auto name = event->getCurrentTarget()->getName();
 	auto line = getChildByName("line_BGM");
 	auto volume = (event->getCurrentTarget()->getPositionX() - line->getBoundingBox().getMinX()) / line->getContentSize().width;
 

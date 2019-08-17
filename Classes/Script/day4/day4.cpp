@@ -121,6 +121,9 @@ namespace day4 {
 			auto control = (day4::Esc*)day4::Esc::createControl();
 			addChild(control, 1, "control");
 
+			// チャプター終了フラグを立てる。（後で別のところに書いて）
+			UserDefault::getInstance()->setBoolForKey("chap4end", true);
+
 			return 1;
 		});
 

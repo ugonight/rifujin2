@@ -6,16 +6,17 @@
 class Title : public cocos2d::Layer
 {
 public:
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
-    virtual bool init();
-    
-    // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
-    
-    // implement the "static create()" method manually
-    CREATE_FUNC(Title);
+	virtual bool init();
 
+	// a selector callback
+	void menuCloseCallback(cocos2d::Ref* pSender);
+
+	// implement the "static create()" method manually
+	CREATE_FUNC(Title);
+private:
+	void showTitleImage(std::string imageName, float dTime, int order, float fadeTime = 1.0f);
 };
 
 #endif // __HELLOWORLD_SCENE_H__
