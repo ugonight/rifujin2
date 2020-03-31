@@ -1,0 +1,17 @@
+■チャプター追加
+・フォルダー作成（コピー）
+・cppファイル名変更（AboutItem,day,fieldList,itemList,hint）
+・Android.mdにパスを追加
+・namaspace,include変更
+・load.cppに追記
+
+■画像追加
+・PNG圧縮
+・スチルはextra.cppに追記→初表示の場所でsetGetStill()
+
+■BGM追加
+・Title.cppでpreload
+・extra.cppに追記
+
+■Error:(81) Android NDK: Application targets deprecated ABI(s): armeabi    
+・Application.mkにAPP_ABI := all

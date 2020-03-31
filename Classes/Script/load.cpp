@@ -10,7 +10,7 @@
 #pragma execution_character_set("utf-8")
 
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 USING_NS_CC;
 
 void Record::load() {

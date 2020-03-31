@@ -6,7 +6,7 @@
 #include "Script\day4\fieldDef.h"
 
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 USING_NS_CC;
 
 

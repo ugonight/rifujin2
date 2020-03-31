@@ -2,7 +2,7 @@
 #include "Script\day1\fieldDef.h"
 
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// // using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
@@ -189,8 +189,8 @@ namespace day1 {
 		m_emitter->setEndSizeVar(0);
 		//m_emitter->setEmissionRate(100);
 		BlendFunc func;
-		func.src = GL_SRC_ALPHA;
-		func.dst = GL_ONE;
+		func.src = backend::BlendFactor::SRC_ALPHA;
+		func.dst = backend::BlendFactor::ONE; 
 		m_emitter->setBlendFunc(func);
 		if (move) {
 			m_emitter->runAction(RepeatForever::create(Sequence::create(

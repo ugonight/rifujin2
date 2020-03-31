@@ -5,7 +5,7 @@
 #include "System/novel.h"
 
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 USING_NS_CC;
 
 Extra::Extra() :ratio(1.0 / 4.0) {

@@ -4,7 +4,7 @@
 #pragma execution_character_set("utf-8")
 
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 USING_NS_CC;
 
 Record::Record() : mPage(0), mSelectNum(0),mMode(0)

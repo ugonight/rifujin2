@@ -10,7 +10,7 @@
 
 #include <time.h>
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 USING_NS_CC;
 
 static Chapter* instanceOfChapter;
@@ -58,10 +58,11 @@ bool Chapter::init()
 	this->addChild(menu, 5, "save");
 	//setVisibleWithTouch(menu, mFuncType == 0);
 
-
+#if USE_ALREADY
 	// ノベル連番初期化
 	auto novel = Novel::create();
 	novel->initSerialNum();
+#endif
 
 	return true;
 }
@@ -135,9 +136,9 @@ void Chapter::save(cocos2d::Ref* pSender) {
 		UserDefault *userDef = UserDefault::getInstance();
 		//struct tm* date = localtime(&t);
 		//char str2[256];
-		//sprintf_s(str2, 256, "%d/%02d/%02d %02d:%02d", date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, date->tm_hour, date->tm_min);
-		data["startTime"] = t;
+		//sprintf_s(str2, 256, "%d/%02d/%02d %02d:%02d", date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, date->tm_hour, date->tm_min);		
 		data["totalTime"] = userDef->getDoubleForKey("totalTime") + (t - userDef->getDoubleForKey("startTime"));
+		data["startTime"] = t;
 
 		if (mFuncType == 1) {	//探索モード
 			auto control = (Control*)getChildByName("control");

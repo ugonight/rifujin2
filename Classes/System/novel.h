@@ -4,6 +4,11 @@
 
 #define MAX_BRANCH 20
 
+// 無理っぽいので既読スキップ封印
+#define USE_ALREADY false
+// SetStringでメモリリークしてるんじゃね疑惑
+#define USE_SETSTRING false
+
 class Novel : public cocos2d::Layer {
 
 private:
@@ -38,6 +43,8 @@ private:
 		//イベント実行
 		void update(Novel* parent);
 		~FTask();
+		// 早送りを止めるか
+		bool stopFast;
 	};
 
 	struct STask : public Task {
@@ -73,9 +80,12 @@ private:
 	int mTaskNum[MAX_BRANCH];
 	cocos2d::ValueVector mLog;
 	int mLogScrollX, mLogScrollY;
+	cocos2d::CallFunc* mEndFunc; // ノベル終了後イベント
+#if USE_ALREADY
 	static int mSerialNum[MAX_BRANCH];	// チャプターごとの全体で連番になってる文番号
 	int mDefSerialNum[MAX_BRANCH];	// Novel生成時の連番
 	cocos2d::ValueMap mAlreadyMap;
+#endif
 
 	void func();
 	bool touchEvent(cocos2d::Touch* touch, cocos2d::Event* event);
@@ -86,11 +96,17 @@ private:
 	void end();
 	bool endCheck();
 	void setDelayAnime();
+	void stopDelayAnime();
 	void pauseDelayAnime();
 	void resumeDelayAnime();
+#if !USE_SETSTRING
+	void initLabel(std::string text = "", std::string name = "");
+#endif
 
+#if USE_ALREADY
 	void writeAlready();
 	void readAlready();
+#endif
 
 public:
 	virtual ~Novel();
@@ -98,14 +114,14 @@ public:
 	virtual bool init();
 	virtual void update(float delta);
 
-	
+
 	//終了フラグ
 	bool getEndFlag();
 
 	//文追加 (mNovelSetNumを返す)
 	int addSentence(int branch, std::string name, std::string s);
 	//背景設定
-	void setBg(int branch,std::string s);
+	void setBg(int branch, std::string s);
 	//キャラクター・センター
 	void setCharaC(int branch, std::string s);
 	//キャラクター・レフト
@@ -115,12 +131,13 @@ public:
 
 	//タスクの終わり
 	void setEndTask(int branch);
+	void setEndTask(int branch, cocos2d::CallFunc* endfunc);
 
 	//文字色変更
 	void setFontColor(int branch, cocos2d::Color3B c);
 
 	//イベントタスク追加
-	void addEvent(int branch, cocos2d::CallFunc* func);
+	void addEvent(int branch, cocos2d::CallFunc* func, bool stopFast = false);
 
 	//ポーズイベントタスク追加（画像を動かしたりするときはNovelのものは使わない）
 	void addPauseEvent(int branch, cocos2d::FiniteTimeAction* func);
@@ -134,8 +151,10 @@ public:
 	//ログだけ表示するモード
 	void setLogOnly();
 
+#if USE_ALREADY
 	// 連番を初期化（チャプター開始時）
 	void initSerialNum();
+#endif
 
 	CREATE_FUNC(Novel);
 };

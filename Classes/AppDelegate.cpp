@@ -11,7 +11,7 @@
 
 #if USE_AUDIO_ENGINE
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 #elif USE_SIMPLE_AUDIO_ENGINE
 #include "audio/include/SimpleAudioEngine.h"
 using namespace CocosDenshion;
@@ -36,7 +36,7 @@ AppDelegate::AppDelegate()
 AppDelegate::~AppDelegate() 
 {
 #if USE_AUDIO_ENGINE
-    //AudioEngine::end();
+    AudioEngine::end();
 #elif USE_SIMPLE_AUDIO_ENGINE
     SimpleAudioEngine::end();
 #endif

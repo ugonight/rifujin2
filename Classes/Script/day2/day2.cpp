@@ -6,7 +6,7 @@
 #include "Script\day3\fieldDef.h"
 
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// // using namespace cocos2d::experimental;
 USING_NS_CC;
 
 
@@ -47,6 +47,14 @@ namespace day2 {
 				removeChildByName("bg");
 			}), NULL));
 			addChild(bg, 0, "bg");
+
+			// 日記のフラグを折る
+			auto userDef = UserDefault::getInstance();
+			userDef->setBoolForKey("diary1", false);
+			userDef->setBoolForKey("diary2", false);
+			userDef->setBoolForKey("diary3", false);
+			userDef->setBoolForKey("diary4", false);
+			userDef->flush();
 
 			return 10;
 		});
@@ -271,7 +279,7 @@ namespace day2 {
 				light->setOpacity(0.0f);
 				light->setPosition(Director::getInstance()->getVisibleSize() / 2);
 				light->runAction(FadeIn::create(1.0f));
-				light->setBlendFunc(BlendFunc { GL_SRC_ALPHA , GL_ONE });
+				light->setBlendFunc(BlendFunc { backend::BlendFactor::SRC_ALPHA , backend::BlendFactor::ONE });
 				addChild(light, 5, "light");
 				AudioEngine::stopAll();
 			}));

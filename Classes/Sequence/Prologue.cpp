@@ -7,7 +7,7 @@
 
 #include <time.h>
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 USING_NS_CC;
 
 Scene* Prologue::createScene()
@@ -73,7 +73,9 @@ bool Prologue::init()
 
 		auto novel = Novel::create();
 
+#if USE_ALREADY
 		novel->initSerialNum();	// 連番の初期化
+#endif
 
 		novel->setFontColor(0, Color3B::BLACK);
 		novel->setBg(0, "bg/town.png");

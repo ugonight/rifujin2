@@ -322,7 +322,7 @@ void Field::initPointHint() {
 			}
 			ripple->setPosition(obj.second->getArea().getMidX(), Director::getInstance()->getVisibleSize().height - obj.second->getArea().getMidY());
 			ripple->setOpacity(0.0f);
-			ripple->setBlendFunc(BlendFunc{ GL_SRC_ALPHA, GL_ONE });
+			ripple->setBlendFunc(BlendFunc{ backend::BlendFactor::SRC_ALPHA, backend::BlendFactor::ONE });
 			layer->addChild(ripple, 1, obj.first);
 			// アニメーション
 			ripple->runAction(Sequence::create(

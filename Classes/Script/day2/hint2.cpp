@@ -69,7 +69,7 @@ namespace day2 {
 		else if (getObjState("torture","serum") == 0) {
 			novel->setFontColor(0, Color3B::BLUE);
 			novel->setCharaL(0, "chara/tuguru1.png");
-			novel->addSentence(0, "継", "血清なんてどこにあるんだろう…");
+			novel->addSentence(0, "継", "血液なんてどこにあるんだろう…");
 			novel->addSentence(0, "継", "そういえば拷問室の天井から何かが滴り落ちていたような…");
 		}
 		else if (getObjState("AboutItem","syringe_r") == 0) {

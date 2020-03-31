@@ -7,7 +7,7 @@
 #include "define.h"
 
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 USING_NS_CC;
 
 Scene* Title::createScene()
@@ -177,13 +177,13 @@ void Title::showTitleImage(std::string imageName, float dTime, int order, float 
 	sprite->setOpacity(0.0f);
 	sprite->runAction(Sequence::createWithTwoActions(DelayTime::create(dTime), FadeIn::create(fadeTime)));
 
-	auto blend = BlendFunc{ GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA };
+	auto blend = BlendFunc{ backend::BlendFactor::SRC_ALPHA, backend::BlendFactor::ONE_MINUS_SRC_ALPHA };
 	if (imageName.find("add") != std::string::npos) {
-		blend = BlendFunc{ GL_SRC_ALPHA, GL_ONE };
+		blend = BlendFunc{ backend::BlendFactor::SRC_ALPHA, backend::BlendFactor::ONE };
 	}
 	else if (imageName.find("mul") != std::string::npos)
 	{
-		blend = BlendFunc{ GL_ZERO, GL_SRC_COLOR };
+		blend = BlendFunc{ backend::BlendFactor::ZERO, backend::BlendFactor::SRC_COLOR };
 
 	}
 	sprite->setBlendFunc(blend);

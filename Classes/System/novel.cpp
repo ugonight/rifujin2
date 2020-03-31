@@ -6,11 +6,13 @@
 
 #include "ui/CocosGUI.h"
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
+#if USE_ALREADY
 int Novel::mSerialNum[] = { 0 };
+#endif
 
 Novel::~Novel() {
 	for (int i = 0; i < MAX_BRANCH; i++) {
@@ -41,6 +43,7 @@ bool Novel::init() {
 	for (int i = 0; i < 4; i++) mImageNum[i] = 0;
 	mSwitch = false;
 	mLogOnly = false;
+	mEndFunc = 0;
 
 	for (int i = 0; i < MAX_BRANCH; i++) {
 		mNovelNum[i] = 0;
@@ -48,7 +51,9 @@ bool Novel::init() {
 		mSentense[i].push_back("");
 		mName[i].push_back("");
 		mTaskNum[i] = 0;
+#if USE_ALREADY
 		mDefSerialNum[i] = mSerialNum[i];
+#endif
 	}
 
 
@@ -83,6 +88,7 @@ bool Novel::init() {
 	msg->runAction(seq);
 	this->addChild(msg, 2, "msgBox");
 
+#if USE_SETSTRING
 	//文字
 	auto label = Label::createWithTTF("", FONT_NAME, 24);
 	label->setPosition(Vec2(origin.x + 50,
@@ -100,11 +106,14 @@ bool Novel::init() {
 	label->setColor(Color3B::WHITE);
 	label->enableOutline(Color4B::BLACK, 1);
 	this->addChild(label, 3, "name");
+#else
+	initLabel();
+#endif
 
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
 	listener->onTouchBegan = CC_CALLBACK_2(Novel::touchEvent, this);
-	listener->onTouchEnded = [this](Touch *touch, Event *event) { mTouchTime = 0; };
+	listener->onTouchEnded = [this](Touch* touch, Event* event) { mTouchTime = 0; };
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 	//バックログ
@@ -141,11 +150,45 @@ bool Novel::init() {
 	listener->onTouchEnded = [this](Touch* touch, Event* event) { mFast = false; };
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, fast);
 
-
+#if USE_ALREADY
 	readAlready();
+#endif
 
 	return true;
 }
+
+#if !USE_SETSTRING
+void Novel::initLabel(std::string text, std::string name) {
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	auto color = Color4B::BLACK;
+
+	if (getChildByName("label")) {
+		color = ((Label*)getChildByName("label"))->getTextColor();
+		removeChildByName("label"); 
+	}
+	if (getChildByName("name")) removeChildByName("name");
+
+	//文字
+	auto label = Label::createWithTTF(text, FONT_NAME, 24);
+	label->setPosition(Vec2(origin.x + 50,
+		origin.y + visibleSize.height - 340));
+	label->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
+	label->setTextColor(color);
+	label->enableOutline(Color4B::WHITE, 2);
+	label->setDimensions(750, 130);
+	this->addChild(label, 3, "label");
+	//名前
+	label = Label::createWithTTF(name, FONT_NAME, 20);
+	label->setPosition(Vec2(origin.x + 130,
+		origin.y + visibleSize.height - 320));
+	label->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	label->setColor(Color3B::WHITE);
+	label->enableOutline(color, 1);
+	this->addChild(label, 3, "name");
+}
+#endif
+
 
 void Novel::func() {
 	mNovelNum[0] = 1;
@@ -196,16 +239,24 @@ void Novel::readTalk() {
 			if (mName[mBranch][mNovelNum[mBranch]] != "")log += mName[mBranch][mNovelNum[mBranch]] + " : ";
 			log += mSentense[mBranch][mNovelNum[mBranch]];
 			mLog.push_back(Value(log));
-			
+
+#if USE_ALREADY
 			// 既読にする
 			mAlreadyMap[StringUtils::format("%d-%d", mBranch, mDefSerialNum[mBranch] + mNovelNum[mBranch])] = true;
+#endif
 		}
 
 		if (mSentense[mBranch].size() - 1 > mNovelNum[mBranch]) {	//文リストの最後でなければ
-																	//次の分をセット
+			stopDelayAnime();
+			//次の文をセット
 			mNovelNum[mBranch]++;
+#if USE_SETSTRING
 			label->setString(mSentense[mBranch][mNovelNum[mBranch]]);
 			name->setString(mName[mBranch][mNovelNum[mBranch]]);
+#else
+			initLabel(mSentense[mBranch][mNovelNum[mBranch]], mName[mBranch][mNovelNum[mBranch]]);
+#endif
+
 			setDelayAnime();
 		}
 		else if (mSentense[mBranch].size() - 1 == mNovelNum[mBranch] && this->getOpacity() == 255) {	//文リストの最後なら
@@ -224,8 +275,10 @@ void Novel::readTalk() {
 			auto file = path + "speak.plist";
 			FileUtils::getInstance()->writeValueVectorToFile(mLog, file);
 
+#if USE_ALREADY
 			// 既読情報を保存
 			writeAlready();
+#endif
 		}
 	}
 	else {
@@ -243,6 +296,11 @@ void Novel::readTalk() {
 
 void Novel::end() {
 	mEndFlag = 1;
+
+	if (mEndFunc) {
+		mEndFunc->execute();
+		CC_SAFE_RELEASE_NULL(mEndFunc);
+	}
 }
 
 void Novel::update(float delta) {
@@ -255,17 +313,21 @@ void Novel::update(float delta) {
 		mHideMsg = true;
 	}
 
-	
+#if USE_ALREADY
 	auto key = StringUtils::format("%d-%d", mBranch, mDefSerialNum[mBranch] + mNovelNum[mBranch]);
 	auto alreadySkip = UserDefault::getInstance()->getBoolForKey("alreadySkip", true);
+#endif
 
 	if (mFast) {
 		if (/*touch->getLocation().y < visibleSize.height / 2 && */
 			!mHideMsg &&
 			!mSwitch &&
 			mSentense[mBranch].size() - 1 > mNovelNum[mBranch] &&
-			mNovelNum[mBranch] > 0 && /* フェードイン前に押されるのを防ぐ */
-			(!alreadySkip || (mAlreadyMap.count(key) && mAlreadyMap[key].asBool()))	// 既読確認
+			mNovelNum[mBranch] > 0  /* フェードイン前に押されるのを防ぐ */
+#if USE_ALREADY
+			&&
+			(!alreadySkip || (mAlreadyMap.count(key) && mAlreadyMap[key].asBool()))// 既読確認
+#endif
 			) {
 			readTalk();
 		}
@@ -282,7 +344,10 @@ int Novel::addSentence(int branch, std::string name, std::string s) {
 	mSentense[branch].push_back(s);
 	mName[branch].push_back(name);
 	mNovelSetNum[branch]++;
+
+#if USE_ALREADY
 	mSerialNum[branch]++;
+#endif
 	return mNovelSetNum[branch] - 1;
 }
 
@@ -293,7 +358,7 @@ void Novel::ITask::update(Novel* parent) {
 	int num = parent->mTaskNum[parent->mBranch];
 	std::stringstream name;
 	name.clear(); name.str("");
-	auto *tsk = (ITask*)parent->mTask[parent->mBranch][num].get();
+	auto* tsk = (ITask*)parent->mTask[parent->mBranch][num].get();
 
 	if (tsk->imgPos == IMG_BG) {
 		name << "bg" << parent->mImageNum[0];
@@ -450,6 +515,14 @@ void Novel::setEndTask(int branch) {
 	}
 }
 
+void Novel::setEndTask(int branch, cocos2d::CallFunc* endfunc) {
+	setEndTask(branch);
+
+	CC_SAFE_RELEASE(mEndFunc);
+	mEndFunc = endfunc;
+	mEndFunc->retain();
+}
+
 void Novel::CTask::update(Novel* parent) {
 	auto label = (Label*)parent->getChildByName("label");
 	auto name = (Label*)parent->getChildByName("name");
@@ -460,6 +533,9 @@ void Novel::CTask::update(Novel* parent) {
 
 void Novel::FTask::update(Novel* parent) {
 	parent->runAction(((FTask*)parent->mTask[parent->mBranch][parent->mTaskNum[parent->mBranch]].get())->func);
+	if (stopFast) {
+		parent->mFast = false;
+	}
 }
 Novel::FTask::~FTask() {
 	CC_SAFE_RELEASE_NULL(func);
@@ -471,26 +547,26 @@ void Novel::PTask::update(Novel* parent) {
 	parent->mHideMsg = true;
 	parent->pauseDelayAnime();
 
-	parent->runAction(Sequence::create(FadeOut::create(0.5f), 
+	parent->runAction(Sequence::create(FadeOut::create(0.5f),
 		CallFunc::create([this, parent]() {
 
-		auto fake = Layer::create();
-		auto listener = EventListenerTouchOneByOne::create();
-		listener->onTouchBegan = [this](Touch* touch, Event* event) {
-			return true;
-		};
-		listener->setSwallowTouches(true);
-		parent->getParent()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, fake);
+			auto fake = Layer::create();
+			auto listener = EventListenerTouchOneByOne::create();
+			listener->onTouchBegan = [this](Touch* touch, Event* event) {
+				return true;
+			};
+			listener->setSwallowTouches(true);
+			parent->getParent()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, fake);
 
-		parent->getParent()->addChild(fake, parent->getLocalZOrder() + 1, "fakeLayer");
-	}),
-		func, 
-		CallFunc::create([this, parent]() {
-		parent->mHideMsg = false;
-		parent->resumeDelayAnime();
-		parent->getParent()->removeChildByName("fakeLayer");
-	}),
-		FadeIn::create(0.5), NULL));;
+			parent->getParent()->addChild(fake, parent->getLocalZOrder() + 1, "fakeLayer");
+			}),
+		func,
+				CallFunc::create([this, parent]() {
+				parent->mHideMsg = false;
+				parent->resumeDelayAnime();
+				parent->getParent()->removeChildByName("fakeLayer");
+					}),
+				FadeIn::create(0.5), NULL));;
 }
 Novel::PTask::~PTask() {
 	CC_SAFE_RELEASE_NULL(func);
@@ -504,6 +580,9 @@ void Novel::STask::update(Novel* parent) {
 
 	auto tsk = (STask*)parent->mTask[parent->mBranch][parent->mTaskNum[parent->mBranch]].get();
 	if (tsk->branchStr[0] == "") {	//ルート変更のみ
+		if (parent->mCurrentSTask) {
+			delete parent->mCurrentSTask; parent->mCurrentSTask = 0;
+		}
 		parent->mCurrentSTask = new STask();
 		parent->mCurrentSTask->num = tsk->num;
 		parent->mCurrentSTask->branchTo[0] = tsk->branchTo[0];
@@ -524,8 +603,13 @@ void Novel::STask::update(Novel* parent) {
 			auto label = (Label*)parent->getChildByName("label");
 			auto name = (Label*)parent->getChildByName("name");
 			parent->mNovelNum[parent->mBranch]++;
+			parent->stopDelayAnime();
+#if USE_SETSTRING
 			label->setString(parent->mSentense[parent->mBranch][parent->mNovelNum[parent->mBranch]]);
 			name->setString(parent->mName[parent->mBranch][parent->mNovelNum[parent->mBranch]]);
+#else
+			parent->initLabel(parent->mSentense[parent->mBranch][parent->mNovelNum[parent->mBranch]], parent->mName[parent->mBranch][parent->mNovelNum[parent->mBranch]]);
+#endif
 			parent->setDelayAnime();
 			parent->removeChildByName("fakeLayer");
 			parent->mSwitch = false;
@@ -536,24 +620,29 @@ void Novel::STask::update(Novel* parent) {
 		int bNum; //選択肢の数
 		for (bNum = 0; tsk->branchTo[bNum] != -1; bNum++);
 
-		std::stringstream name;
+		// std::stringstream name;
 		for (int i = 0; i < bNum; i++) {
 			auto box = Sprite::create("ele_mini1.png");
 			box->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - (300 / (bNum + 1) * (i + 1)));
 			box->setOpacity(0.00f);
 			box->runAction(FadeIn::create(0.5));
-			name.clear(); name.str("");
-			name << "branch" << i;
-			parent->addChild(box, 3, name.str());
+			// name.clear(); name.str("");
+			// name << "branch" << i;
+			// parent->addChild(box, 3, name.str());
+			parent->addChild(box, 3, StringUtils::format("branch%d",i));
 			auto text = Label::createWithTTF(tsk->branchStr[i], FONT_NAME, 24);
 			text->setPosition(box->getPosition());
 			text->setTextColor(Color4B::BLACK);
 			text->enableOutline(Color4B::WHITE, 2);
 			text->setOpacity(0.00f);
 			text->runAction(FadeIn::create(0.5));
-			name.clear(); name.str("");
-			name << "text" << i;
-			parent->addChild(text, 4, name.str());
+			//name.clear(); name.str("");
+			//name << "text" << i;
+			//parent->addChild(text, 4, name.str());
+			parent->addChild(text, 4, StringUtils::format("text%d", i));
+			if (parent->mCurrentSTask) {
+				delete parent->mCurrentSTask; parent->mCurrentSTask = 0;
+			}
 			parent->mCurrentSTask = new STask();
 			parent->mCurrentSTask->num = tsk->num;
 			for (int i_ = 0; i_ < bNum; i_++) {
@@ -576,11 +665,17 @@ void Novel::STask::update(Novel* parent) {
 						parent->getChildByName(name.str())->runAction(Sequence::createWithTwoActions(FadeOut::create(0.3f), RemoveSelf::create()));
 						name.clear(); name.str("");
 					}
+
 					auto label = (Label*)parent->getChildByName("label");
 					auto nlabel = (Label*)parent->getChildByName("name");
 					parent->mNovelNum[parent->mBranch]++;
+					parent->stopDelayAnime();
+#if USE_SETSTRING
 					label->setString(parent->mSentense[parent->mBranch][parent->mNovelNum[parent->mBranch]]);
 					nlabel->setString(parent->mName[parent->mBranch][parent->mNovelNum[parent->mBranch]]);
+#else
+					parent->initLabel(parent->mSentense[parent->mBranch][parent->mNovelNum[parent->mBranch]], parent->mName[parent->mBranch][parent->mNovelNum[parent->mBranch]]);
+#endif
 					parent->setDelayAnime();
 					playSoundBS("SE/choice.ogg");
 
@@ -618,17 +713,18 @@ void Novel::JTask::update(Novel* parent) {
 }
 
 void Novel::setFontColor(int branch, cocos2d::Color3B c) {
-	auto tsk = new CTask(); 
+	auto tsk = new CTask();
 	tsk->num = mNovelSetNum[branch];
 	tsk->color = c;
 	mTask[branch].push_back((std::shared_ptr<Task>)tsk);
 }
 
-void Novel::addEvent(int branch, cocos2d::CallFunc* func) {
+void Novel::addEvent(int branch, cocos2d::CallFunc* func, bool stopFast) {
 	func->retain();
 	auto tsk = new FTask();
 	tsk->num = mNovelSetNum[branch];
 	tsk->func = func;
+	tsk->stopFast = stopFast;
 	mTask[branch].push_back((std::shared_ptr<Task>)tsk);
 }
 
@@ -687,13 +783,24 @@ void Novel::setDelayAnime() {
 			AChar->setOpacity(0.0f);
 			AChar->runAction(
 				Sequence::create(
-					DelayTime::create(0.05f*i),
+					DelayTime::create(0.05f * i),
 					FadeIn::create(0.05f),
 					CallFunc::create([this]() {	if (mCharNum % 4 == 0) playSoundBS("SE/po.ogg"); }),	//全角の最初で鳴らす
 					NULL
 				));
 		}
 	}
+}
+
+void Novel::stopDelayAnime() {
+	auto label1 = (Label*)getChildByName("label");
+	for (int i = 0; i < label1->getStringLength() + label1->getStringNumLines(); i++) {
+		auto AChar = label1->getLetter(i);
+		if (nullptr != AChar) {
+			AChar->stopAllActions();
+		}
+	}
+	// label1->setString("");
 }
 
 void Novel::pauseDelayAnime() {
@@ -812,6 +919,7 @@ void Novel::setLogOnly() {
 
 	mLogOnly = true;
 }
+#if USE_ALREADY
 
 void Novel::writeAlready() {
 	auto path = FileUtils::getInstance()->getWritablePath();
@@ -824,9 +932,11 @@ void Novel::readAlready() {
 	auto path = FileUtils::getInstance()->getWritablePath();
 	int chap = (Chapter::sharedChapter()) ? Chapter::sharedChapter()->getChapterNum() : 0;	//プロローグは0
 
-	mAlreadyMap = FileUtils::getInstance()->getValueMapFromFile(path + StringUtils::format("already%02d.plist",chap));
+	mAlreadyMap = FileUtils::getInstance()->getValueMapFromFile(path + StringUtils::format("already%02d.plist", chap));
 }
 
 void Novel::initSerialNum() {
 	for (int i = 0; i < MAX_BRANCH; i++) mSerialNum[i] = 0;
 }
+
+#endif

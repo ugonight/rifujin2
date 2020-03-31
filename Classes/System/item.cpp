@@ -7,7 +7,7 @@
 #include "define.h"
 
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 USING_NS_CC;
 
 static Item* instanceOfItem;
@@ -170,8 +170,8 @@ void Item::getItem(std::string s, Point p) {
 	m_emitter->setSpeedVar(100.0f);
 	m_emitter->setAutoRemoveOnFinish(true);
 	BlendFunc func;
-	func.src = GL_SRC_ALPHA;
-	func.dst = GL_ONE;
+	func.src = backend::BlendFactor::SRC_ALPHA;
+	func.dst = backend::BlendFactor::ONE;
 	m_emitter->setBlendFunc(func);
 	addChild(m_emitter, 10);
 

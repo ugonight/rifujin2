@@ -29,6 +29,8 @@ namespace day4
 	    void touchNode(cocos2d::Touch* touch, cocos2d::Event* event);
 		void drawLine();
 	};
+	CREATE_FIELD(RRoom)};
+	CREATE_FIELD(RArt)};
 
 
 	class Day : public Chapter

@@ -5,7 +5,7 @@
 #include "Script\day4\fieldDef.h"
 
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 USING_NS_CC;
 
 
@@ -44,6 +44,12 @@ namespace day4 {
 				removeChildByName("bg");
 			}), NULL));
 			addChild(bg, 0, "bg");
+
+			// 日記のフラグを折る
+			auto userDef = UserDefault::getInstance();
+			userDef->setBoolForKey("diary5", false);
+			userDef->setBoolForKey("diary6", false);
+			userDef->flush();
 
 			return 10;
 		});

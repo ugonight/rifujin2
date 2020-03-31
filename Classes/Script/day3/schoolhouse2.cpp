@@ -2,7 +2,7 @@
 #include "Script\day3\fieldDef.h"
 
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
@@ -258,7 +258,7 @@ namespace day3 {
 								return true;
 							};
 							this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, layer);
-							addChild(layer,11,"layer_c");
+							addChild(layer, 11, "layer_c");
 							auto spr = Sprite::create("chara/memory2.png");
 							spr->setPosition(visibleSize / 2);
 							layer->addChild(spr, 0, "spr");
@@ -267,7 +267,7 @@ namespace day3 {
 							label->setColor(Color3B::WHITE);
 							label->enableOutline(Color4B::BLACK, 2);
 							layer->addChild(label, 3, "label");
-						}));
+							}), true);
 						novel->addSentence(0, "宇沢", "これでしょうか…？");
 						novel->addSentence(0, "寿甘", "そうよ！犯人はこいつに違いないわ！");
 						novel->addSentence(0, "宇沢", "この翼はもしかして…リアスさん！？");

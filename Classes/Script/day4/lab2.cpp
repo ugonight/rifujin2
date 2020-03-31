@@ -4,7 +4,7 @@
 #include "ghost.h"
 
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
@@ -61,17 +61,58 @@ namespace day4 {
 		//ghost->setArea(rect);
 		//ghost->setCursor(Cursor::INFO);
 		//ghost->setOpacity(0.0f);
-		//ghost->setBlendFunc(BlendFunc{ GL_SRC_ALPHA ,GL_ONE });
+		//ghost->setBlendFunc(BlendFunc{ backend::BlendFactor::SRC_ALPHA ,backend::BlendFactor::ONE });
 		//ghost->setAction(RepeatForever::create(Spawn::createWithTwoActions(
 		//	Sequence::createWithTwoActions(EaseSineOut::create(FadeIn::create(3.0f)), EaseSineIn::create(FadeOut::create(3.0f)))
 		//	, Sequence::createWithTwoActions(EaseSineOut::create(MoveBy::create(3.0f, Vec2(0.0f, 30.0f))), EaseSineIn::create(MoveBy::create(3.0f, Vec2(0.0f, -30.0f))))
 		//))
 		//);
 		addObject(createGhost(420, 180, "aisle2"), "ghost", 1, UserDefault::getInstance()->getBoolForKey("sendEvd"));
+
+		auto flag = ObjectN::create();
+		addObject(flag, "flag", 0, false);
 	}
 
 	void Aisle2::changedField() {
+		if (Control::me->getField("aisle")->getObject("remon")->getState() == 2 &&
+			mObjectList["flag"]->getState() == 0) {
+			AudioEngine::stopAll();
 
+			auto novel = Novel::create();
+			novel->setFontColor(0, Color3B::BLACK);
+			novel->addSentence(0, "", "ヒュッ…");
+			novel->setCharaR(0, "chara/bandana1.png");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "バンダナ", "危ない！");
+			novel->setCharaL(0, "chara/remon1.png");
+			novel->setFontColor(0, Color3B::RED);
+			novel->addSentence(0, "檸檬", "きゃっ！");
+			novel->setFontColor(0, Color3B::BLACK);
+			novel->setCharaR(0, "");
+			novel->setCharaL(0, "");
+			novel->setBg(0, "chara/stand_bow.png");
+			novel->addEvent(0, CallFunc::create([this]() { playSoundBS("BGM/fear.ogg", true); }));
+			novel->addSentence(0, "？？？", "……");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "バンダナ", "お前…また…！");
+			novel->addSentence(0, "継", "二人とも、ケガはない？");
+			novel->setFontColor(0, Color3B::RED);
+			novel->addSentence(0, "檸檬", "ええ…大丈夫よ");
+			novel->setFontColor(0, Color3B::BLACK);
+			novel->setBg(0, "");
+			novel->addSentence(0, "？？？", "……");
+			novel->setCharaR(0, "chara/bandana1.png");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "バンダナ", "ああ！逃げやがった！");
+			novel->setCharaR(0, "");
+			novel->setCharaL(0, "chara/tuguru1.png");
+			novel->addSentence(0, "継", "待て！バンダナ！");
+
+			novel->setEndTask(0, CallFunc::create([this]() {Control::me->changeField("aisle4"); }));
+			this->addChild(novel, 10, "novel");
+
+			mObjectList["flag"]->setState(1);
+		}
 	}
 
 
@@ -141,7 +182,7 @@ namespace day4 {
 		door->setCursor(Cursor::ENTER);
 		// door->setMsg("鍵がかかっている");
 		// door->setFieldChangeEvent("baking");
-		door->setTouchEvent(CallFunc::create([this] (){
+		door->setTouchEvent(CallFunc::create([this]() {
 			if (mObjectList["baking"]->getState() == 0) {
 				auto novel = Novel::create();
 				novel->setCharaR(0, "chara/bandana1.png");
@@ -177,11 +218,11 @@ namespace day4 {
 						mObjectList["hole"]->setOpacity(0.0f);
 						mObjectList["hole"]->runAction(FadeIn::create(1.0f));
 						addChild(mObjectList["hole"], 2, "hole");
-					}));
+						}));
 					novel->setFontColor(0, Color3B::BLUE);
 					novel->addSentence(0, "バンダナ", "これで通れそうだな！");
 					novel->addSentence(0, "継", "入ってみよう");
-					
+
 					novel->setEndTask(0);
 					this->addChild(novel, 10, "novel");
 
@@ -191,7 +232,7 @@ namespace day4 {
 
 				}
 			}
-		}));
+			}));
 		addObject(door, "baking", 1, true);
 
 		auto hole = ObjectN::create();
@@ -201,7 +242,7 @@ namespace day4 {
 		auto light = ObjectN::create();
 		light->setTexture("light_.png");
 		light->setPosition(Vec2(395, 480 - 130));
-		light->setBlendFunc(BlendFunc{ GL_SRC_ALPHA, GL_ONE });
+		light->setBlendFunc(BlendFunc{ backend::BlendFactor::SRC_ALPHA, backend::BlendFactor::ONE });
 		light->setAction(RepeatForever::create(Sequence::create(FadeOut::create(3.0f), FadeIn::create(3.0f), NULL)));
 		addObject(light, "light", 2, true);
 
@@ -264,9 +305,9 @@ namespace day4 {
 				novel->setFontColor(0, Color3B::BLACK);
 				novel->addEvent(0, CallFunc::create([this]() {
 					mObjectList["guillotine_h"]->runAction(Sequence::createWithTwoActions(
-						EaseOut::create(MoveBy::create(0.03f, Vec2(0, -110.0f)),2), 
+						EaseOut::create(MoveBy::create(0.03f, Vec2(0, -110.0f)), 2),
 						CallFunc::create([this]() {playSoundBS("SE/crash22_b.ogg"); })));
-				}));
+					}));
 				novel->addSentence(0, "", "ガチャン！");
 				novel->setFontColor(0, Color3B::BLUE);
 				novel->addSentence(0, "バンダナ", "思ったより勢いよく落ちたな…");
@@ -281,7 +322,7 @@ namespace day4 {
 				novel->setEndTask(0);
 				this->addChild(novel, 10, "novel");
 			}
-		}));
+			}));
 		addObject(guillotine, "guillotine", 3, true);
 		guillotine = ObjectN::create();	// 背景
 		guillotine->setTexture("guillotine_b.png");
@@ -301,7 +342,7 @@ namespace day4 {
 
 		auto drop = ObjectN::create();
 		drop->setTexture("drop.png");
-		drop->setPosition(Vec2(310, 480-65));
+		drop->setPosition(Vec2(310, 480 - 65));
 		auto act = Sequence::create(
 			FadeIn::create(0.1f),
 			EaseSineOut::create(MoveTo::create(0.5f, Vec2(310, 480 - 350))),
@@ -313,7 +354,7 @@ namespace day4 {
 		drop->setAction(RepeatForever::create(act));
 		addObject(drop, "drop", 2, true);
 
-		addObject(createGhost(270, 210,"torture"), "ghost", 1, false);
+		addObject(createGhost(270, 210, "torture"), "ghost", 1, false);
 
 
 		auto flag = ObjectN::create();
@@ -365,7 +406,7 @@ namespace day4 {
 				novel->setEndTask(0);
 				this->addChild(novel, 10, "novel");
 			}
-		}));
+			}));
 		addObject(skeleton, "skeleton", 2, true);
 
 		auto glass = ObjectN::create();
@@ -378,6 +419,13 @@ namespace day4 {
 		panel->setFieldChangeEvent("panel");
 		addObject(panel, "panel", 2, false);
 
+		auto candle = ObjectN::create();
+		candle->setArea(Rect(300, 350, 40, 50));
+		candle->setCursor(Cursor::NEW);
+		candle->setItemGetEvent("candle");
+		candle->setTexture("candle.png");
+		candle->setMsg("ロウソクを手に入れた");
+		addObject(candle, "candle", 3, true);
 
 
 		auto scene = ObjectN::create();
@@ -385,7 +433,7 @@ namespace day4 {
 		scene->setArea(Rect(0, 0, visibleSize.width, visibleSize.height));
 		addObject(scene, "scene", 5, true);
 
-		
+
 		addObject(createGhost(40, 220, "baking"), "ghost", 1, false);
 
 
@@ -399,38 +447,38 @@ namespace day4 {
 			AudioEngine::stopAll();
 			runAction(Sequence::create(
 				CallFunc::create([this] {
-				mObjectList["scene"]->runAction(Sequence::create(
-					DelayTime::create(1.0f),
-					EaseSineOut::create(FadeOut::create(2.0f)),
-					RemoveSelf::create(), NULL
-				));
-			}),
+					mObjectList["scene"]->runAction(Sequence::create(
+						DelayTime::create(1.0f),
+						EaseSineOut::create(FadeOut::create(2.0f)),
+						RemoveSelf::create(), NULL
+					));
+					}),
 				DelayTime::create(2.0f),
-				CallFunc::create([this] {
-				auto novel = Novel::create();
-				novel->setFontColor(0, Color3B::BLUE);
-				novel->addEvent(0, CallFunc::create([this]() {playSoundBS("BGM/underground.ogg", true); }));
-				novel->addSentence(0, "継", "こ…この部屋は…");
-				novel->addSentence(0, "バンダナ", "こいつら…死んでるのか…？");
-				novel->setCharaR(0, "chara/bandana1.png");
-				novel->setCharaL(0, "chara/tuguru1.png");
-				novel->addSentence(0, "継", "…ああ、どうやら…みんな剥製のようだね。");
-				novel->addSentence(0, "バンダナ", "マジかよ…");
-				novel->addSentence(0, "継", "ひどい…この人は目を抉られてる…");
-				novel->addSentence(0, "バンダナ", "こっちは脚がないし、こっちは骸骨になってるな…");
-				novel->addSentence(0, "継", "どうしてこんな部屋があるんだろう。");
-				mObjectList["flag"]->setState(1);
+						CallFunc::create([this] {
+						auto novel = Novel::create();
+						novel->setFontColor(0, Color3B::BLUE);
+						novel->addEvent(0, CallFunc::create([this]() {playSoundBS("BGM/underground.ogg", true); }));
+						novel->addSentence(0, "継", "こ…この部屋は…");
+						novel->addSentence(0, "バンダナ", "こいつら…死んでるのか…？");
+						novel->setCharaR(0, "chara/bandana1.png");
+						novel->setCharaL(0, "chara/tuguru1.png");
+						novel->addSentence(0, "継", "…ああ、どうやら…みんな剥製のようだね。");
+						novel->addSentence(0, "バンダナ", "マジかよ…");
+						novel->addSentence(0, "継", "ひどい…この人は目を抉られてる…");
+						novel->addSentence(0, "バンダナ", "こっちは脚がないし、こっちは骸骨になってるな…");
+						novel->addSentence(0, "継", "どうしてこんな部屋があるんだろう。");
+						mObjectList["flag"]->setState(1);
 
-				novel->setEndTask(0);
-				this->addChild(novel, 10, "novel");
-			}),
-				NULL
-				));
-	
+						novel->setEndTask(0);
+						this->addChild(novel, 10, "novel");
+							}),
+						NULL
+								));
+
 		}
 		else if (mObjectList["flag"]->getState() == 1 && Control::me->getField("panel")->getObject("flag")->getState() == 2) {
-			mObjectList["glass"]->runAction(Sequence::createWithTwoActions(FadeOut::create(2.0f),RemoveSelf::create()));
-			
+			mObjectList["glass"]->runAction(Sequence::createWithTwoActions(FadeOut::create(2.0f), RemoveSelf::create()));
+
 			auto novel = Novel::create();
 			novel->setFontColor(0, Color3B::BLUE);
 			novel->addSentence(0, "継", "ケースが開いたみたいだ");
@@ -445,9 +493,9 @@ namespace day4 {
 			novel->addSentence(0, "継", "うん、わかった。");
 			novel->setCharaR(0, "");
 			novel->setCharaC(0, "chara/bandana1.png");
-			novel->addEvent(0, CallFunc::create([this] (){
+			novel->addEvent(0, CallFunc::create([this]() {
 				mObjectList["skeleton"]->runAction(Sequence::createWithTwoActions(FadeOut::create(2.0f), RemoveSelf::create()));
-			}));
+				}));
 			novel->addSentence(0, "バンダナ", "しっかり持ったかー？いくぞー！");
 			novel->addSentence(0, "継", "うん…！");
 			novel->addSentence(0, "バンダナ", "ふん…っ！");
@@ -523,7 +571,7 @@ namespace day4 {
 			for (int i = 0; i < 4 * 5; i++) for (int j = 0; j < 4 * 5; j++) mAdjacency[i][j] = 0;
 			pre[0] = pre[1] = -1;
 			drawLine();
-		}));
+			}));
 		addObject(reset, "reset", 2, true);
 
 		auto flag = ObjectN::create();
@@ -535,7 +583,7 @@ namespace day4 {
 		listener->onTouchMoved = CC_CALLBACK_2(Panel::touchNode, this);
 		listener->onTouchEnded = [this](Touch* touch, Event* event) { drawLine(); };
 		Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
-	
+
 		auto layer = Layer::create();
 		layer->setPosition(Vec2::ZERO);
 		this->addChild(layer, 1, "llayer");
@@ -563,7 +611,7 @@ namespace day4 {
 
 	void Panel::touchNode(Touch* touch, Event* event) {
 		auto layer = getChildByName("llayer");
-		
+
 		// 触れている点を探す
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 5; j++) {
@@ -646,13 +694,13 @@ namespace day4 {
 				if (mAdjacency[n][a]) {
 					i_ = a / 5; j_ = a % 5;
 					auto line = DrawNode::create();
-					line->drawSegment(	getChildByName(StringUtils::format("cirlce%d%d", i, j))->getPosition(),
-										getChildByName(StringUtils::format("cirlce%d%d", i_, j_))->getPosition(),
-										2.0f, Color4F::RED);
+					line->drawSegment(getChildByName(StringUtils::format("cirlce%d%d", i, j))->getPosition(),
+						getChildByName(StringUtils::format("cirlce%d%d", i_, j_))->getPosition(),
+						2.0f, Color4F::RED);
 					layer->addChild(line);
 				}
 			}
 		}
 	}
-	
+
 }

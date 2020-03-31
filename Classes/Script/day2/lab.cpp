@@ -3,7 +3,7 @@
 #include "Sequence\Title.h"
 
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
@@ -255,6 +255,31 @@ namespace day2 {
 			}
 		}));
 		addObject(m_water, "m_water", 1, true);;
+
+		auto diary = ObjectN::create();
+		diary->setArea(Rect(500, 35, 50, 75));
+		diary->setCursor(Cursor::NEW);
+		diary->setTouchEvent(CallFunc::create([this] {
+			auto userDef = UserDefault::getInstance();
+
+			auto novel = Novel::create();
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->setCharaR(0, "chara/tuguru1.png");
+			novel->addSentence(0, "継", "あれ？…ビンの下に紙切れが挟まっている");
+			novel->addSentence(0, "継", "取り出してみよう");
+			novel->addEvent(0, CallFunc::create([this]() {removeChildByName("diary4"); }));
+			if (!ItemMgr::sharedItem()->getGetItem("diary"))
+				novel->addEvent(0, CallFunc::create([this]() {
+				ItemMgr::sharedItem()->getItem("diary", Point(500 + 25, 480 - (35 + 37)));
+					}));
+			novel->setEndTask(0);
+			addChild(novel, 10, "novel");
+
+			userDef->setBoolForKey("diary4", true);
+			userDef->flush();
+
+			}));
+		addObject(diary, "diary4", 1, !UserDefault::getInstance()->getBoolForKey("diary4", false));
 	}
 
 	void Lab::changedField() {
@@ -562,7 +587,7 @@ namespace day2 {
 		auto light = ObjectN::create();
 		light->setTexture("light_.png");
 		light->setPosition(Vec2(395, 480 - 130));
-		light->setBlendFunc(BlendFunc{ GL_SRC_ALPHA, GL_ONE });
+		light->setBlendFunc(BlendFunc{ backend::BlendFactor::SRC_ALPHA, backend::BlendFactor::ONE });
 		light->setAction(RepeatForever::create(Sequence::create(FadeOut::create(3.0f), FadeIn::create(3.0f), NULL)));
 		addObject(light, "light", 2, true);
 
@@ -628,6 +653,7 @@ namespace day2 {
 				addChild(novel, 10, "novel"/*"novel_bad"*/);
 			}
 			else if (mObjectList["flag"]->getState() == 1) {
+
 				Control::me->showMsg("鉄の処女だ。危ないから離れよう");
 			}
 		}));
@@ -665,7 +691,27 @@ namespace day2 {
 				addChild(novel, 10, "novel");
 			}
 			else if (mObjectList["flag"]->getState() == 1) {
-				Control::me->showMsg("棺桶だ");
+				auto userDef = UserDefault::getInstance();
+				if (!userDef->getBoolForKey("diary2", false)) {
+					auto novel = Novel::create();
+					novel->setCharaL(0, "chara/tuguru1.png");
+					novel->setFontColor(0, Color3B::BLUE);
+					novel->addSentence(0, "継", "あれ？…棺桶の中に紙が落ちている");
+					novel->addSentence(0, "継", "拾ってみよう");
+					if (!ItemMgr::sharedItem()->getGetItem("diary"))
+						novel->addEvent(0, CallFunc::create([this]() {
+						ItemMgr::sharedItem()->getItem("diary", Point(50 + 100, 480 - (330 + 75)));
+							}));
+
+					novel->setEndTask(0);
+					this->addChild(novel, 10, "novel");
+
+					userDef->setBoolForKey("diary2", true);
+					userDef->flush();
+				}
+				else {
+					Control::me->showMsg("棺桶だ");
+				}
 			}
 		}));
 		addObject(coffin, "coffin", 1, true);
@@ -693,8 +739,10 @@ namespace day2 {
 				auto novel = Novel::create();
 				novel->setFontColor(0, Color3B::BLUE);
 				novel->setCharaR(0, "chara/tuguru1.png");
-				novel->addSentence(0, "継", "天井から染み出ている液体…これってもしかして血清だったりするのかな");
-				novel->addSentence(0, "継", "上の部屋がどうなってるかはわからないけど、色的にもそんな気がするんだ。");
+				//novel->addSentence(0, "継", "天井から染み出ている液体…これってもしかして血清だったりするのかな");
+				//novel->addSentence(0, "継", "上の部屋がどうなってるかはわからないけど、色的にもそんな気がするんだ。");
+				//novel->addSentence(0, "継", "他にはそれらしきものは見当たらないし、とりあえず注射器に入れてみよう。");
+				novel->addSentence(0, "継", "天井から染み出ている液体…これって色も臭いも血液だよな…");
 				novel->addSentence(0, "継", "他にはそれらしきものは見当たらないし、とりあえず注射器に入れてみよう。");
 				novel->addEvent(0, CallFunc::create([this] {
 					Control::me->getField("AboutItem")->getObject("syringe_b")->setState(1);

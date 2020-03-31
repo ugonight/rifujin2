@@ -13,7 +13,7 @@
 #include "ui/CocosGUI.h"
 USING_NS_CC;
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 
 Control* Control::me;
 
@@ -116,7 +116,7 @@ bool Control::init() {
 		auto back = Sprite::create("fieldName.png");
 		back->setPosition(Director::getInstance()->getVisibleSize() / 2);
 		back->setOpacity(0.0f);
-		back->setBlendFunc(BlendFunc{ GL_SRC_ALPHA, GL_ONE });
+		back->setBlendFunc(BlendFunc{ backend::BlendFactor::SRC_ALPHA, backend::BlendFactor::ONE });
 		auto label = Label::createWithTTF("", FONT_NAME, 24);
 		label->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 		label->setPosition(Vec2(854, 400));
@@ -263,9 +263,23 @@ void Control::changeField(std::string s) {
 		auto action = Sequence::create(FadeIn::create(1.0f), DelayTime::create(2.0f), FadeOut::create(1.0f), NULL);
 		getChildByName("fname_back")->stopAllActions();
 		getChildByName("fname_back")->runAction(action);
+
+#if USE_SETSTRING
 		((Label*)getChildByName("fname_label"))->setString(mFieldList[s]->getFieldName());
 		getChildByName("fname_label")->stopAllActions();
 		getChildByName("fname_label")->runAction(action->clone());
+#else
+		removeChildByName("fname_label");
+		auto label = Label::createWithTTF(mFieldList[s]->getFieldName(), FONT_NAME, 24);
+		label->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
+		label->setPosition(Vec2(854, 400));
+		label->setOpacity(0.0f);
+		label->setTextColor(Color4B::WHITE);
+		label->enableOutline(Color4B::BLACK, 1);
+		label->runAction(action->clone());
+		addChild(label, 2, "fname_label");
+#endif // USE_SETSTRING
+
 	}
 }
 
@@ -273,9 +287,25 @@ void Control::showMsg(std::string s) {
 	auto msg = (Label*)getChildByName("msg");
 	auto msgArea = getChildByName("msgArea");
 
+	msgArea->runAction(Sequence::create(FadeIn::create(0.5f), FadeIn::create(3.0f), FadeOut::create(0.5f), NULL));
+
+#if USE_SETSTRING
 	msg->setString(s);
 	msg->runAction(Sequence::create(FadeIn::create(0.5f), FadeIn::create(3.0f), FadeOut::create(0.5f), NULL));
-	msgArea->runAction(Sequence::create(FadeIn::create(0.5f), FadeIn::create(3.0f), FadeOut::create(0.5f), NULL));
+#else
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	removeChild(msg);
+	msg = Label::createWithTTF(s, FONT_NAME, 30);
+	msg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + 50));
+	msg->setColor(Color3B::WHITE);
+	msg->setOpacity(0.0f);
+	msg->setString(s);
+	msg->runAction(Sequence::create(FadeIn::create(0.5f), FadeIn::create(3.0f), FadeOut::create(0.5f), NULL));
+	this->addChild(msg, 3, "msg");
+#endif // USE_SETSTRING
+
 }
 
 void Control::showAI(std::string itemName) {

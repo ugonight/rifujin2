@@ -3,7 +3,7 @@
 #include "ghost.h"
 
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
@@ -101,7 +101,7 @@ namespace day4 {
 			else if (mObjectList["remon"]->getState() == 2) {
 				// クロユリの花びらを拾う
 			}
-		}));
+			}));
 		addObject(remon, "remon", 2, true);
 
 		// 牢屋の扉
@@ -109,6 +109,7 @@ namespace day4 {
 		door->setArea(Rect(225, 155, 55, 205));
 		door->setCursor(Cursor::INFO);
 		door->setMsg("牢の扉だ、カギがかかっている。");
+		door->addCanUseItem("key");
 		door->setTouchEvent(CallFunc::create([this]() {
 			if (ItemMgr::sharedItem()->getSelectedItem() == "key") {
 				// 檸檬救出。回収不可能にする
@@ -127,7 +128,7 @@ namespace day4 {
 				novel->setFontColor(0, Color3B::RED);
 				novel->setCharaR(0, "chara/remon1.png");
 				novel->addSentence(0, "檸檬", "ふぅ、これでここから出られるわ…ありがとね。");
-				novel->addEvent(0, CallFunc::create([this]() {mObjectList["remon"]->runAction(FadeOut::create(0.5f)); }));
+				novel->addEvent(0, CallFunc::create([this]() {mObjectList["remon"]->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5f), RemoveSelf::create())); }));
 				novel->setFontColor(0, Color3B::BLUE);
 				novel->addSentence(0, "継", "どういたしまして。水無月さんはここに来る前はどうしてたの？");
 				novel->setFontColor(0, Color3B::RED);
@@ -146,7 +147,7 @@ namespace day4 {
 				novel->setEndTask(0);
 				this->addChild(novel, 10, "novel");
 			}
-		}));
+			}));
 		addObject(door, "door", 2, true);
 
 
@@ -157,9 +158,17 @@ namespace day4 {
 		addObject(b2f, "b2f", 1, true);
 
 
+
 		this->setCascadeOpacityEnabled(true);
 		this->setOpacity(0);
-		this->runAction(FadeIn::create(0.5f));
+		this->runAction(Sequence::create(FadeIn::create(0.5f), CallFunc::create([this]() {
+			// 日記取得
+			bool gotdiary = false;
+			for (int i = 1; i <= 4; i++) { if (UserDefault::getInstance()->getBoolForKey(StringUtils::format("diary%d", i).c_str())) { gotdiary = true; break; } }
+			if (gotdiary && !ItemMgr::sharedItem()->getGetItem("diary")) {
+				ItemMgr::sharedItem()->getItem("diary", Point(-100, -100));
+			}
+			}),NULL));
 	}
 
 	void Aisle::changedField() {

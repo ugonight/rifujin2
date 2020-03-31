@@ -34,7 +34,7 @@ namespace day4 {
 		ghost->setArea(rect);
 		ghost->setCursor(Cursor::INFO);
 		ghost->setOpacity(0.0f);
-		ghost->setBlendFunc(BlendFunc{ GL_SRC_ALPHA ,GL_ONE });
+		ghost->setBlendFunc(BlendFunc{ backend::BlendFactor::SRC_ALPHA ,backend::BlendFactor::ONE });
 		ghost->setAction(RepeatForever::create(Spawn::createWithTwoActions(
 			Sequence::createWithTwoActions(EaseSineOut::create(FadeIn::create(3.0f)), EaseSineIn::create(FadeOut::create(3.0f)))
 			, Sequence::createWithTwoActions(EaseSineOut::create(MoveTo::create(3.0f, Vec2(x, 480 - y + 30.0f))), EaseSineIn::create(MoveTo::create(3.0f, Vec2(x, 480-y))))

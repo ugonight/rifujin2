@@ -46,9 +46,9 @@ namespace day2 {
 		ai->setCursor(Cursor::NEW);
 		ai->setArea(Rect(854 / 2 - 150 + 80, 480 / 2 - 150 + 145, 30, 25));
 		ai->setTouchEvent(CallFunc::create([this] {
-			mObjectList["fak_s"]->setState(1);  Control::me->showMsg("注射器を手に入れた"); 
+			mObjectList["fak_s"]->setState(1);  Control::me->showMsg("注射器を手に入れた");
 			Control::me->getField("prison")->addChild(Control::me->getField("prison")->getObject("lizard"), 3, "lizard");
-		}));
+			}));
 		addObject(ai, "fak_s", 2, false);
 
 		// 注射器
@@ -56,7 +56,7 @@ namespace day2 {
 		ai->setTexture("item/syringe_a.png");
 		ai->setMsg("注射器だ。解毒薬の材料を入れていこう。");
 		ai->setArea(ai->getBoundingBox());
-		ai->setTouchEvent(CallFunc::create([this] (){
+		ai->setTouchEvent(CallFunc::create([this]() {
 			if (ItemMgr::sharedItem()->getSelectedItem() == "nume") {
 				Control::me->showMsg("注射器にヒルの体液を入れた");
 				mObjectList["syringe_h"]->setState(1);
@@ -81,7 +81,7 @@ namespace day2 {
 					Control::me->showMsg("解毒薬が完成した");
 				}
 			}
-		}));
+			}));
 		addObject(ai, "syringe", 5, false);
 		ai = ObjectN::create();	// 水
 		ai->setTexture("item/syringe_w.png");
@@ -95,6 +95,107 @@ namespace day2 {
 		ai = ObjectN::create(); // しっぽ
 		ai->setTexture("item/syringe_r.png");
 		addObject(ai, "syringe_r", 4, false);
+
+		// 日記
+		std::string text[4] = { "　　　　　　　　　　　　　　　1/4 ページ\n"
+			"私の将来の夢は研究者になること。\n"
+"小さなころからずっとあこがれだった。\n"
+"\n"
+"いつもどおりパパの研究室で過ごす\n"
+"今日もお気に入りの本のページをめくる\n"
+"\n"
+"現在は絶滅したと言われているドラゴン族\n"
+"まだ見たことのない存在に思いを馳せた\n"
+"彼らがこの理不尽で退屈な世界を変えてくれた" ,
+"　　　　　　　　　　　　　　　2/4 ページ\n"
+		"幼いころずっと読んでいた大好きな絵本\n"
+"絵本の中のあの子が大好きでなんどもなんども読み返した\n"
+"\n"
+"大きくなって入学式の日に出会ったのはあの子と同じ瞳のーーーー\n"
+"私だけの物にしたいと思った",
+"　　　　　　　　　　　　　　　3/4 ページ\n"
+"いつしかあの子と仲良くなっていた\n"
+"内気で恥ずかしがり屋のあの子の世話をする毎日\n"
+"私が何を考えているのか知らないで、あの子は楽しそうだった\n"
+"\n"
+"あの子はいつも全身にきれいな宝石を身に着けていた\n"
+"探知の能力で珍しい宝石を集めるのが得意だった\n"
+"じゃあこれはどうかしらとママの作ったかんざしを渡してみた\n"
+"あの子は「こんな素敵なもの見たことない！」とたいそう喜んでくれた\n"
+"あれからあの子はかんざしを毎日着けてきてくれた",
+"　　　　　　　　　　　　　　　4/4 ページ\n"
+"ある日の体育の授業\n"
+"あの子が男子とぶつかって転んでしまった\n"
+"そいつに連れられて保健室にいたあの子の瞳は\n"
+"今まで見たことのない恋をした眼をしていた\n"
+"\n"
+"あれからあの子はあいつを追いかけ回すようになった\n"
+"私があげたかんざしもその日から着けてこなくなった\n\n"
+"あいつのせいで\n"
+"あいつのせいで、私の大切なあの子は…"
+		};
+		std::function<int(int)> getNextPage = [this](int current) {
+			auto userDef = UserDefault::getInstance();
+			for (int i = current + 1; i <= 4; i++) {
+				if (userDef->getBoolForKey(StringUtils::format("diary%d", i).c_str(), false)) {
+					return i;
+				}
+			}
+			return -1;
+		};
+		ai = ObjectN::create();
+		ai->setTexture("item/diary_a.png");
+		ai->setArea(ai->getBoundingBox());
+		ai->setTouchEvent(CallFunc::create([this, text, getNextPage] {
+			auto layer = Layer::create();
+			layer->setPosition(Vec2::ZERO);
+			addChild(layer, 20, "slayer");
+			auto spr = ObjectN::create();
+			spr->setTexture("bg/black.png");
+			spr->setPosition(Director::getInstance()->getVisibleSize() / 2);
+			spr->setOpacity(255.0f / 2.0f);
+			spr->setState(getNextPage(getNextPage(0)));
+			layer->addChild(spr, 0, "black");
+			auto label = Label::createWithTTF("", FONT_NAME, 24);
+			label->setPosition(Director::getInstance()->getVisibleSize() / 2);
+			label->setTextColor(Color4B::BLACK);
+			label->enableOutline(Color4B::WHITE, 2);
+			label->setAlignment(TextHAlignment::CENTER);
+			label->setString(text[getNextPage(0)-1]);
+			layer->addChild(label, 3, "label");
+			auto listener = EventListenerTouchOneByOne::create();
+			listener->setSwallowTouches(true);
+			listener->onTouchBegan = [this](Touch* touch, Event* event) {
+				return true;
+			};
+			listener->onTouchEnded = [this, text, getNextPage](Touch* touch, Event* event) {
+				auto node = (ObjectN*)event->getCurrentTarget()->getChildByName("black");
+				auto label = (Label*)event->getCurrentTarget()->getChildByName("label");
+				switch (node->getState())
+				{
+				case 2: {
+					label->setString(text[1]);
+					node->setState(getNextPage(2));
+					break;
+				}
+				case 3: {
+					label->setString(text[2]);
+					node->setState(getNextPage(3));
+					break;
+				}
+				case 4: {
+					label->setString(text[3]);
+					node->setState(-1);
+					break;
+				}
+				default:
+					removeChild(event->getCurrentTarget());
+					break;
+				}
+			};
+			this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, layer);
+			}));
+		addObject(ai, "diary", 1, false);
 	}
 	void AboutItem::changedField() {}
 	void AboutItem::setAboutItem(std::string itemName) {

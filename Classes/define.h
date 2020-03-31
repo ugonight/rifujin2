@@ -53,7 +53,7 @@ inline int playSoundBS(std::string filename, bool loop = false) {
 	}
 	
 	if (volume != 0.0)
-		return cocos2d::experimental::AudioEngine::play2d(filename.c_str(), loop, volume);
+		return cocos2d::AudioEngine::play2d(filename.c_str(), loop, volume);
 
 	return -1;
 }

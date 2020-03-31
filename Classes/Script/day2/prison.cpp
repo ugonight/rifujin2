@@ -2,7 +2,7 @@
 #include "Script\day2\fieldDef.h"
 
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
+// using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
@@ -23,7 +23,7 @@ namespace day2 {
 		bandana->setCursor(Cursor::INFO);
 		bandana->setTouchEvent(CallFunc::create([this] {
 			auto ai = Control::me->getField("AboutItem");
-			if (ai->getObject("syringe_w")->getState() == 1 && ai->getObject("syringe_b")->getState() == 1 && ai->getObject("syringe_h")->getState() == 1 && ai->getObject("syringe_r")->getState() == 1){
+			if (ai->getObject("syringe_w")->getState() == 1 && ai->getObject("syringe_b")->getState() == 1 && ai->getObject("syringe_h")->getState() == 1 && ai->getObject("syringe_r")->getState() == 1) {
 				// クリア
 				this->runAction(Sequence::create(FadeOut::create(1.0f), CallFunc::create([this] {Control::me->setEndFlag(); }), NULL));
 			}
@@ -39,7 +39,7 @@ namespace day2 {
 				novel->setEndTask(0);
 				this->addChild(novel, 10, "novel");
 			}
-		}));
+			}));
 		//renji->addCanUseItem("clothes");
 		addObject(bandana, "bandana", 1, true);
 
@@ -47,30 +47,51 @@ namespace day2 {
 		paper->setArea(Rect(480, 270, 20, 30));
 		paper->setCursor(Cursor::NEW);
 		paper->setTouchEvent(CallFunc::create([this] {
-			auto novel = Novel::create();
-			novel->setCharaL(0, "chara/tuguru1.png");
+			auto userDef = UserDefault::getInstance();
+			if (mObjectList["paper"]->getState() == 2 && !userDef->getBoolForKey("diary1", false)) {
 
-			if (mObjectList["paper"]->getState() == 0) {
+				auto novel = Novel::create();
+				novel->setCharaL(0, "chara/tuguru1.png");
 				novel->setFontColor(0, Color3B::BLUE);
-				novel->addSentence(0, "継", "壁のヒビの隙間に何か挟まっている…慎重に取り出してみよう");
-				novel->addSentence(0, "継", "よいしょっ…と。これは紙切れかな、読んでみよう。");
-			}
-			novel->setFontColor(0, Color3B::BLACK);
-			novel->addSentence(0, "", "この手紙を読んでいる君へ");
-			novel->addSentence(0, "", "毛布の下に通路へとつながる穴を掘った");
-			novel->addSentence(0, "", "監視にバレないように魔法で入り口をロックしておいた");
-			novel->addSentence(0, "", "私も逃げ切れるかはわからないが、君はどうか生き残って欲しい。健闘を祈る。");
-			novel->addSentence(0, "", "ロック解除に必要な暗号:全ての方向の和を同一にせよ");
-			if (mObjectList["paper"]->getState() == 0) {
-				novel->setFontColor(0, Color3B::BLUE);
-				novel->addSentence(0, "継", "なるほど。布団の下を調べてみよう");
-				mObjectList["paper"]->setState(1);
-				mObjectList["paper"]->setCursor(Cursor::INFO);
-			}
+				novel->addSentence(0, "継", "あれ？…もう一枚紙が挟まっているみたいだ");
+				novel->addSentence(0, "継", "取り出してみよう");
+				if (!ItemMgr::sharedItem()->getGetItem("diary"))
+					novel->addEvent(0, CallFunc::create([this]() {
+					ItemMgr::sharedItem()->getItem("diary", Point(480 + 10, 480 - (270 + 15)));
+						}));
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
 
-			novel->setEndTask(0);
-			this->addChild(novel, 10, "novel");
-		}));
+				userDef->setBoolForKey("diary1", true);
+				userDef->flush();
+
+			}
+			else {
+				auto novel = Novel::create();
+				novel->setCharaL(0, "chara/tuguru1.png");
+
+				if (mObjectList["paper"]->getState() == 0) {
+					novel->setFontColor(0, Color3B::BLUE);
+					novel->addSentence(0, "継", "壁のヒビの隙間に何か挟まっている…慎重に取り出してみよう");
+					novel->addSentence(0, "継", "よいしょっ…と。これは紙切れかな、読んでみよう。");
+				}
+				novel->setFontColor(0, Color3B::BLACK);
+				novel->addSentence(0, "", "この手紙を読んでいる君へ");
+				novel->addSentence(0, "", "毛布の下に通路へとつながる穴を掘った");
+				novel->addSentence(0, "", "監視にバレないように魔法で入り口をロックしておいた");
+				novel->addSentence(0, "", "私も逃げ切れるかはわからないが、君はどうか生き残って欲しい。健闘を祈る。");
+				novel->addSentence(0, "", "ロック解除に必要な暗号:全ての方向の和を同一にせよ");
+				if (mObjectList["paper"]->getState() == 0) {
+					novel->setFontColor(0, Color3B::BLUE);
+					novel->addSentence(0, "継", "なるほど。布団の下を調べてみよう");
+					mObjectList["paper"]->setState(1);
+					mObjectList["paper"]->setCursor(Cursor::INFO);
+				}
+
+				novel->setEndTask(0);
+				this->addChild(novel, 10, "novel");
+			}
+			}));
 		addObject(paper, "paper", 1, true);
 
 		auto blanket = ObjectN::create();
@@ -91,7 +112,7 @@ namespace day2 {
 						if (AudioEngine::getPlayingAudioCount()) {
 							AudioEngine::stopAll();
 						}
-					}));
+						}));
 					novel->addSentence(0, "継", "狭いから這っていかないと…");
 					novel->addSentence(0, "継", "…んしょ…んしょと……");
 					novel->setFontColor(0, Color3B::BLACK);
@@ -113,7 +134,7 @@ namespace day2 {
 						this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, black);
 						black->runAction(Sequence::create(DelayTime::create(3.0f), CallFunc::create(CC_CALLBACK_0(Prison::attackZombie, this)), NULL));
 						addChild(black, 5, "black");
-					}));
+						}));
 
 					novel->setEndTask(0);
 					this->addChild(novel, 10, "novel");
@@ -125,7 +146,7 @@ namespace day2 {
 			else if (mObjectList["paper"]->getState() == 2) {
 				Control::me->changeField("aisle");
 			}
-		}));
+			}));
 		addObject(blanket, "blanket", 1, true);
 
 		{
@@ -138,11 +159,11 @@ namespace day2 {
 
 		auto lizard = ObjectN::create();
 		lizard->setTexture("lizard.png");
-		lizard->setPosition(Vec2(620,480 + 100));
+		lizard->setPosition(Vec2(620, 480 + 100));
 		lizard->setCursor(Cursor::INFO);
 		auto act = Sequence::create(
 			DelayTime::create(cocos2d::random() % 5 + 5),
-			MoveBy::create(1.0f,Vec2(0,-200)),
+			MoveBy::create(1.0f, Vec2(0, -200)),
 			DelayTime::create(cocos2d::random() % 7 + 3),
 			FlipY::create(true),
 			MoveBy::create(1.0f, Vec2(0, 200)),
@@ -162,11 +183,11 @@ namespace day2 {
 			novel->addEvent(0, CallFunc::create([this] {
 				removeChildByName("lizard");
 				Control::me->getField("AboutItem")->getObject("syringe_r")->setState(1);
-			}));
+				}));
 
 			novel->setEndTask(0);
 			this->addChild(novel, 10, "novel");
-		}));
+			}));
 		addObject(lizard, "lizard", 3, false);
 		lizard->setArea(lizard->getBoundingBox());
 
@@ -218,7 +239,11 @@ namespace day2 {
 				event->getCurrentTarget()->runAction(Sequence::create(MoveBy::create(0.1, Vec2(50, 0)), MoveBy::create(0.1, Vec2(-100, 0)), MoveBy::create(0.1, Vec2(50, 0)), NULL));
 				playSoundBS("SE/tm2_hit004.ogg");
 			}
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+			if (mHit == 50) {
+#else
 			if (mHit == 100) {
+#endif
 				getChildByName("layer_z")->setCascadeOpacityEnabled(true);
 				getChildByName("layer_z")->runAction(Sequence::create(FadeOut::create(1.0f), CallFunc::create([this] {
 					if (AudioEngine::getPlayingAudioCount())AudioEngine::stopAll();
@@ -241,11 +266,11 @@ namespace day2 {
 						Control::me->changeField("aisle");
 						mObjectList["paper"]->setState(2);
 						playSoundBS("BGM/underground.ogg", true);
-					}));
+						}));
 
 					novel->setEndTask(0);
 					this->addChild(novel, 10, "novel");
-				}), RemoveSelf::create(), NULL));
+					}), RemoveSelf::create(), NULL));
 			}
 
 			return true;
@@ -280,7 +305,7 @@ namespace day2 {
 		auto spr = Sprite::create("num2.png");
 		auto w = spr->getContentSize().width, h = spr->getContentSize().height;
 		//auto rect = Rect(0, 0, w / 9, h);
-		Sprite* /*ObjectN**/ number; EventListenerTouchOneByOne *listener;
+		Sprite* /*ObjectN**/ number; EventListenerTouchOneByOne* listener;
 		std::stringstream name;
 		for (int j = 0; j < 3; j++) {
 			for (int i = 0; i < 3; i++) {
@@ -290,11 +315,11 @@ namespace day2 {
 					number->setTexture("num2.png");
 					number->setTextureRect(Rect((i + j * 3) * (w / 8), 0, w / 8, h));
 				}
-			/*	else {
-					number->setColor(Color3B::RED);
-					number->setTextureRect(Rect(0, 0, w / 8, w / 8));
-					number->setOpacity(100.0f);
-				}*/
+				/*	else {
+						number->setColor(Color3B::RED);
+						number->setTextureRect(Rect(0, 0, w / 8, w / 8));
+						number->setOpacity(100.0f);
+					}*/
 				number->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
 				number->setPosition(205 + (w / 8) * i, visibleSize.height - h * j - 100);
 				//number->setState(1);
@@ -302,7 +327,7 @@ namespace day2 {
 				name << "num" << i + 1 + j * 3;
 				listener = EventListenerTouchOneByOne::create();
 				listener->setSwallowTouches(true);
-				listener->onTouchBegan = [this, i, j, w, h](Touch *touch, Event *event) {
+				listener->onTouchBegan = [this, i, j, w, h](Touch* touch, Event* event) {
 					if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation()) && mCanMove) {
 						auto num = (Sprite*)event->getCurrentTarget();
 						auto q = (Sprite*)getChildByName("num9");
@@ -355,8 +380,8 @@ namespace day2 {
 									light->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 									light->setPosition(x0 + 50, y0 - 50);
 									BlendFunc func;
-									func.src = GL_SRC_ALPHA;
-									func.dst = GL_ONE;
+									func.src = backend::BlendFactor::SRC_ALPHA;
+									func.dst = backend::BlendFactor::ONE;
 									light->setBlendFunc(func);
 									light->setOpacity(0.0f);
 									light->runAction(RepeatForever::create(Sequence::create(DelayTime::create(1.0f), FadeIn::create(1.0f), FadeOut::create(1.f), NULL)));
