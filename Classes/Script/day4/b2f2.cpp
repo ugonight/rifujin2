@@ -82,6 +82,7 @@ namespace day4 {
 					ItemMgr::sharedItem()->deleteItem("key_remon");
 					mObjectList["rroom"]->setFieldChangeEvent("rroom");
 					mObjectList["rroom"]->setState(1);
+					playSoundBS("SE/door.ogg");
 					}));
 				addChild(novel, 10, "novel");
 			}
@@ -489,7 +490,7 @@ namespace day4 {
 				novel->addSentence(0, "継", "気づかない所で誰かを犠牲にしてしまったりしてしまう立場なんだよ、王族というのは。");
 				novel->addSentence(0, "バンダナ", "…わりぃ、野暮なこと聞いちまったな");
 				novel->addSentence(0, "バンダナ", "何があったとしても、仲間の命を危険に晒すなんて真似は絶対に許せねえな！");
-				
+
 				auto userDef = UserDefault::getInstance();
 				bool gotdiary = false;
 				for (int i = 1; i <= 4; i++) {
@@ -505,7 +506,7 @@ namespace day4 {
 				novel->setEndTask(0);
 				addChild(novel, 10, "novel");
 
-				
+
 				userDef->setBoolForKey("diary5", true);
 				userDef->setBoolForKey("diary6", true);
 				userDef->flush();
@@ -519,8 +520,61 @@ namespace day4 {
 		auto skull = ObjectN::create();
 		skull->setArea(Rect(240, 240, 50, 65));
 		skull->setCursor(Cursor::INFO);
-		skull->setMsg("髑髏が置いてある");
+		skull->setMsg("ドクロが置いてある");
+		skull->addCanUseItem("candle");
+		skull->setTouchEvent(CallFunc::create([this]() {
+			if (mObjectList["skull"]->getState() < 2 &&
+				ItemMgr::sharedItem()->getSelectedItem() == "candle" && Control::me->getField("AboutItem")->getObject("candle")->getState() == 1) {
+				auto novel = Novel::create();
+				novel->setCharaR(0, "chara/tuguru1.png");
+				novel->setCharaL(0, "chara/bandana1.png");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "バンダナ", "このドクロとこのろうそく、なんか似てるな。");
+				novel->addSentence(0, "継", "ほんとだね");
+				novel->addSentence(0, "継", "…ちょうどドクロ中の空洞にこのロウソクを置けそうだね。置いてみよう。");
+				novel->addEvent(0, CallFunc::create([this]() {
+					this->addChild(mObjectList["skull_light"], 3, "skull_light");
+					mObjectList["skull_light"]->runObjectAction();
+					}));
+				novel->addSentence(0, "バンダナ", "うおっ！ドクロがカラフルに光り始めたぞ！");
+				mObjectList["skull"]->setState(2);
+				ItemMgr::sharedItem()->deleteItem("candle");
+
+				novel->setEndTask(0);
+				addChild(novel, 10, "novel");
+			}
+			else if (mObjectList["skull"]->getState() == 0) {
+				auto novel = Novel::create();
+				novel->setCharaR(0, "chara/tuguru1.png");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継", "角の生えたドクロが置いてある");
+				novel->addSentence(0, "継", "中が空洞になっている。なにか置けそうだね。");
+				mObjectList["skull"]->setState(1);
+
+				novel->setEndTask(0);
+				addChild(novel, 10, "novel");
+			}
+			}));
 		addObject(skull, "skull", 2, true);
+
+		// 髑髏の光
+		Vector<FiniteTimeAction*> actionList;
+		actionList.pushBack(FadeIn::create(0.5f));
+		actionList.pushBack(EaseOut::create(TintTo::create(1.0f, Color3B::MAGENTA), 1));
+		actionList.pushBack(EaseOut::create(TintTo::create(2.0f, Color3B::YELLOW), 1));
+		actionList.pushBack(EaseOut::create(TintTo::create(2.0f, Color3B::RED), 1));
+		actionList.pushBack(EaseOut::create(TintTo::create(2.0f, Color3B::GREEN), 1));
+		actionList.pushBack(EaseOut::create(TintTo::create(3.0f, Color3B::BLUE), 1));
+		actionList.pushBack(FadeOut::create(0.5f));
+		actionList.pushBack(TintTo::create(0.0f, Color3B::MAGENTA));
+		actionList.pushBack(DelayTime::create(0.5f));
+
+		skull = ObjectN::create();
+		skull->setTexture("skull_light.png");
+		skull->setBlendFunc(BlendFunc{ backend::BlendFactor::SRC_ALPHA, backend::BlendFactor::ONE });
+		skull->setAction(RepeatForever::create(Sequence::create(actionList)));
+		skull->setOpacity(0.0f);
+		addObject(skull, "skull_light", 3, false);
 
 		auto book = ObjectN::create();
 		book->setArea(Rect(55, 200, 20, 85));
@@ -556,6 +610,9 @@ namespace day4 {
 					"おしまい\n"
 				};
 				mObjectList["book"]->setState(1);
+				
+				auto novel = (Novel*)getChildByName("novel");
+				if (novel) novel->stopMessage();
 
 				auto back = Sprite::create("bg/book.png");
 				back->setCascadeOpacityEnabled(true);
@@ -568,7 +625,7 @@ namespace day4 {
 				listener->onTouchBegan = [this](Touch* touch, Event* event) {
 					return true;
 				};
-				listener->onTouchEnded = [this, text](Touch* touch, Event* event) {
+				listener->onTouchEnded = [this, text, novel](Touch* touch, Event* event) {
 					auto state = mObjectList["book"]->getState();
 					auto back = getChildByName("layer_c");
 					auto booktext = (Label*)back->getChildByName("book_text");
@@ -592,6 +649,7 @@ namespace day4 {
 					{
 						back->runAction(Sequence::createWithTwoActions(FadeOut::create(0.25f), RemoveSelf::create()));
 						mObjectList["book"]->setState(1);
+						if (novel) novel->resumeMessage();
 
 						break;
 					}
@@ -633,10 +691,22 @@ namespace day4 {
 		addObject(book, "book", 2, true);
 
 		auto art = ObjectN::create();
+		art->setTexture("remon_room_art.png");
 		art->setArea(Rect(305, 120, 240, 140));
 		art->setCursor(Cursor::INFO);
 		art->setFieldChangeEvent("rart");
 		addObject(art, "art", 2, true);
+
+		auto chair = Sprite::create("remon_room_chair.png");
+		chair->setPosition(visibleSize / 2);
+		addChild(chair, 3, "chair");
+
+		auto key = ObjectN::create();
+		key->setArea(Rect(390, 190, 60, 40));
+		key->setCursor(Cursor::INFO);
+		key->setItemGetEvent("key2");
+		key->setMsg("カギを手に入れた");
+		addObject(key, "key2", 2, false);
 
 		auto flag = ObjectN::create();
 		addObject(flag, "flag", 0, false);
@@ -658,6 +728,23 @@ namespace day4 {
 			novel->setEndTask(0);
 			addChild(novel, 10, "novel");
 		}
+		else if (Control::me->getField("rart")->getObject("flag")->getState() == 6 && mObjectList["flag"]->getState() == 1) {
+			mObjectList["flag"]->setState(2);
+			auto art = mObjectList["art"];
+			art->runAction(EaseIn::create(MoveTo::create(1.0f, Vec2(art->getPositionX(), art->getPositionY() + 60)), 1.0f));
+			art->setArea(Rect(art->getArea().origin.x, art->getArea().origin.y - 60, art->getArea().size.width, art->getArea().size.height));
+			addChild(mObjectList["key2"], 2, "key2");
+
+			auto novel = Novel::create();
+			novel->setCharaR(0, "chara/tuguru1.png");
+			novel->setCharaL(0, "chara/bandana1.png");
+			novel->setFontColor(0, Color3B::BLUE);
+			novel->addSentence(0, "バンダナ", "絵が動くぞ！");
+			novel->addSentence(0, "継", "…絵の後ろに何か隠されているみたいだね。");
+
+			novel->setEndTask(0);
+			addChild(novel, 10, "novel");
+		}
 	}
 
 	void RArt::initField() {
@@ -675,6 +762,43 @@ namespace day4 {
 		rroom->setCursor(Cursor::BACK);
 		rroom->setFieldChangeEvent("rroom");
 		addObject(rroom, "rroom", 1, true);
+
+		std::vector < std::tuple<Rect, std::string, Color3B, std::function<void()>>> skullList;
+		skullList.push_back(std::make_tuple(Rect(75, 260, 90, 100), "skull_red", Color3B(255, 100, 100), [this]() { if (mObjectList["flag"]->getState() == 2) mObjectList["flag"]->setState(3); else mObjectList["flag"]->setState(0); }));
+		skullList.push_back(std::make_tuple(Rect(230, 360, 90, 100), "skull_purple", Color3B(255, 100, 255), [this]() { mObjectList["flag"]->setState(1); }));
+		skullList.push_back(std::make_tuple(Rect(520, 360, 90, 100), "skull_green", Color3B(100, 255, 100), [this]() { if (mObjectList["flag"]->getState() == 3) mObjectList["flag"]->setState(4); else mObjectList["flag"]->setState(0); }));
+		skullList.push_back(std::make_tuple(Rect(650, 260, 90, 100), "skull_yellow", Color3B(255, 255, 100), [this]() { if (mObjectList["flag"]->getState() == 1) mObjectList["flag"]->setState(2); else mObjectList["flag"]->setState(0); }));
+		skullList.push_back(std::make_tuple(Rect(410, 40, 90, 100), "skull_blue", Color3B(100, 100, 255), [this]() { if (mObjectList["flag"]->getState() == 4) mObjectList["flag"]->setState(5); else mObjectList["flag"]->setState(0); }));
+		for (auto skullp : skullList)
+		{
+			auto skull = ObjectN::create();
+			auto rect = std::get<0>(skullp);
+			auto name = std::get<1>(skullp);
+			auto color = std::get<2>(skullp);
+			auto func = std::get<3>(skullp);
+			skull->setTexture("art_light.png");
+			skull->setArea(rect);
+			skull->setPosition(rect.getMidX(), visibleSize.height - rect.getMidY());
+			// skull->setAction(Sequence::createWithTwoActions(FadeIn::create(0.5), FadeOut::create(0.5)));
+			skull->setOpacity(0.0f);
+			skull->setColor(color);
+			skull->setBlendFunc(BlendFunc{ backend::BlendFactor::SRC_ALPHA, backend::BlendFactor::ONE });
+			skull->setTouchEvent(CallFunc::create([this, name, func, skullList]() {
+				mObjectList[name]->runAction(Sequence::createWithTwoActions(FadeIn::create(0.5), FadeOut::create(0.5)));
+				if (mObjectList["flag"]->getState() < 5)
+					func();
+				// 正解時
+				if (mObjectList["flag"]->getState() == 5) {
+					for (auto s : skullList)
+					{
+						mObjectList[std::get<1>(s)]->runAction(Sequence::create(DelayTime::create(1.5f), FadeIn::create(0.5), FadeOut::create(0.5), NULL));
+					}
+					Control::me->showMsg("どこかで物音がした");
+					mObjectList["flag"]->setState(6);
+				}
+				}));
+			addObject(skull, name, 2, true);
+		}
 
 		auto flag = ObjectN::create();
 		addObject(flag, "flag", 0, false);

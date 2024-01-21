@@ -2,8 +2,8 @@
 
 #define CREATE_FIELD(cName) class cName : public Field { \
 							public: \
-								virtual void initField(); \
-								virtual void changedField(); \
+								virtual void initField() override; \
+								virtual void changedField() override; \
 								CREATE_FUNC(cName); 
 
 #define FONT_NAME "fonts/font_1_honokamarugo_1.1.ttf"

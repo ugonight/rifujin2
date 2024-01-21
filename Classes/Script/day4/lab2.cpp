@@ -80,6 +80,7 @@ namespace day4 {
 
 			auto novel = Novel::create();
 			novel->setFontColor(0, Color3B::BLACK);
+			novel->addEvent(0, CallFunc::create([this]() { playSoundBS("SE/arrow01.ogg"); }));
 			novel->addSentence(0, "", "ヒュッ…");
 			novel->setCharaR(0, "chara/bandana1.png");
 			novel->setFontColor(0, Color3B::BLUE);
@@ -108,10 +109,14 @@ namespace day4 {
 			novel->setCharaL(0, "chara/tuguru1.png");
 			novel->addSentence(0, "継", "待て！バンダナ！");
 
-			novel->setEndTask(0, CallFunc::create([this]() {Control::me->changeField("aisle4"); }));
+			novel->setEndTask(0, CallFunc::create([this]() {
+				Control::me->changeField("aisle4"); 
+				playSoundBS("SE/footsteps.ogg");
+				}));
 			this->addChild(novel, 10, "novel");
 
 			mObjectList["flag"]->setState(1);
+
 		}
 	}
 
@@ -631,21 +636,26 @@ namespace day4 {
 						mAdjacency[n_][n] = true;
 						pre[0] = i; pre[1] = j;
 					}
+					
+					// 線更新
+					drawLine();
+
 					break;
 				}
 			}
 		}
 
-
-		// 線更新
-		drawLine();
 		// 描画途中
 		if (pre[0] > 0) {
-			auto line = DrawNode::create();
+			auto line = (DrawNode*)layer->getChildByName("path");
+			if (!line) {
+				line = DrawNode::create();
+				layer->addChild(line, 1, "path");
+			}
+			line->clear();
 			line->drawSegment(getChildByName(StringUtils::format("cirlce%d%d", pre[0], pre[1]))->getPosition(),
 				touch->getLocation(),
 				2.0f, Color4F::RED);
-			layer->addChild(line);
 		}
 
 		// 判定

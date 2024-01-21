@@ -156,6 +156,11 @@ public:
 	void initSerialNum();
 #endif
 
+	// •¶š‘—‚è‚ğ~‚ß‚é
+	void stopMessage();
+	// •¶š‘—‚è‚ğÄŠJ‚·‚é
+	void resumeMessage();
+
 	CREATE_FUNC(Novel);
 };
 

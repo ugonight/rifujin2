@@ -940,3 +940,15 @@ void Novel::initSerialNum() {
 }
 
 #endif
+
+void Novel::stopMessage()
+{
+	mHideMsg = true;
+	stopDelayAnime();
+}
+
+void Novel::resumeMessage()
+{
+	mHideMsg = false;
+	setDelayAnime();
+}

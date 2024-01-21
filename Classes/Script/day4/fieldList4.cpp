@@ -24,6 +24,9 @@ namespace day4 {
 		mFieldList["panel"] = Panel::create();
 		mFieldList["rroom"] = RRoom::create();
 		mFieldList["rart"] = RArt::create();
+		mFieldList["dangeon1"] = Dangeon1::create();
+		mFieldList["remains"] = Remains::create();
+		mFieldList["dangeon2"] = Dangeon2::create();
 
 		mFieldList["AboutItem"] = AboutItem::create();
 

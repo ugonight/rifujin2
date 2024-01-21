@@ -388,6 +388,7 @@ namespace day4 {
 				novel->setFontColor(0, Color3B::RED);
 				novel->setCharaL(0, "chara/remon1.png");
 				novel->addSentence(0, "檸檬", "呪われるわよ…");
+				novel->setCharaC(0, "chara/scene11_.png");
 				novel->setFontColor(0, Color3B::BLUE);
 				novel->addSentence(0, "バンダナ", "よし、これで火が起こせたな。ロウソクに点けるぞ");
 				mObjectList["candle"]->setState(1);
@@ -406,6 +407,12 @@ namespace day4 {
 			}));
 		addObject(ai, "candle", 1, false);
 
+		// カギ2
+		ai = ObjectN::create();
+		ai->setTexture("item/key2_a.png");
+		ai->setMsg("どこかのカギだ。");
+		ai->setArea(ai->getBoundingBox());
+		addObject(ai, "key2", 1, false);
 	}
 	void AboutItem::changedField() {}
 	void AboutItem::setAboutItem(std::string itemName) {

@@ -241,8 +241,10 @@ namespace day3 {
 						novel->addSentence(0, "寿甘", "フフ…私も写真を見て気づいたことがあるわ");
 						novel->addSentence(0, "宇沢", "おお、何ですかそれは");
 						novel->addSentence(0, "寿甘", "犯人は…この写真に写っているわ！");
-						novel->addEvent(0, CallFunc::create([this] {
+						novel->addEvent(0, CallFunc::create([this, novel] {
 							auto visibleSize = Director::getInstance()->getVisibleSize();
+
+							novel->stopMessage();
 
 							auto layer = Layer::create();
 							layer->setCascadeOpacityEnabled(true);
@@ -250,10 +252,11 @@ namespace day3 {
 							layer->runAction(FadeIn::create(0.2));
 							auto listener = EventListenerTouchOneByOne::create();
 							listener->setSwallowTouches(true);
-							listener->onTouchBegan = [this](Touch* touch, Event* event) {
+							listener->onTouchBegan = [this, novel](Touch* touch, Event* event) {
 								if (Rect(570, 270, 40, 50).containsPoint(touch->getLocationInView())) {
 									playSoundBS("SE/choice.ogg");
 									getChildByName("layer_c")->runAction(Sequence::createWithTwoActions(FadeOut::create(0.2), RemoveSelf::create()));
+									novel->resumeMessage();
 								}
 								return true;
 							};

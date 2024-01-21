@@ -158,6 +158,38 @@ namespace day4 {
 		addObject(b2f, "b2f", 1, true);
 
 
+		auto dangeon = ObjectN::create();
+		dangeon->setArea(Rect(380, 140, 100, 160));
+		dangeon->setCursor(Cursor::ENTER);
+		dangeon->setMsg("カギがかかっている");
+		dangeon->addCanUseItem("key2");
+		dangeon->setTouchEvent(CallFunc::create([this]() {
+			if (ItemMgr::sharedItem()->getSelectedItem() == "key2") {
+				auto novel = Novel::create();
+				novel->setFontColor(0, Color3B::BLACK);
+				novel->addSentence(0, "", "ガチャ");
+				novel->setCharaL(0, "chara/tuguru1.png");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継", "よし、カギが開いたぞ！");
+				novel->setFontColor(0, Color3B::RED);
+				novel->setCharaR(0, "chara/remon1.png");
+				novel->addSentence(0, "檸檬", "ここから外に出られるのかしら？");
+				novel->setFontColor(0, Color3B::BLUE);
+				novel->addSentence(0, "継", "まだわからないけど…行ってみよう。");
+
+				novel->setEndTask(0, CallFunc::create([this]() {
+					Control::me->changeField("dangeon1"); 
+					playSoundBS("SE/door.ogg");
+					}));
+				this->addChild(novel, 10, "novel");
+
+				ItemMgr::sharedItem()->deleteItem("key2");
+				mObjectList["dangeon"]->setMsg("");
+				mObjectList["dangeon"]->setFieldChangeEvent("dangeon1");
+			}
+			}));
+		addObject(dangeon, "dangeon", 1, true);
+
 
 		this->setCascadeOpacityEnabled(true);
 		this->setOpacity(0);
@@ -168,7 +200,7 @@ namespace day4 {
 			if (gotdiary && !ItemMgr::sharedItem()->getGetItem("diary")) {
 				ItemMgr::sharedItem()->getItem("diary", Point(-100, -100));
 			}
-			}),NULL));
+			}), NULL));
 	}
 
 	void Aisle::changedField() {

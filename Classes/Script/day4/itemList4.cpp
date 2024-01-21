@@ -19,6 +19,7 @@ namespace day4 {
 		mItemList["key_remon"] = new ItemObj("item/key_remon_i.png");
 		mItemList["diary"] = new ItemObj("item/diary_i.png");
 		mItemList["candle"] = new ItemObj("item/candle_i.png");
+		mItemList["key2"] = new ItemObj("item/key2_i.png");
 
 	}
 
