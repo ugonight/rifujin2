@@ -184,6 +184,7 @@ namespace day4 {
 				this->addChild(novel, 10, "novel");
 
 				ItemMgr::sharedItem()->deleteItem("key2");
+				mObjectList["dangeon"]->setState(1);
 				mObjectList["dangeon"]->setMsg("");
 				mObjectList["dangeon"]->setFieldChangeEvent("dangeon1");
 			}

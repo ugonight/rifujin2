@@ -86,6 +86,7 @@ private:
 	int mDefSerialNum[MAX_BRANCH];	// Novel生成時の連番
 	cocos2d::ValueMap mAlreadyMap;
 #endif
+	cocos2d::Color4B mColor = cocos2d::Color4B::BLACK;
 
 	void func();
 	bool touchEvent(cocos2d::Touch* touch, cocos2d::Event* event);
@@ -160,6 +161,9 @@ public:
 	void stopMessage();
 	// 文字送りを再開する
 	void resumeMessage();
+
+	// 文字色設定（タスク用）
+	void setTextColor(cocos2d::Color4B color);
 
 	CREATE_FUNC(Novel);
 };

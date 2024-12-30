@@ -2,6 +2,7 @@
 
 #include "System/cursor.h"
 #include "Sequence/Title.h"
+#include "Sequence/Ending.h"
 #include "Script\day4\fieldDef.h"
 
 #include "audio/include/AudioEngine.h"
@@ -55,9 +56,23 @@ namespace day4 {
 		});
 
 		mFuncList.push_back([this]() {
-			mSituation = "闇で出会って（ノベル）";
 			AudioEngine::stopAll();
 			playSoundBS("BGM/underground.ogg", true);
+
+			auto bg = Sprite::create("chara/remon_fallen.png");
+			bg->setPosition(Director::getInstance()->getVisibleSize() / 2);
+			bg->setOpacity(0.0f);
+			bg->runAction(Sequence::create(FadeIn::create(0.5f), DelayTime::create(1.0f), FadeOut::create(0.5f), CallFunc::create([this] {
+				mFuncType = mFuncList[++mFuncNum]();
+				removeChildByName("bg");
+				}), NULL));
+			addChild(bg, 0, "bg");
+
+			return 0;
+		});
+
+		mFuncList.push_back([this]() {
+			mSituation = "闇で出会って（ノベル）";
 
 			auto novel = Novel::create();
 
@@ -127,9 +142,6 @@ namespace day4 {
 			auto control = (day4::Esc*)day4::Esc::createControl();
 			addChild(control, 1, "control");
 
-			// チャプター終了フラグを立てる。（後で別のところに書いて）
-			UserDefault::getInstance()->setBoolForKey("chap4end", true);
-
 			return 1;
 		});
 
@@ -140,17 +152,13 @@ namespace day4 {
 
 			auto origin = Director::getInstance()->getVisibleOrigin();
 			auto visibleSize = Director::getInstance()->getVisibleSize();
-			
 
-			auto label = Label::createWithTTF("chapter2 end", FONT_NAME, 30);
-			label->setPosition(Vec2(visibleSize.width - 70, 50));
-			label->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
-			label->setColor(Color3B::WHITE);
-			label->setOpacity(0.0f);
-			label->runAction(Sequence::create(DelayTime::create(5.0f),FadeIn::create(1.0f), DelayTime::create(2.0f), FadeOut::create(1.0f), CallFunc::create([this] {
-				//Director::getInstance()->replaceScene(TransitionFade::create(1.0f, day3::Day::createScene(), Color3B::WHITE));
+			this->runAction(Sequence::create(DelayTime::create(2.0f), CallFunc::create([this] {
+				Director::getInstance()->replaceScene(TransitionFade::create(1.0f, Ending::createScene(), Color3B::WHITE));
 			}), NULL));
-			this->addChild(label, 3, "label");
+
+			// チャプター終了フラグを立てる
+			UserDefault::getInstance()->setBoolForKey("chap4end", true);
 
 			return 10;
 		});

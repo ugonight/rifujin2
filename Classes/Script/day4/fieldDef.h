@@ -59,6 +59,10 @@ CREATE_FIELD(Panel)
 			void DrawEnemy();
 			void gameover();
 	};
+	CREATE_FIELD(DeadEnd)
+		private:
+			void gameover();
+		};
 
 	class Day : public Chapter
 	{

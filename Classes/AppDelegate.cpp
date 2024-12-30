@@ -3,18 +3,9 @@
 #include <time.h>
 
 #define USE_AUDIO_ENGINE 1
-// #define USE_SIMPLE_AUDIO_ENGINE 1
-
-#if USE_AUDIO_ENGINE && USE_SIMPLE_AUDIO_ENGINE
-#error "Don't use AudioEngine and SimpleAudioEngine at the same time. Please just select one in your game!"
-#endif
 
 #if USE_AUDIO_ENGINE
 #include "audio/include/AudioEngine.h"
-// using namespace cocos2d::experimental;
-#elif USE_SIMPLE_AUDIO_ENGINE
-#include "audio/include/SimpleAudioEngine.h"
-using namespace CocosDenshion;
 #endif
 
 USING_NS_CC;
@@ -37,8 +28,6 @@ AppDelegate::~AppDelegate()
 {
 #if USE_AUDIO_ENGINE
     AudioEngine::end();
-#elif USE_SIMPLE_AUDIO_ENGINE
-    SimpleAudioEngine::end();
 #endif
 }
 
@@ -72,12 +61,12 @@ bool AppDelegate::applicationDidFinishLaunching() {
         director->setOpenGLView(glview);
     }
 
-//#ifdef _DEBUG || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
+#ifdef _DEBUG // || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
     // turn on display FPS
     director->setDisplayStats(true);
-//#else
-//	director->setDisplayStats(false);
-//#endif
+#else
+	director->setDisplayStats(false);
+#endif
 
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0f / 50);
@@ -123,9 +112,6 @@ void AppDelegate::applicationDidEnterBackground() {
 
 #if USE_AUDIO_ENGINE
     AudioEngine::pauseAll();
-#elif USE_SIMPLE_AUDIO_ENGINE
-    SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-    SimpleAudioEngine::getInstance()->pauseAllEffects();
 #endif
 
 	UserDefault *userDef = UserDefault::getInstance();
@@ -139,9 +125,6 @@ void AppDelegate::applicationWillEnterForeground() {
 
 #if USE_AUDIO_ENGINE
     AudioEngine::resumeAll();
-#elif USE_SIMPLE_AUDIO_ENGINE
-    SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-    SimpleAudioEngine::getInstance()->resumeAllEffects();
 #endif
 
 	UserDefault *userDef = UserDefault::getInstance();

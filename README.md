@@ -1,6 +1,10 @@
 理不尽ごっこ。2 - ~~sign~~ curse -
 ====
 
+完成版公開しました！🎉
+
+Windows版: https://ugonight.booth.pm/items/6437605
+Android版: https://play.google.com/store/apps/details?id=com.ugonight.rifujin2
 
 ## Description
 
@@ -10,9 +14,11 @@
 
 ## Demo  
 
-プロローグまで遊べるデモを公開！  
-[PC版](https://github.com/ugonight/rifujin2/raw/master/Release.win32.zip)  
-[Android版](https://github.com/ugonight/rifujin2/raw/master/rifujin2-release.apk) 
+~~プロローグまで遊べるデモを公開！~~  
+~~[PC版](https://github.com/ugonight/rifujin2/raw/master/Release.win32.zip)~~  
+~~[Android版](https://github.com/ugonight/rifujin2/raw/master/rifujin2-release.apk)~~ 
+
+正式リリースしたのでデモ版は消しておきます…
 
 ## VS. 
 

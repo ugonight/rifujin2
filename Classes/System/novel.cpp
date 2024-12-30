@@ -146,7 +146,7 @@ bool Novel::init() {
 			return true;
 		}
 		return false;
-	};
+		};
 	listener->onTouchEnded = [this](Touch* touch, Event* event) { mFast = false; };
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, fast);
 
@@ -161,21 +161,24 @@ bool Novel::init() {
 void Novel::initLabel(std::string text, std::string name) {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	auto color = Color4B::BLACK;
+	auto color = mColor;
 
 	if (getChildByName("label")) {
-		color = ((Label*)getChildByName("label"))->getTextColor();
-		removeChildByName("label"); 
+		// color = ((Label*)getChildByName("label"))->getTextColor();
+		removeChildByName("label");
 	}
-	if (getChildByName("name")) removeChildByName("name");
+	if (getChildByName("name")) {
+		removeChildByName("name");
+	}
 
 	//文字
 	auto label = Label::createWithTTF(text, FONT_NAME, 24);
 	label->setPosition(Vec2(origin.x + 50,
 		origin.y + visibleSize.height - 340));
 	label->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
-	label->setTextColor(color);
-	label->enableOutline(Color4B::WHITE, 2);
+	label->setTextColor(Color4B::WHITE);
+	//label->setTextColor(color);
+	//label->enableOutline(Color4B::WHITE, 2);
 	label->setDimensions(750, 130);
 	this->addChild(label, 3, "label");
 	//名前
@@ -183,7 +186,7 @@ void Novel::initLabel(std::string text, std::string name) {
 	label->setPosition(Vec2(origin.x + 130,
 		origin.y + visibleSize.height - 320));
 	label->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-	label->setColor(Color3B::WHITE);
+	label->setTextColor(Color4B::WHITE);
 	label->enableOutline(color, 1);
 	this->addChild(label, 3, "name");
 }
@@ -233,7 +236,7 @@ void Novel::readTalk() {
 	auto label = (Label*)this->getChildByName("label");
 	auto name = (Label*)this->getChildByName("name");
 	if (endCheck()) {	//文がすべて表示されていたら
-						//バックログに記録
+		//バックログに記録
 		if (this->getOpacity() == 255) {
 			std::string log = "";
 			if (mName[mBranch][mNovelNum[mBranch]] != "")log += mName[mBranch][mNovelNum[mBranch]] + " : ";
@@ -527,8 +530,9 @@ void Novel::CTask::update(Novel* parent) {
 	auto label = (Label*)parent->getChildByName("label");
 	auto name = (Label*)parent->getChildByName("name");
 	auto tsk = (CTask*)parent->mTask[parent->mBranch][parent->mTaskNum[parent->mBranch]].get();
-	label->setTextColor((Color4B)tsk->color);
+	// label->setTextColor((Color4B)tsk->color);
 	name->enableOutline((Color4B)tsk->color, 1);
+	parent->setTextColor((Color4B)tsk->color);
 }
 
 void Novel::FTask::update(Novel* parent) {
@@ -554,19 +558,19 @@ void Novel::PTask::update(Novel* parent) {
 			auto listener = EventListenerTouchOneByOne::create();
 			listener->onTouchBegan = [this](Touch* touch, Event* event) {
 				return true;
-			};
+				};
 			listener->setSwallowTouches(true);
 			parent->getParent()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, fake);
 
 			parent->getParent()->addChild(fake, parent->getLocalZOrder() + 1, "fakeLayer");
 			}),
 		func,
-				CallFunc::create([this, parent]() {
-				parent->mHideMsg = false;
-				parent->resumeDelayAnime();
-				parent->getParent()->removeChildByName("fakeLayer");
-					}),
-				FadeIn::create(0.5), NULL));;
+		CallFunc::create([this, parent]() {
+			parent->mHideMsg = false;
+			parent->resumeDelayAnime();
+			parent->getParent()->removeChildByName("fakeLayer");
+			}),
+		FadeIn::create(0.5), NULL));;
 }
 Novel::PTask::~PTask() {
 	CC_SAFE_RELEASE_NULL(func);
@@ -597,7 +601,7 @@ void Novel::STask::update(Novel* parent) {
 		listener->setSwallowTouches(true);
 		listener->onTouchBegan = [this](Touch* touch, Event* event) {
 			return true;
-		};
+			};
 		listener->onTouchEnded = [this, branchTo, parent](Touch* touch, Event* event) {
 			parent->mBranch = parent->mCurrentSTask->branchTo[branchTo];
 			auto label = (Label*)parent->getChildByName("label");
@@ -613,7 +617,7 @@ void Novel::STask::update(Novel* parent) {
 			parent->setDelayAnime();
 			parent->removeChildByName("fakeLayer");
 			parent->mSwitch = false;
-		};
+			};
 		parent->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, fake);
 	}
 	else {
@@ -629,11 +633,11 @@ void Novel::STask::update(Novel* parent) {
 			// name.clear(); name.str("");
 			// name << "branch" << i;
 			// parent->addChild(box, 3, name.str());
-			parent->addChild(box, 3, StringUtils::format("branch%d",i));
+			parent->addChild(box, 3, StringUtils::format("branch%d", i));
 			auto text = Label::createWithTTF(tsk->branchStr[i], FONT_NAME, 24);
 			text->setPosition(box->getPosition());
-			text->setTextColor(Color4B::BLACK);
-			text->enableOutline(Color4B::WHITE, 2);
+			text->setTextColor(Color4B::WHITE);
+			// text->enableOutline(Color4B::WHITE, 2);
 			text->setOpacity(0.00f);
 			text->runAction(FadeIn::create(0.5));
 			//name.clear(); name.str("");
@@ -682,7 +686,7 @@ void Novel::STask::update(Novel* parent) {
 					return true;
 				}
 				return false;
-			};
+				};
 			parent->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, box);
 		}
 	}
@@ -888,7 +892,7 @@ bool Novel::logEvent(cocos2d::Touch* touch, cocos2d::Event* event) {
 			{
 				this->removeChildByName("layer_l");
 			}
-		};
+			};
 		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, close);
 
 		auto _scrollView = cocos2d::ui::ScrollView::create();
@@ -951,4 +955,9 @@ void Novel::resumeMessage()
 {
 	mHideMsg = false;
 	setDelayAnime();
+}
+
+void Novel::setTextColor(cocos2d::Color4B color)
+{
+	mColor = color;
 }

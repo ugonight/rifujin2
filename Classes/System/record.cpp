@@ -7,8 +7,9 @@
 // using namespace cocos2d::experimental;
 USING_NS_CC;
 
-Record::Record() : mPage(0), mSelectNum(0),mMode(0)
-{}
+Record::Record() : mPage(0), mSelectNum(0), mMode(0)
+{
+}
 
 Record::~Record() {
 	//CC_SAFE_RELEASE_NULL(mSaveFunc);
@@ -23,15 +24,15 @@ Record::~Record() {
 
 bool Record::init()
 {
-    if ( !Layer::init() )
-    {
-        return false;
-    }
-    
+	if (!Layer::init())
+	{
+		return false;
+	}
+
 	this->scheduleUpdate();
 
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	playSoundBS("SE/record_on.ogg");
 
@@ -66,12 +67,12 @@ bool Record::init()
 		}
 		else {
 			this->runAction(Sequence::create(EaseSineIn::create(MoveBy::create(0.2, Vec3(0, visibleSize.height, 0)))
-				,RemoveSelf::create(),NULL));
+				, RemoveSelf::create(), NULL));
 			playSoundBS("SE/record_off.ogg");
 			mSelectNum = 0;
 		}
 		return true;
-	};
+		};
 	listener->onTouchEnded = [this](Touch* touch, Event* event) {
 		getChildByName("select")->runAction(FadeOut::create(0.1));
 		int my = event->getCurrentTarget()->getBoundingBox().getMaxY() - 25;
@@ -87,7 +88,7 @@ bool Record::init()
 				}
 			}
 		}
-	};
+		};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, bg);
 
 	//テキスト
@@ -96,7 +97,7 @@ bool Record::init()
 		std::stringstream str;
 		str << i + 1;
 		auto num = Label::createWithTTF(str.str(), FONT_NAME, 20);
-		num->setPosition(Vec2(250,my - 70 * i - 35));
+		num->setPosition(Vec2(250, my - 70 * i - 35));
 		//str.clear(); str.str("");
 		resetStr(str);
 		str << "num_" << i + 1;
@@ -134,7 +135,7 @@ bool Record::init()
 			return true;
 		}
 		return false;
-	};
+		};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, arrow);
 	arrow = Sprite::create("record_next.png");
 	arrow->setPosition(Vec2(visibleSize.width / 2 - 250, visibleSize.height / 2));
@@ -152,14 +153,14 @@ bool Record::init()
 			return true;
 		}
 		return false;
-	};
+		};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, arrow);
 	getEventDispatcher()->pauseEventListenersForTarget(arrow);
 
-    return true;
+	return true;
 }
 
-void Record::update( float delta ) {
+void Record::update(float delta) {
 
 }
 
@@ -193,7 +194,7 @@ void Record::turnPage() {
 	//	pre->setVisible(false);
 	//	getEventDispatcher()->pauseEventListenersForTarget(pre);
 	//}
-	
+
 	setVisibleWithTouch(next, mPage < 2);
 	setVisibleWithTouch(pre, mPage > 0);
 
@@ -206,7 +207,7 @@ void Record::updateInfo() {
 	for (int i = 0; i < 5; i++) {
 		dataNum = mPage * 5 + i + 1;
 		resetStr(str);
-		str << FileUtils::getInstance()->getWritablePath() <<  dataNum << "/";
+		str << FileUtils::getInstance()->getWritablePath() << dataNum << "/";
 		auto path = str.str();
 
 		auto file = path + "saveData.plist";
@@ -228,23 +229,26 @@ void Record::updateInfo() {
 		if (data["totalTime"].asDouble() > 0) {
 			resetStr(str);
 			double time = data["totalTime"].asDouble();
-			str << "プレイ時間 : " << StringUtils::format("%02d", (int)time / (60 * 60)) << "h" << StringUtils::format("%02d", (int)time / 60) << "m" << StringUtils::format("%02d", (int)time % 60) << "s";
+			str << "プレイ時間 : "
+				<< StringUtils::format("%02d", (int)time / (60 * 60)) << "h"
+				<< StringUtils::format("%02d", ((int)time % (60 * 60)) / 60) << "m"
+				<< StringUtils::format("%02d", (int)time % 60) << "s";
 			label->setString(str.str());
 		}
 		else {
 			label->setString("");
 		}
-		
+
 	}
 }
 
-void Record::save(std::function<void(int)> &func) {
+void Record::save(std::function<void(int)>& func) {
 	mSaveFunc = func;
 	//mSaveFunc->retain();
 	mMode = true;
 
 	auto goTitle = Label::createWithTTF("タイトルへ", FONT_NAME, 25);
-	goTitle->setPosition(200,80);
+	goTitle->setPosition(200, 80);
 	goTitle->setTextColor(Color4B::BLACK);
 	goTitle->setOpacity(0.0f);
 	goTitle->runAction(FadeIn::create(0.2f));
@@ -256,13 +260,13 @@ void Record::save(std::function<void(int)> &func) {
 		Vec2 origin = Director::getInstance()->getVisibleOrigin();
 		if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
 			this->runAction(Sequence::create(EaseSineIn::create(MoveBy::create(0.2, Vec3(0, visibleSize.height, 0)))
-				, RemoveSelf::create(), NULL));	
+				, RemoveSelf::create(), NULL));
 			AudioEngine::stopAll();
 			Director::getInstance()->replaceScene(TransitionCrossFade::create(1.0f, Title::createScene()));
 			return true;
 		}
 		return false;
-	};
+		};
 
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, goTitle);
 

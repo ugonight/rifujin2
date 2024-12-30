@@ -311,7 +311,9 @@ namespace day1 {
 			novel->addSentence(0, "継", "！");
 			novel->addEvent(0, CallFunc::create([this] {playSoundBS("BGM/mystery.ogg", true); setGetMusic(3);}));
 			novel->addSentence(0, "継", "それは違うと思うよ");
+			novel->setFontColor(0, Color3B::RED);
 			novel->addSentence(0, "リアス", "ど、どうしてですか");
+			novel->setFontColor(0, Color3B::BLUE);
 			novel->addSentence(0, "継", "確か…僕たちが写真を宇沢さんに見せた時…");
 			novel->addSwitchEvent(0, 1, "オカルトは嫌い", 2, "バンダナが好き");
 			novel->addSentence(0, "継", "彼女はこう言っていたはずだ");

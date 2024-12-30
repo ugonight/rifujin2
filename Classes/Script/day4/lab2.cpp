@@ -324,6 +324,8 @@ namespace day4 {
 				novel->addSentence(0, "バンダナ", "まじか…");
 				novel->addSentence(0, "継", "くっつけられるものを探さないと");
 
+				mObjectList["guillotine"]->setState(1);
+
 				novel->setEndTask(0);
 				this->addChild(novel, 10, "novel");
 			}

@@ -313,7 +313,7 @@ namespace day3 {
 						novel->addEvent(0, CallFunc::create([this] { AudioEngine::stopAll(); playSoundBS("BGM/school.ogg", true); }));
 						novel->addSentence(0, "寿甘", "ま、そうと決まればまた校舎裏に行くわよ！");
 						novel->addSentence(0, "宇沢", "いや、ここは手分けしていきましょう。");
-						novel->addSentence(0, "宇沢", "私は「人形遣い」の生徒について調査しています、寿甘さんは校舎裏へ向かってください。");
+						novel->addSentence(0, "宇沢", "私は「人形遣い」の生徒について調査します、寿甘さんは校舎裏へ向かってください。");
 						novel->addSentence(0, "寿甘", "わかったわ、何かわかったら教えてね");
 						novel->addSentence(0, "寿甘", "あ、そうだ。この笛渡しておくから、調査したことを紙に書いて翼くんに届けさせて！");
 						novel->addEvent(0, CallFunc::create([this] {

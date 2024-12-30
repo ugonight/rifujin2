@@ -31,7 +31,7 @@ namespace day3 {
 				novel->setCharaR(0, "chara/renji1.png");
 				novel->addSentence(0, "寿甘", "おい神北");
 				novel->setFontColor(0, Color3B::BLUE);
-				novel->addSentence(0, "恋巳", "俺は辛辣な方なのか…");
+				novel->addSentence(0, "恋巳", "な、なんだ");
 				novel->setFontColor(0, Color3B::RED);
 				novel->addSentence(0, "寿甘", "つぐるんとバンダナがどこに行ったか知らない？");
 				novel->setFontColor(0, Color3B::BLUE);
@@ -782,7 +782,7 @@ namespace day3 {
 					auto novel = Novel::create();
 
 					novel->setFontColor(0, Color3B::RED);
-					novel->addSentence(0, "寿甘", "こっちじゃないっぽいわ…");
+					novel->addSentence(0, "寿甘", "こっちは行き止まりだわ…");
 					novel->addSentence(0, "寿甘", "戻らなきゃ…！");
 					novel->addEvent(0, CallFunc::create([this] {
 						getChildByName("bg")->runAction(Sequence::createWithTwoActions(FadeOut::create(0.5), FadeIn::create(0.5)));

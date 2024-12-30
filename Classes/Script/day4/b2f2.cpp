@@ -43,8 +43,10 @@ namespace day4 {
 				novel->addEvent(0, CallFunc::create([this]() {
 					ItemMgr::sharedItem()->getItem("key", Vec2(mObjectList["library"]->getArea().getMidX(), mObjectList["library"]->getArea().getMidY()));
 					ItemMgr::sharedItem()->deleteItem("key_broken");
-					}));
+				}));
 				novel->addSentence(0, "継", "ふー、ふー…これなら扉を開ける程度は、問題無く使えそうだね。");
+
+				mObjectList["library"]->setState(1);
 
 				novel->setEndTask(0);
 				addChild(novel, 10, "novel");
@@ -239,7 +241,7 @@ namespace day4 {
 				}));
 			novel->setCharaR(0, "");
 			novel->setCharaL(0, "");
-			novel->addSentence(0, "バンダナ", "おらっ！堪忍しろっ……！？");
+			novel->addSentence(0, "バンダナ", "おらっ！観念しろっ……！？");
 			novel->addSentence(0, "継", "！？");
 			novel->addSentence(0, "バンダナ", "身体が…消えた…？");
 
@@ -348,8 +350,10 @@ namespace day4 {
 						novel->addSentence(0, "継", "なにかヒントになるかもしれない、持っていこう。");
 					}
 					mObjectList["book3"]->setCursor(Cursor::INFO);
-					mObjectList["book3"]->setState(0);
+					mObjectList["book3"]->setState(2);
 					break;
+				case 2:
+					novel->addSentence(0, "継", "…参考になりそうなところは大体読み終わったかな");
 				default:
 					break;
 				}
@@ -535,7 +539,7 @@ namespace day4 {
 				novel->addEvent(0, CallFunc::create([this]() {
 					this->addChild(mObjectList["skull_light"], 3, "skull_light");
 					mObjectList["skull_light"]->runObjectAction();
-					}));
+				}));
 				novel->addSentence(0, "バンダナ", "うおっ！ドクロがカラフルに光り始めたぞ！");
 				mObjectList["skull"]->setState(2);
 				ItemMgr::sharedItem()->deleteItem("candle");
@@ -724,6 +728,7 @@ namespace day4 {
 			novel->setCharaC(0, "chara/remon1.png");
 			novel->addSentence(0, "檸檬", "……");
 			mObjectList["flag"]->setState(1);
+			setGetStill(19);
 
 			novel->setEndTask(0);
 			addChild(novel, 10, "novel");
@@ -762,6 +767,7 @@ namespace day4 {
 		rroom->setCursor(Cursor::BACK);
 		rroom->setFieldChangeEvent("rroom");
 		addObject(rroom, "rroom", 1, true);
+
 
 		std::vector < std::tuple<Rect, std::string, Color3B, std::function<void()>>> skullList;
 		skullList.push_back(std::make_tuple(Rect(75, 260, 90, 100), "skull_red", Color3B(255, 100, 100), [this]() { if (mObjectList["flag"]->getState() == 2) mObjectList["flag"]->setState(3); else mObjectList["flag"]->setState(0); }));

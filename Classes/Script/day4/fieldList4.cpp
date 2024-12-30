@@ -27,6 +27,7 @@ namespace day4 {
 		mFieldList["dangeon1"] = Dangeon1::create();
 		mFieldList["remains"] = Remains::create();
 		mFieldList["dangeon2"] = Dangeon2::create();
+		mFieldList["deadend"] = DeadEnd::create();
 
 		mFieldList["AboutItem"] = AboutItem::create();
 

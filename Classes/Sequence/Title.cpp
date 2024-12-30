@@ -29,17 +29,17 @@ bool Title::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	UserDefault* userDef = UserDefault::getInstance();
 
-	auto closeItem = MenuItemImage::create(
-		"CloseNormal.png",
-		"CloseSelected.png",
-		CC_CALLBACK_1(Title::menuCloseCallback, this));
+	//auto closeItem = MenuItemImage::create(
+	//	"CloseNormal.png",
+	//	"CloseSelected.png",
+	//	CC_CALLBACK_1(Title::menuCloseCallback, this));
 
-	closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width / 2,
-		origin.y + closeItem->getContentSize().height / 2));
+	//closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width / 2,
+	//	origin.y + closeItem->getContentSize().height / 2));
 
-	auto menu = Menu::create(closeItem, NULL);
-	menu->setPosition(Vec2::ZERO);
-	this->addChild(menu, 1);
+	//auto menu = Menu::create(closeItem, NULL);
+	//menu->setPosition(Vec2::ZERO);
+	//this->addChild(menu, 1);
 
 	// タイトル表示
 	{
